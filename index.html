@@ -13,14 +13,14 @@
 <meta property="og:url" content="https://radek-sixi.github.io/">
 </head>
 <body>
-<header class="site">
+  <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
   <h1>I break AI agents, then prove what really broke.</h1>
-  <p class="lede">Senior AI engineer &amp; architect in Switzerland. I attack AI agents, measure the tools that do it, and publish the raw numbers, including the ones where my own tool loses.</p>
-  <p>14 years shipping software where failure is expensive: defence edge devices, an IoT platform for global pharma, and an agentic AI platform over live building telemetry. Open to remote roles and contracts from November 2026: <a href="/work/">work with me</a>.</p>
+  <p class="lede">Senior AI engineer &amp; architect in Switzerland. I attack AI agents, measure the tools that do it, and publish the raw numbers — and build off-grid LoRa mesh protocols and firmware that hold up when the network doesn't.</p>
+  <p>14 years shipping software where failure is expensive: defence edge devices, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. Open to remote roles and contracts from November 2026: <a href="/work/">work with me</a>.</p>
 
   <img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: reach, attack, judge, prove, ship.">
 
@@ -33,10 +33,19 @@
     </li>
   </ul>
 
-  <h2>Projects</h2>
+  <h2>Off-grid LoRa mesh &amp; authenticated alerts</h2>
+  <p>A complete open-source stack for packet-radio communications when power and mobile networks go down — from the 87-byte signed wire frame to the handheld UI, desktop console, and SDR telemetry bridge:</p>
+  <ul>
+    <li><a href="https://github.com/radek-sixi/sigillo">sigillo</a>: compact 87-byte <code>Ed25519</code>-signed public alert frame (EU Galileo CAMF block, offline verification, conformance test vectors, and reference libraries in C99, Python and TypeScript)</li>
+    <li><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a>: clean-room LVGL 9 touch-first handheld UI and Linux desktop companion console for <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> on LilyGo T-Deck Plus, T-Beam S3 Supreme and Heltec V3 (2D mesh graph, SX1262 link-budget calculator, offline SNR heatmap, 1-click WebSerial flasher)</li>
+    <li><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a>: LoRa &amp; RTL-SDR V4 observer bridge with local <code>Ed25519</code> advertisement verification, ML Bayesian ghost-hop repeater triangulation, and a 0 ms local WebSocket stream</li>
+  </ul>
+
+  <h2>AI agent security</h2>
   <ul>
     <li><a href="https://github.com/radek-sixi/agent-redteam-benchmark">agent-redteam-benchmark</a>: seven red-teaming tools vs one real Foundry agent, scored from the wire</li>
-    <li><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a>: red-team scanner for LLM agents; one Go binary, no LLM inside</li>
+    <li><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a>: red-team scanner for LLM agents; 27 single- and multi-turn techniques, one Go binary, no LLM inside by default</li>
+    <li><a href="https://github.com/radek-sixi/laya-as-judge">laya-as-judge</a>: local LLM-as-a-judge with deterministic oracles first</li>
     <li><a href="https://github.com/radek-sixi/scan-action">scan-action</a>: sixi-scanner in GitHub CI, findings in the Security tab</li>
     <li><a href="https://github.com/radek-sixi/redwire">redwire</a>: reach any agent over REST, MCP, A2A or WebSocket</li>
     <li><a href="https://github.com/radek-sixi/agent-arena">agent-arena</a>: an evaluation arena with a model-free referee</li>
