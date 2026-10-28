@@ -4,54 +4,149 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek (Sixi) — Senior Software Engineer &amp; AI Architect</title>
-<meta name="description" content="Radek (Sixi) breaks AI agents, then proves what really broke and builds the controls that stop it.">
+<meta name="description" content="Radek (Sixi) builds off-grid LoRa mesh protocols, LVGL 9 handheld firmware, and measured red-teaming tools for AI agents.">
 <meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radek-sixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek (Sixi) — Senior Software Engineer &amp; AI Architect">
-<meta property="og:description" content="Measured security for AI agents: attack, judge, prove, ship.">
+<meta property="og:description" content="Off-grid LoRa mesh protocols &amp; firmware (sigillo, Faro, sixi-observer) and measured security for AI agents (sixi-scanner, agent-redteam-benchmark).">
 <meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radek-sixi.github.io/">
 </head>
 <body>
-  <header class="site">
+<header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
   <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
-  <h1>I break AI agents, then prove what really broke.</h1>
-  <p class="lede">Senior AI engineer &amp; architect in Switzerland. I attack AI agents, measure the tools that do it, and publish the raw numbers — and build off-grid LoRa mesh protocols and firmware that hold up when the network doesn't.</p>
-  <p>14 years shipping software where failure is expensive: defence edge devices, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. Open to remote roles and contracts from November 2026: <a href="/work/">work with me</a>.</p>
+  <h1>I break AI agents, then prove what really broke — and build systems that hold up when the network or the model doesn't.</h1>
+  <p class="lede">Senior Software Engineer &amp; AI Architect in Switzerland. Two open-source tracks that reinforce each other: a complete off-grid LoRa mesh &amp; packet-radio stack (from an 87-byte <code>Ed25519</code>-signed wire frame to handheld LVGL 9 firmware and SDR telemetry) and a measured AI agent red-teaming suite.</p>
+  <p>14 years shipping software where failure is expensive: defence edge devices in C/C++, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. See my full <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a> (open to remote roles and contracts from November 2026).</p>
 
-  <img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: reach, attack, judge, prove, ship.">
-
-  <h2>Writing</h2>
+  <p class="eyebrow">Writing</p>
+  <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
-      <span class="date">October 2026</span>
+      <span class="date">26 October 2026 <span class="post-tag">LoRa · Protocol &amp; Crypto</span></span>
+      <a href="/sigillo-87-byte-signed-alerts-for-lora/">Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</a>
+      <p>A 7-byte header, the 16-byte Galileo CAMF block, and a 64-byte Ed25519 signature that any microcontroller can verify offline — and why OpenSSL, noble, and libsodium disagree on edge-case signatures unless you lock the rules.</p>
+    </li>
+    <li>
+      <span class="date">24 October 2026 <span class="post-tag">LoRa · Firmware &amp; SDR</span></span>
+      <a href="/faro-and-sixi-observer-lora-mesh-stack/">Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios</a>
+      <p>Running LVGL 9.3 on the LilyGo T-Deck Plus alongside unmodified MeshCore firmware, clamping 868 MHz duty-cycle and ERP ceilings in code, and triangulating ghost-hop repeaters with local Ed25519 verification.</p>
+    </li>
+    <li>
+      <span class="date">16 October 2026 <span class="post-tag">AI Security · Multi-turn</span></span>
+      <a href="/multi-turn-probes-and-taint-relay/">What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</a>
+      <p>Why per-request guardrails fail across a conversation, how an agent relayed prompt injection by e-mail seven times while an LLM judge called it compliant, and what changed in sixi-scanner v0.8.4.</p>
+    </li>
+    <li>
+      <span class="date">6 October 2026 <span class="post-tag">AI Security · Benchmark</span></span>
       <a href="/agent-redteam-benchmark-findings/">I scored 7 AI red-teaming tools on a real Azure agent. Their own reports were 70–97% noise.</a>
-      <p>The agent never said its secret. It e-mailed it. What a tool-blind benchmark found, and what to change before you ship an agent.</p>
+      <p>The agent never said its secret. It e-mailed it. What a tool-blind benchmark found across 15,000 turns, and what to change before you ship an agent.</p>
     </li>
   </ul>
 
-  <h2>Off-grid LoRa mesh &amp; authenticated alerts</h2>
-  <p>A complete open-source stack for packet-radio communications when power and mobile networks go down — from the 87-byte signed wire frame to the handheld UI, desktop console, and SDR telemetry bridge:</p>
-  <ul>
-    <li><a href="https://github.com/radek-sixi/sigillo">sigillo</a>: compact 87-byte <code>Ed25519</code>-signed public alert frame (EU Galileo CAMF block, offline verification, conformance test vectors, and reference libraries in C99, Python and TypeScript)</li>
-    <li><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a>: clean-room LVGL 9 touch-first handheld UI and Linux desktop companion console for <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> on LilyGo T-Deck Plus, T-Beam S3 Supreme and Heltec V3 (2D mesh graph, SX1262 link-budget calculator, offline SNR heatmap, 1-click WebSerial flasher)</li>
-    <li><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a>: LoRa &amp; RTL-SDR V4 observer bridge with local <code>Ed25519</code> advertisement verification, ML Bayesian ghost-hop repeater triangulation, and a 0 ms local WebSocket stream</li>
+  <p class="eyebrow">Off-grid packet radio &amp; embedded devices</p>
+  <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
+  <p>When power and mobile networks go down, cloud-dependent tools disappear first. I build an open-source, end-to-end LoRa &amp; <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> stack — from the 87-byte signed wire protocol verifiable offline on a microcontroller, to the handheld touchscreen UI and Linux desktop console, to the USB/SDR observer bridge:</p>
+
+  <div class="grid">
+    <div class="card card-full">
+      <p class="tag-line">Sign &amp; Verify · C99 · Python 3.14 · TypeScript · v1.0-rc</p>
+      <h3><a href="https://github.com/radek-sixi/sigillo">sigillo</a></h3>
+      <p>Compact signed frame for public alerts over low-bandwidth packet radio. Packs a 7-byte header, the 16-byte EU Common Alert Message Format (Galileo CAMF Issue 1.2) block, optional TLV extensions, and a 64-byte <code>Ed25519</code> signature into an <strong>87-byte base frame</strong> (well inside MeshCore's 165 B group limit). Includes a CC BY 4.0 specification, locked conformance vectors (<code>vectors/v1.json</code>), and three bit-exact reference libraries: <code>sigillo-c</code> (C99, gcc/clang ASan &amp; UBSan), <code>sigillo-py</code>, and <code>sigillo-ts</code>.</p>
+      <ul class="pills">
+        <li>87 B base frame (7 B header + 16 B CAMF + 64 B Ed25519)</li>
+        <li>Offline verification &amp; strict Ed25519 rules</li>
+        <li>Clockless node support (VALID_AGE_UNKNOWN + TIME beacons)</li>
+        <li>Primary &amp; backup roots · KEY / REVOKE / ROTATE</li>
+      </ul>
+    </div>
+
+    <div class="card card-full">
+      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9.3 · SDL2 · Apache-2.0</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
+      <p>Clean-room touch, keyboard, and trackball UI for unmodified upstream MeshCore on the <strong>LilyGo T-Deck / T-Deck Plus / T-Deck MAX</strong> and <strong>Elecrow ThinkNode M9</strong>, plus companion builds for the <strong>LilyGo T-Beam S3 Supreme</strong> and <strong>Heltec WiFi LoRa 32 V3</strong>. Ships with a native Ubuntu Linux desktop console (<code>faro-console</code> over USB or TCP <code>:5000</code>), a headless 320×240 PNG simulator (<code>faro-sim</code>), and a 1-click browser WebSerial flasher.</p>
+      <ul class="pills">
+        <li>LilyGo T-Deck Plus / MAX · T-Beam S3 Supreme · Heltec V3</li>
+        <li>2D mesh topology graph &amp; SX1262 link-budget calculator</li>
+        <li>1 Hz regional RF &amp; ERP/duty-cycle clamping (EU 868/433, US/AU/BR 915)</li>
+        <li>Offline SD map tiles · trace path SNR · companion key-export lock</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Observe &amp; Triangulate · Python · LoRa · RTL-SDR V4</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a></h3>
+      <p>Open-source (MIT) observer bridge for USB/serial MeshCore radios (T-Beam Supreme SX1262, Heltec V3/V4, RAK4631) and <strong>RTL-SDR Blog V4</strong> receivers: local 64-byte <code>Ed25519</code> advertisement verification, multi-hop SNR/RSSI telemetry, ML Bayesian ghost-hop repeater triangulation, and a 0 ms local WebSocket stream (<code>ws://127.0.0.1:8765/ws</code>).</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Route (Upstream) &amp; Edge OT · C++ · NVIDIA Jetson</p>
+      <h3><a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">MeshCore (Upstream)</a> &amp; <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a></h3>
+      <p>Upstream pull requests to MeshCore adding dynamic Wi-Fi for the LilyGO T-Beam Supreme SX1262 and fixing negative TX power conversion in radio preferences — alongside <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>, air-gapped inference and agentic diagnostics over live industrial telemetry on two NVIDIA Jetson edge nodes.</p>
+    </div>
+  </div>
+
+  <p><strong>Hardware &amp; embedded bench:</strong></p>
+  <ul class="pills">
+    <li>ESP32-S3 · STM32 · Raspberry Pi</li>
+    <li>SX1262 LoRa (868 / 433 / 915 MHz)</li>
+    <li>LilyGo T-Deck Plus &amp; T-Beam S3 Supreme</li>
+    <li>Heltec WiFi LoRa 32 V3 · RAK4631</li>
+    <li>RTL-SDR Blog V4</li>
+    <li>MeshCore · Meshtastic · LoRaWAN</li>
+    <li>C99 · C++ · LVGL 9.3 · SDL2</li>
+    <li>NVIDIA Jetson Thor &amp; Nano Super</li>
   </ul>
 
-  <h2>AI agent security</h2>
-  <ul>
-    <li><a href="https://github.com/radek-sixi/agent-redteam-benchmark">agent-redteam-benchmark</a>: seven red-teaming tools vs one real Foundry agent, scored from the wire</li>
-    <li><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a>: red-team scanner for LLM agents; 27 single- and multi-turn techniques, one Go binary, no LLM inside by default</li>
-    <li><a href="https://github.com/radek-sixi/laya-as-judge">laya-as-judge</a>: local LLM-as-a-judge with deterministic oracles first</li>
-    <li><a href="https://github.com/radek-sixi/scan-action">scan-action</a>: sixi-scanner in GitHub CI, findings in the Security tab</li>
-    <li><a href="https://github.com/radek-sixi/redwire">redwire</a>: reach any agent over REST, MCP, A2A or WebSocket</li>
-    <li><a href="https://github.com/radek-sixi/agent-arena">agent-arena</a>: an evaluation arena with a model-free referee</li>
-  </ul>
+  <p class="eyebrow">Sixi · Measured security for AI agents</p>
+  <h2>Attack, judge with code, prove on the wire, gate in CI</h2>
+  <p>Most AI red-teaming tools tell you what <em>they think</em> broke. On a real agent, 70–97% of those flags were false alarms. Sixi is the open-source suite I build to close that gap:</p>
+
+  <a href="https://github.com/radek-sixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (redwire, PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark, agent-arena) → 5 Ship (scan-action). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
+
+  <div class="grid">
+    <div class="card">
+      <p class="tag-line">Attack · Go · v0.8.4</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a></h3>
+      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions.</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Prove · Benchmark · Python</p>
+      <h3><a href="https://github.com/radek-sixi/agent-redteam-benchmark">agent-redteam-benchmark</a></h3>
+      <p>Seven red-teaming tools (garak, promptfoo, DeepTeam, PyRIT, Azure AI Red Teaming Agent, agent-probe, sixi-scanner) vs one real Microsoft Foundry agent, scored from the wire by 10 deterministic oracles and a tool-blind judge.</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Judge · Local LLM &amp; Oracles · Python</p>
+      <h3><a href="https://github.com/radek-sixi/laya-as-judge">laya-as-judge</a></h3>
+      <p>Local LLM-as-a-judge returning typed verdicts in milliseconds: deterministic oracles evaluate business rules first, calling a model only when code cannot decide.</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Prove · Evaluation Arena · TypeScript</p>
+      <h3><a href="https://github.com/radek-sixi/agent-arena">agent-arena</a></h3>
+      <p>Evaluation arena for AI agents with a model-free referee: scripted adversarial peers that lie, hash-committed replays anyone can verify, and SARIF output (npm <code>0.2.3</code>).</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Reach · Transport Library · Go &amp; Upstream</p>
+      <h3><a href="https://github.com/radek-sixi/redwire">redwire</a></h3>
+      <p>One <code>Send()</code> interface to reach any agent over REST, MCP, A2A, WebSocket, or a browser chat widget (SSRF-guarded). Upstream <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into Microsoft PyRIT</a>; <a href="https://github.com/NVIDIA/garak/pull/2225"><code>A2AGenerator</code> for NVIDIA garak</a> in review.</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Ship &amp; Learn · GitHub Action &amp; Labs</p>
+      <h3><a href="https://github.com/radek-sixi/scan-action">scan-action</a> &amp; <a href="https://github.com/radek-sixi/agent-redteam-labs">agent-redteam-labs</a></h3>
+      <p><code>uses: radek-sixi/scan-action@v2</code> puts SARIF findings in the GitHub Security tab and fails the build when a target is unreachable — paired with hands-on red-teaming labs and <a href="https://github.com/radek-sixi/adk-demo-target">adk-demo-target</a>.</p>
+    </div>
+  </div>
 </main>
-<footer class="site">© 2026 Radek (Sixi)</footer>
+<footer class="site">© 2026 Radek (Sixi) · <a href="https://radeksixi.web.app/">Portfolio</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radek-sixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="https://x.com/radeksixi">X</a></footer>
 <script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

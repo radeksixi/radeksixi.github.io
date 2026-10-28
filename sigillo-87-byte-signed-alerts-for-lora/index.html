@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</title>
+<meta name="description" content="How Sigillo packs a 7-byte header, the 16-byte EU Common Alert Message Format (Galileo CAMF) block, and a 64-byte Ed25519 signature into an 87-byte offline-verifiable frame — and why standard Ed25519 libraries disagree without strict verification rules.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radek-sixi.github.io/sigillo-87-byte-signed-alerts-for-lora/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio">
+<meta property="og:description" content="An 87-byte offline-verifiable public alert frame for low-bandwidth packet radio, with conformance vectors and C99, Python, and TypeScript reference libraries.">
+<meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radek-sixi.github.io/sigillo-87-byte-signed-alerts-for-lora/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-10-26">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</h1>
+<p class="meta">Radek (Sixi) · 26 October 2026 · <a href="https://github.com/radek-sixi/sigillo">spec, conformance vectors and libraries</a></p>
+
+<p class="lede">When power and mobile networks go down in an Alpine valley, low-power LoRa mesh radios keep working for days on a small battery. What they cannot carry is a 2 KB JSON alert wrapped in an X.509 certificate chain — and what a receiver should never trust is an unsigned text broadcast on a shared channel.</p>
+
+<p>I published <a href="https://github.com/radek-sixi/sigillo">Sigillo</a> (<code>v1.0-rc</code>) to solve that specific problem: a compact, cryptographically signed public-alert frame designed for low-bandwidth packet radio such as <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a>. The base frame is <strong>87 bytes</strong> — small enough to fit well inside MeshCore's 165-byte group payload limit and respect European 868 MHz duty-cycle constraints — yet every receiver can verify its authenticity, authority scope, and geographic target completely offline.</p>
+
+<p>The repository ships the specification (<a href="https://github.com/radek-sixi/sigillo/blob/main/spec/SPEC.md"><code>spec/SPEC.md</code></a>, CC BY 4.0), locked conformance test vectors (<a href="https://github.com/radek-sixi/sigillo/blob/main/vectors/v1.json"><code>vectors/v1.json</code></a>), and three bit-exact reference implementations under Apache-2.0: <code>sigillo-c</code> (C99), <code>sigillo-py</code> (Python 3.14), and <code>sigillo-ts</code> (TypeScript, Node 24).</p>
+
+<h2>Why 87 bytes? The airtime and payload budget</h2>
+<p>On sub-GHz LoRa (869.525 MHz in EU/CH under ERC/REC 70-03), every byte costs Time-on-Air (ToA), battery, and part of a strict 10% hourly duty cycle. In a multi-hop flood mesh, a packet that fragments across frames multiplies collision probability at every repeater hop. MeshCore's group data channel caps payloads at <strong>165 bytes</strong> (<code>MAX_FRAME = 165</code>; Sigillo sets <code>SENDER_LIMIT = 163</code>).</p>
+
+<p>An Asymmetric signature over Curve25519 (<code>Ed25519</code>, RFC 8032) already takes <strong>64 bytes</strong>. That leaves roughly 23 to 100 bytes for everything else: wire framing, signer key identification, replay protection, hazard classification, severity, onset/duration, geographic target ellipse, and optional local extensions.</p>
+
+<p>Instead of inventing a custom hazard taxonomy, Sigillo adopts the 122-bit <strong>Common Alert Message Format (CAMF, Issue 1.2, March 2026)</strong> developed for the EU Galileo Emergency Warning Satellite Service (EWSS), adds 6 Sigillo flag bits to align to 16 bytes (128 bits), and wraps it in a 7-byte header:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Offset</th>
+      <th>Bytes</th>
+      <th>Field</th>
+      <th>Encoding</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>0</code></td>
+      <td>1</td>
+      <td>Header</td>
+      <td>High nibble: wire version (<code>0</code>). Low nibble: frame kind (<code>1</code> = CAMF, <code>2</code> = KEY, <code>3</code> = REVOKE, <code>4</code> = TIME, <code>5</code> = ROTATE).</td>
+    </tr>
+    <tr>
+      <td><code>1–2</code></td>
+      <td>2</td>
+      <td>Key ID</td>
+      <td>16-bit big-endian signer key identifier used to select candidate certificates on the receiver.</td>
+    </tr>
+    <tr>
+      <td><code>3–6</code></td>
+      <td>4</td>
+      <td>Issue time &amp; sequence</td>
+      <td>24-bit unsigned minute since <code>2026-01-01T00:00Z</code> (valid through November 2057) + 8-bit sequence number, packed as one 32-bit big-endian integer.</td>
+    </tr>
+    <tr>
+      <td><code>7–22</code></td>
+      <td>16</td>
+      <td>CAMF block</td>
+      <td>122 bits of EU/Japan CAMF (fields A1 → A18 packed MSB-first) + 6 Sigillo flag bits.</td>
+    </tr>
+    <tr>
+      <td><code>23 … n−65</code></td>
+      <td>0–78</td>
+      <td>TLV extensions</td>
+      <td>Optional <code>(type, len, value)</code> records: Swiss BFS commune numbers (<code>0x01</code>), emergency meeting point <code>PRU</code> (<code>0x02</code>), reference frame ID (<code>0x03</code>), template (<code>0x04</code>), or explicit expiry (<code>0x06</code>).</td>
+    </tr>
+    <tr>
+      <td><code>n−64 … n−1</code></td>
+      <td>64</td>
+      <td>Signature</td>
+      <td>Strict <code>Ed25519</code> signature over the 9-byte ASCII domain separator <code>SIGILLO/1</code> followed by bytes <code>0 … n−65</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>With no TLV extensions, <code>7 + 16 + 64 = 87 bytes</code>. Add three Swiss BFS commune codes (<code>0x01</code>) and the frame is <strong>95 bytes</strong>; add a commune list, an emergency meeting point (<code>PRU</code>), and a Swiss template and it is still only <strong>103 bytes</strong>.</p>
+
+<h2>What fits inside the 16-byte CAMF block</h2>
+<p>Every 128-bit CAMF block decodes deterministically without floating-point ambiguity or external lookup tables:</p>
+<ul>
+  <li><strong>Message type, country, provider, hazard, severity (A1–A5):</strong> 25 bits total. The 5-bit provider field (A3) MUST match the provider encoded in the signer's certificate, preventing an issuer certified for one agency from spoofing another.</li>
+  <li><strong>Integer onset and duration (A6–A8):</strong> 17 bits encoding current/next week, minutes since Monday <code>00:00 UTC</code>, and duration class (<code>&lt;6h</code>, <code>6–12h</code>, <code>12–24h</code>), resolved purely with integer arithmetic from the frame's 24-bit issue minute.</li>
+  <li><strong>Geographic target ellipse (A12–A18):</strong> 33-bit linear grid centre (latitude and longitude), 5-bit logarithmic semi-major and semi-minor axes (<code>~0.216 km</code> to <code>2500 km</code>), 6-bit azimuth, and an optional 15-bit B1 refinement group. The specification locks the exact IEEE 754 double-precision flat-earth projection so that every receiver decides <code>NOT_FOR_AREA</code> identically.</li>
+</ul>
+
+<h2>Finding 1: "Ed25519" does not mean the same thing across libraries</h2>
+<p>If a C99 firmware build on an ESP32-S3, a Python observer bridge on a Raspberry Pi, and a TypeScript web console in a browser inspect the same 87 bytes over radio, they <strong>must never disagree</strong> on whether a frame or certificate is valid.</p>
+
+<p>During the design phase I tested standard cryptographic libraries against edge-case vectors, including the 12 test cases from Chalkias, Garillot, and Nikolaenko's paper <em>"Taming the many EdDSAs"</em> (<a href="https://github.com/novifinancial/ed25519-speccheck"><code>ed25519-speccheck</code></a>):</p>
+<ul>
+  <li>A lenient <code>ref10</code>-style check (inspecting only the top bits of scalar <code>S</code>) accepts a malleated signature <code>S + L</code>.</li>
+  <li><strong>OpenSSL</strong> accepts a trivial forgery when the public key is the identity point (<code>R = identity, S = 0</code>, valid for <em>any</em> message), whereas <strong>libsodium</strong> rejects it.</li>
+  <li>Cofactored verification — such as the default ZIP-215 mode in <code>@noble/ed25519</code> — accepts <code>R + T8</code> (a signature whose <code>R</code> point carries an order-8 torsion component) that strict cofactorless verifiers reject.</li>
+  <li>Browser <strong>WebCrypto Ed25519</strong> behaves differently across browser engines on small-order and non-canonical points.</li>
+</ul>
+
+<div class="note"><p><strong>Sigillo's rule (Section 6):</strong> Every implementation must enforce five strict rules before accepting a signature or subject public key: canonical <code>S &lt; L</code>, canonical point encodings for both <code>A</code> and <code>R</code>, rejection of all 8 small-order points for both <code>A</code> and <code>R</code>, and the unbatched cofactorless verification equation <code>[S]B = R + [k]A</code>. Under these rules, only case 3 of the 12 <code>ed25519-speccheck</code> vectors is valid — matching <code>libsodium</code> across C99, Python, and TypeScript.</p></div>
+
+<p>To make sure duplicate suppression is immune even if someone wires a lenient verifier, Sigillo detects duplicates on <code>(key_id, fingerprint, issue_minute, sequence)</code> rather than raw packet bytes. A malleated copy of a valid frame can never trigger a second alarm.</p>
+
+<h2>Finding 2: Clockless microcontrollers and "silence is not safety"</h2>
+<p>Many battery-powered LoRa mesh nodes have no battery-backed real-time clock (RTC); after a reboot without GPS lock, a MeshCore node wakes up at a default 2024 date. If a protocol simply dropped frames when the local clock was wrong, a rebooted handheld in an emergency would go deaf. If it ignored time completely, it would be vulnerable to replay.</p>
+
+<p>Sigillo separates <strong>authenticity</strong> from <strong>clock trust</strong> through three mechanisms:</p>
+<ol>
+  <li><strong>Per-key high-water marks in non-volatile flash:</strong> Even without a clock, the receiver tracks the highest <code>(issue_minute, sequence)</code> seen for each <code>(key_id, fingerprint)</code> and rejects replays older than <code>REPLAY_WINDOW_MIN = 60</code> minutes below that high-water mark while tolerating out-of-order multi-hop flood delivery inside the window.</li>
+  <li><strong><code>VALID_AGE_UNKNOWN</code> and 71-byte signed <code>TIME</code> beacons:</strong> When a receiver has no trusted clock, an authentic, in-scope alert is never silently dropped — it yields the normative status <code>VALID_AGE_UNKNOWN</code> and the UI must display an explicit <em>"age unknown"</em> badge. Certified time sources broadcast 71-byte signed <code>TIME</code> frames (kind <code>4</code>) every 30 minutes that advance a clockless receiver's time monotonically forward.</li>
+  <li><strong>Mandatory "last heard" indicator:</strong> A jammed or disconnected radio looks identical to a quiet afternoon. Every Sigillo receiver persists the highest recorded issue minute across all frame kinds and surfaces <em>"last heard HH:MM"</em> in the UI. If beacons arrive every 30 minutes and last-heard age exceeds 60 minutes, the UI warns the operator that the node has lost the network.</li>
+</ol>
+
+<h2>Offline trust roots, revocation, and safety rails for testing</h2>
+<p>In an off-grid valley there is no OCSP responder or CRL server. Sigillo uses a two-tier offline trust chain fits into single LoRa frames:</p>
+<ul>
+  <li><strong>Primary + offline backup roots:</strong> Every receiver is provisioned with two roots (primary and an air-gapped backup). Roots sign short-lived 113-byte <code>KEY</code> certificates (kind <code>2</code>, optionally scoped to specific Swiss BFS communes via TLV <code>0x11</code>), <code>REVOKE</code> frames (kind <code>3</code>, 72 bytes + 6 bytes per revoked key), and 105-byte <code>ROTATE</code> frames (kind <code>5</code>).</li>
+  <li><strong>Immediate root compromise recovery:</strong> If a primary root is ever compromised, the backup root broadcasts a single 78-byte <code>REVOKE</code> frame naming the primary's <code>(key_id, fingerprint)</code>. Step 5 of the receiver pipeline immediately voids the primary root and every certificate it ever signed.</li>
+  <li><strong>Strict <code>TEST</code> and <code>DEMO</code> root isolation:</strong> Every trust root carries a trust class (<code>TEST</code>, <code>DEMO</code>, or <code>PRODUCTION</code>), inherited by every certificate it signs. Under a <code>TEST</code> or <code>DEMO</code> root, any CAMF frame whose message type (A1) is anything other than <code>0 (Test)</code> is rejected by the receiver as <code>NOT_TEST_UNDER_DEMO</code>, and accepted test frames must render with a visible <code>TEST</code> banner. Open-source builds ship with zero production roots.</li>
+</ul>
+
+<h2>Three reference libraries, one locked vector suite</h2>
+<p>A specification is only as good as its test suite. <a href="https://github.com/radek-sixi/sigillo/blob/main/vectors/v1.json"><code>vectors/v1.json</code></a> (rendered in human-readable form in <a href="https://github.com/radek-sixi/sigillo/blob/main/vectors/v1.md"><code>vectors/v1.md</code></a>) drives state-machine scenarios across all 17 normative receiver statuses (<code>VALID</code>, <code>VALID_AGE_UNKNOWN</code>, <code>NOT_FOR_AREA</code>, <code>EXPIRED</code>, <code>DUPLICATE</code>, <code>BAD_SIGNATURE</code>, <code>UNKNOWN_KEY</code>, <code>NOT_SIGNED_BY_ROOT</code>, <code>REVOKED</code>, <code>REJECTED_KEY</code>, <code>NOT_ISSUER_SCOPE</code>, <code>NOT_TEST_UNDER_DEMO</code>, <code>FUTURE</code>, <code>TOO_OLD</code>, <code>MALFORMED</code>, <code>UNSUPPORTED_VERSION</code>, <code>UNKNOWN_KIND</code>) plus the strict Ed25519 edge cases:</p>
+
+<pre><code># C99 library (tested under both gcc and clang with ASan + UBSan)
+make -C libs/sigillo-c test CC=gcc
+make -C libs/sigillo-c test CC=clang
+
+# Python 3.14 library
+cd libs/sigillo-py &amp;&amp; uv run python -m sigillo.conformance ../../vectors/v1.json
+
+# TypeScript library (Node 24)
+cd libs/sigillo-ts &amp;&amp; npm run conformance -- ../../vectors/v1.json</code></pre>
+
+<p class="takeaway">The rule in the spec is simple: if a library disagrees with <code>vectors/v1.json</code>, the library is wrong — never the vectors.</p>
+
+<hr>
+<p>The full specification, conformance vectors, and C99 / Python / TypeScript implementations are available at <a href="https://github.com/radek-sixi/sigillo">github.com/radek-sixi/sigillo</a>. To see how Sigillo pairs with handheld LoRa hardware and SDR telemetry, read <a href="/faro-and-sixi-observer-lora-mesh-stack/">the companion write-up on Faro (sixi-tdeck-plus) and sixi-observer</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

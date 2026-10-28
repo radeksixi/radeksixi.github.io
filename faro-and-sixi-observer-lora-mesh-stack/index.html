@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios</title>
+<meta name="description" content="How Faro (sixi-tdeck-plus) runs an LVGL 9.3 touch, keyboard, and trackball UI on the LilyGo T-Deck Plus alongside unmodified MeshCore firmware, clamps regional RF ceilings, and pairs with sixi-observer for local Ed25519 verification and Bayesian repeater triangulation.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radek-sixi.github.io/faro-and-sixi-observer-lora-mesh-stack/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios">
+<meta property="og:description" content="An open-source LVGL 9.3 handheld UI, Linux desktop console, simulator, and LoRa/RTL-SDR observer bridge for MeshCore packet radios.">
+<meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radek-sixi.github.io/faro-and-sixi-observer-lora-mesh-stack/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-10-24">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios</h1>
+<p class="meta">Radek (Sixi) · 24 October 2026 · <a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a> · <a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a></p>
+
+<p class="lede">Most LoRa mesh nodes are headless radios that treat your smartphone as their screen and keyboard. That works right up until your phone battery dies, Bluetooth pairing flakes out in the rain, or you want a standalone field terminal that operates without a companion phone at all.</p>
+
+<p>Over the past few months I built and open-sourced the device and telemetry layers of my off-grid packet-radio stack on top of <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a>:</p>
+<ul>
+  <li><strong><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></strong> (Apache-2.0): a clean-room LVGL 9.3 touch, keyboard, and trackball UI for the <strong>LilyGo T-Deck / T-Deck Plus / T-Deck MAX</strong>, companion builds for the <strong>LilyGo T-Beam S3 Supreme</strong> and <strong>Heltec WiFi LoRa 32 V3</strong>, an SDL2 Linux desktop console (<code>faro-console</code>), a headless PNG simulator (<code>faro-sim</code>), and a 1-click browser WebSerial flasher.</li>
+  <li><strong><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a></strong> (MIT): a Python observer bridge for USB/serial MeshCore radios and <strong>RTL-SDR Blog V4</strong> receivers that verifies 64-byte <code>Ed25519</code> node advertisements locally on-device, computes ML Bayesian ghost-hop repeater triangulation, and exposes a 0 ms local WebSocket telemetry stream (<code>ws://127.0.0.1:8765/ws</code>).</li>
+  <li><strong><a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">Upstream MeshCore contributions</a></strong>: dynamic Wi-Fi support for the LilyGO T-Beam Supreme SX1262 and fixing unsigned conversion of negative TX power in radio preferences.</li>
+</ul>
+
+<p>Together with <a href="/sigillo-87-byte-signed-alerts-for-lora/">Sigillo</a> (the 87-byte <code>Ed25519</code>-signed EU CAMF alert frame), they form a complete, auditable stack from the wire format to the handheld screen and desktop workbench.</p>
+
+<h2>1. Attaching an on-device UI without forking the radio protocol</h2>
+<p>Custom firmware forks usually rot because they patch the underlying routing state machine and invent private serial opcodes. Faro takes the opposite approach: it pins unmodified upstream MeshCore (<code>companion-v1.18.0</code>) as a submodule and attaches solely through upstream's <code>platformio.local.ini</code> build hook and the <code>AbstractUITask</code> listener interface.</p>
+
+<p>That architectural constraint buys three things immediately:</p>
+<ol>
+  <li><strong>Zero custom companion opcodes:</strong> The standard MeshCore BLE phone app and Wi-Fi TCP clients (port <code>5000</code>) keep working simultaneously while you use the T-Deck's physical keyboard and touchscreen.</li>
+  <li><strong>One UI codebase across handheld, desktop, and CI:</strong> The exact same LVGL 9.3 screen code compiles to ESP32-S3 firmware, to a native Ubuntu Linux desktop console (<code>faro-console</code> over SDL2 talking to a companion radio via USB serial or TCP <code>:5000</code>), and to a deterministic headless simulator (<code>faro-sim</code>) that renders every 320×240 screen in light and dark themes to PNG.</li>
+  <li><strong>Clean upstream upgrades:</strong> Moving to a new MeshCore release means bumping the submodule commit and running the simulator and hardware checks, not rebasing a diverged radio stack.</li>
+</ol>
+
+<h2>2. Hardware targets and power/RF realities</h2>
+<p>Writing C/C++ for battery-powered ESP32-S3 + SX1262 hardware quickly surfaces bugs that never appear in a simulator:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Board</th>
+      <th>Build environment</th>
+      <th>Mode</th>
+      <th>Input &amp; interfaces</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>LilyGo T-Deck / T-Deck Plus</strong></td>
+      <td><code>faro_tdeck</code></td>
+      <td>Handheld UI + Companion</td>
+      <td>320×240 IPS touch, physical keyboard, trackball, GPS, microSD, BLE, Wi-Fi TCP</td>
+    </tr>
+    <tr>
+      <td><strong>LilyGo T-Deck MAX</strong></td>
+      <td><code>faro_tdeck_max</code></td>
+      <td>Handheld UI + Companion</td>
+      <td>320×240 IPS touch, keyboard, trackball, microSD, BLE, Wi-Fi TCP</td>
+    </tr>
+    <tr>
+      <td><strong>Elecrow ThinkNode M9</strong></td>
+      <td><code>faro_thinknode_m9</code></td>
+      <td>Screen UI (experimental)</td>
+      <td>I2C keypad (<code>STC8H</code> at <code>0x6C</code>), piezo alarm/message tones</td>
+    </tr>
+    <tr>
+      <td><strong>LilyGo T-Beam S3 Supreme</strong></td>
+      <td><code>faro_tbeam_supreme</code></td>
+      <td>Headless Companion</td>
+      <td>SX1262, GPS, PMU, BLE + dynamic Wi-Fi TCP (<code>:5000</code>) + USB serial</td>
+    </tr>
+    <tr>
+      <td><strong>Heltec WiFi LoRa 32 V3</strong></td>
+      <td><code>faro_heltec_v3</code></td>
+      <td>Headless Companion</td>
+      <td>SX1262, BLE + Wi-Fi TCP (<code>:5000</code>) + USB serial</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Two hardware lessons from the <code>0.10.x</code> releases stand out:</p>
+<ul>
+  <li><strong>The T-Deck Plus battery ADC bootloop (fixed in <code>0.10.1</code>):</strong> Early builds hit a reset loop on certain T-Deck Plus units during battery ADC initialization before the display rail stabilized. Isolating the ADC sampling setup eliminated the bootloop.</li>
+  <li><strong>Idle power draw (fixed in <code>0.10.2</code>):</strong> An always-on ESP32-S3 backlight and idle Wi-Fi modem drain a handheld battery in hours. <code>0.10.2</code> turns the screen off after 5 minutes of inactivity, lowers the default backlight PWM, and powers down the Wi-Fi radio completely when TCP companion mode is disabled.</li>
+  <li><strong>Negative TX power serialization upstream:</strong> While testing low-power bench links, I found that negative TX power values in MeshCore's radio preferences suffered an unsigned conversion bug. I fixed that upstream alongside adding dynamic Wi-Fi support for the LilyGO T-Beam Supreme SX1262.</li>
+</ul>
+
+<h2>3. Enforcing regional spectrum rules in firmware, every second</h2>
+<p>Because Faro also exposes upstream's USB serial CLI, BLE companion protocol, and TCP port <code>5000</code>, an external phone app or script can issue a <code>set radio</code> command behind the UI's back. If a user in Switzerland or the EU accidentally applies a 915 MHz US preset or cranks transmit power past the legal ERP limit, the radio transmits out of band.</p>
+
+<p>Faro enforces regional spectrum ceilings directly in a 1 Hz supervisor loop across five region definitions:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Region</th>
+      <th>Allowed sub-band (MHz)</th>
+      <th>Power ceiling</th>
+      <th>Duty cycle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>EU / UK / CH 868</strong></td>
+      <td><code>869.400 – 869.650</code></td>
+      <td>27 dBm e.r.p. (500 mW)</td>
+      <td>10% (airtime factor 9)</td>
+    </tr>
+    <tr>
+      <td><strong>EU / UK 433</strong></td>
+      <td><code>433.050 – 434.790</code></td>
+      <td>10 dBm e.r.p. (10 mW)</td>
+      <td>10% (airtime factor 9)</td>
+    </tr>
+    <tr>
+      <td><strong>USA / Canada 915</strong></td>
+      <td><code>902.000 – 928.000</code></td>
+      <td>30 dBm conducted / 36 dBm e.i.r.p.</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><strong>Australia / NZ 915</strong></td>
+      <td><code>915.000 – 928.000</code></td>
+      <td>30 dBm e.i.r.p.</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><strong>Brazil 915</strong></td>
+      <td><code>902–907.5, 915–928</code></td>
+      <td>30 dBm e.i.r.p.</td>
+      <td>—</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Every second, Faro checks the active radio parameters (including full channel bandwidth, <code>centre ± BW/2</code>, and antenna gain <code>FARO_ANTENNA_GAIN_DBI</code>, defaulting to 3 dBi where <code>e.r.p. = conducted + gain − 2.15 dB</code>). If an external client moves settings inside a valid region, Faro clamps power and duty cycle to that region's ceiling; if the frequency falls outside every allowed sub-band, Faro immediately restores the last valid configuration and logs the rejection.</p>
+
+<h2>4. Hardening the companion surface</h2>
+<p>Reviewing the companion attack surface led to several deliberate defaults in Faro that differ from stock firmware:</p>
+<ul>
+  <li><strong>Private-key export over the companion protocol is disabled:</strong> Upstream MeshCore allows a connected BLE phone or unauthenticated TCP <code>:5000</code> client to export or replace the node's private key. Faro strips those opcodes at compile time. Key backup is only possible locally to the physical microSD card after an explicit on-screen confirmation tap.</li>
+  <li><strong>Hardware RNG for private channels &amp; strict BLE PINs:</strong> New private channels draw keys from the ESP32-S3 hardware RNG. Screen-equipped boards generate a random BLE pairing PIN and reject weak user-chosen PINs (<code>123456</code>, repeated digits, or sequential runs).</li>
+  <li><strong>Zero message text on serial logs:</strong> Diagnostic serial output never prints direct-message or channel plaintext.</li>
+</ul>
+
+<p>On top of messaging (direct messages with ACK/RTT, <code>#hashtag</code> channels, QR contact sharing, store-and-forward) and remote repeater administration (login, telemetry, neighbour tables, ACLs, remote CLI), the UI gives field operators real RF instrumentation: a <strong>2D mesh topology graph</strong>, an <strong>SX1262 link-budget and Time-on-Air calculator</strong>, per-hop SNR path traces, zero-hop neighbour scans, and offline SD-card map tiles with GPX track recording and EN/IT/DE/FR localization.</p>
+
+<h2>5. sixi-observer: local Ed25519 verification and Bayesian ghost-hop triangulation</h2>
+<p>While Faro turns a handheld into a self-contained field terminal, I also wanted a lightweight Python daemon for headless USB radios (<strong>T-Beam Supreme SX1262</strong>, <strong>Heltec V3/V4</strong>, <strong>RAK4631</strong>) and <strong>RTL-SDR Blog V4</strong> dongles running on a Linux mini-PC or Raspberry Pi. That project is <a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a>.</p>
+
+<p>It solves three practical telemetry problems in a multi-hop LoRa network:</p>
+<ol>
+  <li><strong>Local 64-byte <code>Ed25519</code> advertisement verification:</strong> MeshCore node advertisements (<code>ADVERT</code> frames) carry a 64-byte Ed25519 signature over the node's public key, timestamp, coordinates, and name. Rather than trusting unverified metadata, <code>sixi-observer</code> verifies the 64-byte signature locally on the observer host before marking a node <code>verified_local = true</code>.</li>
+  <li><strong>ML Bayesian ghost-hop repeater triangulation:</strong> In MeshCore flood routing, packets record a path of 1-byte repeater hashes (<code>Origin → ~A3 → ~7F → Your Radio</code>) alongside the final hop's sub-noise SNR and RSSI. Frequently, intermediate repeaters (<code>~HASH</code>) forward traffic without having broadcast a recent GPS-tagged <code>ADVERT</code> of their own. <code>sixi-observer</code> uses Bayesian spatial inference over observed multi-hop paths, known anchor coordinates, and free-space/terrain path-loss posteriors to estimate coordinates and an uncertainty radius (<code>±km</code>) for those unidentified "ghost-hop" repeaters.</li>
+  <li><strong>Zero-latency local WebSocket stream &amp; strict privacy:</strong> Running <code>sixi-observer</code> exposes a local WebSocket server at <code>ws://127.0.0.1:8765/ws</code> with 0 ms cloud latency, and can be launched in one command with <code>uvx</code> or Docker. By design, encrypted direct messages (<code>TXT_MSG</code> / ECDH) and private channel keys are never decoded or transmitted off the device.</li>
+</ol>
+
+<pre><code># Run sixi-observer directly via uvx against a USB-connected T-Beam Supreme or Heltec
+uvx --from git+https://github.com/radek-sixi/sixi-observer sixi-observer run \
+  --serial /dev/ttyACM0 \
+  --name "Field Observer" \
+  --lat 47.37 --lon 8.54</code></pre>
+
+<hr>
+<p>All three repositories in the LoRa stack are open source: <a href="https://github.com/radek-sixi/sigillo">sigillo</a> (Apache-2.0 / CC BY 4.0), <a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a> (Apache-2.0), and <a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a> (MIT).</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
