@@ -52,7 +52,7 @@
 <h2>Red-teaming in CI</h2>
 <p>For a team that wants agent security checked on every change, not once a year.</p>
 <ul>
-  <li><a href="https://github.com/radek-sixi/scan-action">scan-action</a> and <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a> wired into your pipeline, findings in the GitHub Security tab</li>
+  <li><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a> wired into your pipeline with native SARIF 2.1.0 output (<code>--format sarif</code>) so findings land directly in the GitHub Security tab</li>
   <li>Custom checks for your agent's own business rules: the ones generic tools can't know</li>
   <li>A handover so your team owns it afterwards</li>
 </ul>

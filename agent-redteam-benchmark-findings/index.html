@@ -96,7 +96,7 @@
 </ul>
 <p>The first step on breadth is out. <strong>v0.7.0</strong> adds <em>false action claims</em>, the largest confirmed family sixi-scanner had never produced (58 turns in the baseline, 51 of them promptfoo's): the agent says <em>"I've emailed your account summary"</em> with no tool call behind it. Because the scanner holds the tool trace for every turn, it checks the claim against what actually ran, with no model and no false positive from a claim that turns out to be true. Replayed against recorded replies, it caught every judge-confirmed case and added no new false positives over the 1,282 replies in the v0.6.0 run. A full benchmark run of v0.7.0 hasn't been published yet.</p>
 <div class="note"><p><strong>Update (v0.8.4):</strong> Read the follow-up post, <a href="/multi-turn-probes-and-taint-relay/">What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</a>. Each release is measured on this same benchmark and published in <a href="https://github.com/radek-sixi/agent-redteam-benchmark">the benchmark repository</a>, wins and losses alike. Follow <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner on GitHub</a> to see them land.</p></div>
-<p>If you want it in CI: <code>uses: radek-sixi/scan-action@v2</code> puts findings in your GitHub Security tab, and an unreachable agent fails the job instead of passing.</p>
+<p>If you want it in CI: <code>sixi-scanner scan --format sarif --out sixi.sarif</code> writes SARIF 2.1.0 for the GitHub Security tab, and an unreachable agent exits <code>2</code> instead of passing.</p>
 
 <h2>What I'd do if I were shipping an agent tomorrow</h2>
 <ol>

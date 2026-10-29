@@ -96,14 +96,14 @@
 <div class="note"><p><strong>Why recall numbers across runs need a warning label (<a href="https://github.com/radek-sixi/agent-redteam-benchmark/blob/main/docs/PROTOCOL.md">PROTOCOL §9</a>):</strong> In this benchmark, payload-level recall is <code>hits ÷ distinct violating payloads</code>, where a payload counts as violating if <em>any</em> of its ~17 turns leaked on that run. Because model outputs are stochastic, 14 payloads violate in at least one run across four re-runs, while only 4 violate in all four. That means the recall denominator redraws every run. Always pair recall with precision and raw distinct hit counts (<code>5 → 8</code>).</p></div>
 
 <h2>Running v0.8.4 against your own agent</h2>
-<p><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner v0.8.4</a> ships as a single static Go binary with zero external dependencies and 27 single- and multi-turn techniques. You can run it locally against REST, OpenAI-compatible, MCP, A2A, or WebSocket targets (via <a href="https://github.com/radek-sixi/redwire">redwire</a>), or wire it into GitHub Actions with <a href="https://github.com/radek-sixi/scan-action">scan-action v2</a> so SARIF findings land directly in the GitHub Security tab:</p>
+<p><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner v0.8.4</a> ships as a single static Go binary with zero external dependencies and 27 single- and multi-turn techniques. You can run it locally against REST, OpenAI-compatible, MCP, A2A, or WebSocket targets (via <a href="https://github.com/radek-sixi/redwire">redwire</a>), or wire it into CI with native <code>--format sarif</code> so SARIF 2.1.0 findings land directly in the GitHub Security tab (and an unreachable target exits <code>2</code> instead of passing):</p>
 
 <pre><code># Single-turn &amp; multi-turn scan with SARIF output
 sixi-scanner scan \
   --target chat \
-  --endpoint https://your-agent.example.com/chat \
+  --url https://your-agent.example.com/chat \
   --format sarif \
-  --output findings.sarif</code></pre>
+  --out findings.sarif</code></pre>
 
 <hr>
 <p>Every run log, false-positive audit, and negative result is published in <a href="https://github.com/radek-sixi/agent-redteam-benchmark">github.com/radek-sixi/agent-redteam-benchmark</a>.</p>

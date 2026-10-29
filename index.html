@@ -106,13 +106,13 @@
   <h2>Attack, judge with code, prove on the wire, gate in CI</h2>
   <p>Most AI red-teaming tools tell you what <em>they think</em> broke. On a real agent, 70–97% of those flags were false alarms. Sixi is the open-source suite I build to close that gap:</p>
 
-  <a href="https://github.com/radek-sixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (redwire, PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark, agent-arena) → 5 Ship (scan-action). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
+  <a href="https://github.com/radek-sixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (redwire, PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark, agent-arena) → 5 Ship (--format sarif). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
 
   <div class="grid">
     <div class="card">
-      <p class="tag-line">Attack · Go · v0.8.4</p>
+      <p class="tag-line">Attack &amp; Ship · Go · v0.8.4</p>
       <h3><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions.</p>
+      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions. Reports as JSON, SARIF 2.1.0, or Markdown.</p>
     </div>
 
     <div class="card">
@@ -140,9 +140,9 @@
     </div>
 
     <div class="card">
-      <p class="tag-line">Ship &amp; Learn · GitHub Action &amp; Labs</p>
-      <h3><a href="https://github.com/radek-sixi/scan-action">scan-action</a> &amp; <a href="https://github.com/radek-sixi/agent-redteam-labs">agent-redteam-labs</a></h3>
-      <p><code>uses: radek-sixi/scan-action@v2</code> puts SARIF findings in the GitHub Security tab and fails the build when a target is unreachable — paired with hands-on red-teaming labs and <a href="https://github.com/radek-sixi/adk-demo-target">adk-demo-target</a>.</p>
+      <p class="tag-line">Learn · Hands-on Labs · Python</p>
+      <h3><a href="https://github.com/radek-sixi/agent-redteam-labs">agent-redteam-labs</a></h3>
+      <p>Hands-on AI agent red-teaming and security engineering labs, paired with <a href="https://github.com/radek-sixi/adk-demo-target">adk-demo-target</a>, a deliberately vulnerable bank agent.</p>
     </div>
   </div>
 </main>
