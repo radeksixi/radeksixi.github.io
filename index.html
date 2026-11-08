@@ -50,7 +50,7 @@
 
   <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
   <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
-  <p>Modern open-weight models mix full attention, linear attention (<code>Gated DeltaNet</code>), and hundreds of sparse experts (<code>MoE</code>) — fast on paper, but hard to fit into predictable GPU memory and keep reproducible. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a modular C++20/CUDA engine built to run large hybrid models locally with strict memory caps, lossless speculative decoding, and zero Python in the runtime path:</p>
+  <p>Modern open-source models mix full attention, linear attention (<code>Gated DeltaNet</code>), and hundreds of sparse experts (<code>MoE</code>) — fast on paper, but hard to fit into predictable GPU memory and keep reproducible. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a modular C++20/CUDA engine built for high-efficiency execution of large open-weight models on <strong>NVIDIA Jetson</strong> edge devices and the latest <strong>NVIDIA DGX Spark</strong> architecture — with strict memory caps, lossless speculative decoding, and zero Python in the runtime path:</p>
 
   <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, Hybrid MoE &amp; Gated DeltaNet inference engine: 1 Verify (.sixi manifest) → 2 Plan (memory planner) → 3 Run (C++20 / CUDA) → 4 Accelerate (speculative decode) → 5 Serve (sixi-server, sixi-cli)."></a>
 
