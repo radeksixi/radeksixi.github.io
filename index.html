@@ -52,6 +52,8 @@
   <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
   <p>When power and mobile networks go down, cloud-dependent tools disappear first. I build an open-source, end-to-end LoRa &amp; <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> stack — from the 87-byte signed wire protocol verifiable offline on a microcontroller, to the handheld touchscreen UI and Linux desktop console, to the USB/SDR observer bridge:</p>
 
+  <a href="https://github.com/radek-sixi/sigillo"><img src="/assets/sixi-lora-flow.svg" alt="Off-grid LoRa mesh &amp; authenticated field communications: 1 Sign (sigillo v1.0-rc) → 2 Route (MeshCore) → 3 Operate (sixi-tdeck-plus / Faro) → 4 Observe (sixi-observer) → 5 Diagnose (GlassBoxEdge)."></a>
+
   <div class="grid">
     <div class="card card-full">
       <p class="tag-line">Sign &amp; Verify · C99 · Python 3.14 · TypeScript · v1.0-rc</p>
@@ -101,6 +103,26 @@
     <li>C99 · C++ · LVGL 9.3 · SDL2</li>
     <li>NVIDIA Jetson Thor &amp; Nano Super</li>
   </ul>
+
+  <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
+  <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
+  <p>A native C++20/CUDA(<code>sm_110</code>) inference runtime engineered for hybrid linear-attention (<code>Gated DeltaNet</code> / <code>Mamba-SSM</code>) and sparse Mixture-of-Experts (<code>MoE</code>) architectures — with zero Python on the critical inference path, byte-exact VRAM planning, and 100% lossless speculative verification:</p>
+
+  <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, C++20/CUDA hybrid MoE &amp; Gated DeltaNet inference engine: 1 Bind (.sixi + .sixi.idx) → 2 Plan (MemoryPlanner) → 3 Execute (CUDA sm_110, FP32 GDN) → 4 Draft (Suffix + MTP, n_rs_seq GDN ring) → 5 Serve (sixi-server, sixi-cli)."></a>
+
+  <div class="grid">
+    <div class="card card-full">
+      <p class="tag-line">Inference Engine · C++20 · CUDA sm_110 · OpenAI HTTP/SSE</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a></h3>
+      <p>Deterministic, memory-bounded execution for <code>unsloth/Qwen3.8-27B-GGUF</code> (<code>&lt; 20 GiB</code> VRAM at <code>17.27 GiB</code> measured footprint, plus a <code>&lt; 12 GiB</code> low-VRAM profile) and 512-expert <code>unsloth/Qwen3.8-Flash-Next-GGUF</code> (<code>&lt; 80 GiB</code> VRAM with <code>26.82 GiB</code> PLE offloaded via <code>mmap</code> / pinned ring). Delivers <strong>+14.2% throughput over <code>llama.cpp draft-mtp</code></strong> (5/5 benchmark wins on NVIDIA Thor) and up to <strong>32.02 tok/s (1.73x)</strong> on 512-expert MoE with <code>O(1)</code> GPU GDN state rollback.</p>
+      <ul class="pills">
+        <li>.sixi manifest &amp; atomic .sixi.idx sidecar</li>
+        <li>Full top-k MoE routing (0 dropped experts)</li>
+        <li>FP32 GDN state · q8_1_fp32 &amp; Blackwell nvfp4_fp32</li>
+        <li>Fused MTP + GPU greedy verifier · 0 Python</li>
+      </ul>
+    </div>
+  </div>
 
   <p class="eyebrow">Sixi · Measured security for AI agents</p>
   <h2>Attack, judge with code, prove on the wire, gate in CI</h2>
