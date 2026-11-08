@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <title>Off-grid LoRa mesh &amp; authenticated field communications — sign, route, operate, observe, diagnose</title>
+  <title>Off-grid LoRa mesh &amp; authenticated field communications — sign, route, operate, observe, edge AI</title>
   <style>
     .bg { fill: #ffffff; }
     .card { fill: #f6f8fa; stroke: #d0d7de; }
@@ -38,16 +38,16 @@
   <rect class="bg" width="960" height="400" rx="12"/>
 
   <text class="title" x="32" y="46">Sixi <tspan class="accent">·</tspan> off-grid LoRa mesh &amp; authenticated field communications</text>
-  <text class="sub" x="32" y="70">Sign public alerts into 87 bytes, route across solar repeaters, operate from a handheld or PC, and verify on the air.</text>
+  <text class="sub" x="32" y="70">When power and mobile networks go down: sign public alerts, route across pocket radios, and verify every message offline.</text>
 
   <!-- five stages -->
   <g>
     <rect class="core" x="32" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="48" y="122">1 · SIGN</text>
-    <text class="q" x="48" y="146">Fit crypto in 87 B</text>
-    <text class="repo" x="48" y="174">sigillo (v1.0-rc)</text>
-    <text class="note" x="48" y="194">7 B hdr + 16 B CAMF</text>
-    <text class="note" x="48" y="210">+ 64 B Ed25519 sig</text>
+    <text class="q" x="48" y="146">Authentic alerts</text>
+    <text class="repo" x="48" y="174">sigillo</text>
+    <text class="note" x="48" y="196">signed public alert in</text>
+    <text class="note" x="48" y="212">one 87-byte radio frame</text>
     <text class="note" x="48" y="236">C99 · Python · TS</text>
   </g>
   <path class="arrow" d="M198,171 L214,171" marker-end="url(#a)"/>
@@ -55,58 +55,58 @@
   <g>
     <rect class="card" x="218" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="234" y="122">2 · ROUTE</text>
-    <text class="q" x="234" y="146">Multi-hop LoRa RF</text>
+    <text class="q" x="234" y="146">No cell towers</text>
     <text class="repo" x="234" y="174">MeshCore</text>
-    <text class="note" x="234" y="194">SX1262 · 868/915 MHz</text>
-    <text class="note" x="234" y="220">ERP &amp; 1% duty clamp</text>
-    <text class="note" x="234" y="236">upstream C++ PRs</text>
+    <text class="note" x="234" y="196">hops across solar nodes</text>
+    <text class="note" x="234" y="218">respects regional radio</text>
+    <text class="note" x="234" y="234">power &amp; airtime rules</text>
   </g>
   <path class="arrow" d="M384,171 L400,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="core" x="404" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="420" y="122">3 · OPERATE</text>
-    <text class="q" x="420" y="146">Handheld &amp; PC UI</text>
+    <text class="q" x="420" y="146">Handheld &amp; PC app</text>
     <text class="repo" x="420" y="174">sixi-tdeck-plus</text>
-    <text class="repo" x="420" y="190">Faro · LVGL 9.3</text>
-    <text class="note" x="420" y="218">T-Deck+ · T-Beam S3</text>
-    <text class="note" x="420" y="236">2D mesh &amp; link calc</text>
+    <text class="note" x="420" y="196">Faro touch handheld UI</text>
+    <text class="note" x="420" y="218">&amp; Linux desktop app,</text>
+    <text class="note" x="420" y="234">live mesh map &amp; range</text>
   </g>
   <path class="arrow" d="M570,171 L586,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="card" x="590" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="606" y="122">4 · OBSERVE</text>
-    <text class="q" x="606" y="146">Verify on the air</text>
+    <text class="q" x="606" y="146">Monitor the air</text>
     <text class="repo" x="606" y="174">sixi-observer</text>
-    <text class="note" x="606" y="194">LoRa USB + RTL-SDR</text>
-    <text class="note" x="606" y="220">Ed25519 ADVERT check</text>
-    <text class="note" x="606" y="236">Bayesian ghost-hop</text>
+    <text class="note" x="606" y="196">LoRa &amp; SDR receiver</text>
+    <text class="note" x="606" y="218">checks node signatures,</text>
+    <text class="note" x="606" y="234">maps repeater paths</text>
   </g>
   <path class="arrow" d="M756,171 L772,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="card" x="776" y="96" width="152" height="150" rx="10"/>
-    <text class="step" x="792" y="122">5 · DIAGNOSE</text>
-    <text class="q" x="792" y="146">Air-gapped edge</text>
+    <text class="step" x="792" y="122">5 · EDGE AI</text>
+    <text class="q" x="792" y="146">Local edge AI</text>
     <text class="repo" x="792" y="174">GlassBoxEdge</text>
-    <text class="note" x="792" y="194">2× NVIDIA Jetson</text>
-    <text class="note" x="792" y="220">live OT telemetry</text>
-    <text class="note" x="792" y="236">local LLM agents</text>
+    <text class="note" x="792" y="196">NVIDIA Jetson nodes</text>
+    <text class="note" x="792" y="218">reads live site sensors,</text>
+    <text class="note" x="792" y="234">air-gapped, no cloud</text>
   </g>
 
   <!-- loop back -->
   <path class="arrow" d="M852,248 L852,262 Q852,268 846,268 L122,268 Q116,268 116,262 L116,252" marker-end="url(#a)" stroke-dasharray="4 4"/>
-  <text class="note" x="248" y="290">offline Ed25519 verification &amp; multi-hop SNR/RSSI telemetry across clockless field nodes</text>
+  <text class="note" x="220" y="290">every radio node verifies signatures offline — even without internet, GPS, or a real-time clock</text>
 
   <!-- KPIs -->
   <line class="rule" x1="32" y1="300" x2="928" y2="300"/>
-  <text class="kpil" x="32" y="324">Open-source off-grid stack · sigillo v1.0-rc · Faro (sixi-tdeck-plus) · sixi-observer · GlassBoxEdge</text>
+  <text class="kpil" x="32" y="324">Complete open-source off-grid stack · sigillo · Faro (sixi-tdeck-plus) · sixi-observer · GlassBoxEdge</text>
   <g>
-    <text class="kpi" x="32" y="366">87 B</text><text class="kpil" x="32" y="384">signed EU CAMF alert frame</text>
-    <text class="kpi" x="216" y="366">3 libs</text><text class="kpil" x="216" y="384">bit-exact C99 · Python · TS</text>
-    <text class="kpi" x="392" y="366">320×240</text><text class="kpil" x="392" y="384">LVGL 9 handheld + SDL2 sim</text>
-    <text class="kpi" x="576" y="366">0 ms</text><text class="kpil" x="576" y="384">local WebSocket SDR stream</text>
-    <text class="kpi" x="776" y="366">100%</text><text class="kpil" x="776" y="384">offline · zero cloud needed</text>
+    <text class="kpi" x="32" y="366">87 bytes</text><text class="kpil" x="32" y="384">signed public alert packet</text>
+    <text class="kpi" x="216" y="366">3 languages</text><text class="kpil" x="216" y="384">C99 · Python · TypeScript</text>
+    <text class="kpi" x="412" y="366">Handheld + PC</text><text class="kpil" x="412" y="384">touchscreen UI &amp; Linux app</text>
+    <text class="kpi" x="624" y="366">Live radio</text><text class="kpil" x="624" y="384">USB LoRa &amp; SDR receiver</text>
+    <text class="kpi" x="784" y="366">Offline</text><text class="kpil" x="784" y="384">100% · zero cloud needed</text>
   </g>
 </svg>

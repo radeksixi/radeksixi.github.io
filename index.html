@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek (Sixi) — Senior Software Engineer &amp; AI Architect</title>
-<meta name="description" content="Radek (Sixi) builds off-grid LoRa mesh protocols, LVGL 9 handheld firmware, and measured red-teaming tools for AI agents.">
+<meta name="description" content="Radek (Sixi) builds C++20/CUDA hybrid MoE inference engines, measured red-teaming tools for AI agents, and off-grid LoRa mesh systems.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radek-sixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek (Sixi) — Senior Software Engineer &amp; AI Architect">
-<meta property="og:description" content="Off-grid LoRa mesh protocols &amp; firmware (sigillo, Faro, sixi-observer) and measured security for AI agents (sixi-scanner, agent-redteam-benchmark).">
+<meta property="og:description" content="C++20/CUDA hybrid MoE inference (sixi-asi), measured security for AI agents (sixi-scanner, agent-redteam-benchmark), and off-grid LoRa mesh systems (sigillo, Faro, sixi-observer).">
 <meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radek-sixi.github.io/">
 </head>
@@ -19,9 +19,9 @@
   <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
-  <h1>I break AI agents, then prove what really broke — and build systems that hold up when the network or the model doesn't.</h1>
-  <p class="lede">Senior Software Engineer &amp; AI Architect in Switzerland. Two open-source tracks that reinforce each other: a complete off-grid LoRa mesh &amp; packet-radio stack (from an 87-byte <code>Ed25519</code>-signed wire frame to handheld LVGL 9 firmware and SDR telemetry) and a measured AI agent red-teaming suite.</p>
-  <p>14 years shipping software where failure is expensive: defence edge devices in C/C++, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. See my full <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a> (open to remote roles and contracts from November 2026).</p>
+  <h1>I build local C++/CUDA inference engines, break AI agents and prove what really broke, and engineer systems that hold up when the network or the model doesn't.</h1>
+  <p class="lede">Senior Software Engineer &amp; AI Architect in Switzerland. Three open-source tracks: a native C++20/CUDA inference engine for hybrid MoE &amp; Gated DeltaNet language models, a measured AI agent red-teaming suite, and a complete off-grid LoRa mesh &amp; packet-radio stack.</p>
+  <p>14 years shipping software where failure is expensive: native C/C++ &amp; CUDA runtimes, defence edge devices, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. See my full <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a> (open to remote roles and contracts from November 2026).</p>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
@@ -29,12 +29,12 @@
     <li>
       <span class="date">26 October 2026 <span class="post-tag">LoRa · Protocol &amp; Crypto</span></span>
       <a href="/sigillo-87-byte-signed-alerts-for-lora/">Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</a>
-      <p>A 7-byte header, the 16-byte Galileo CAMF block, and a 64-byte Ed25519 signature that any microcontroller can verify offline — and why OpenSSL, noble, and libsodium disagree on edge-case signatures unless you lock the rules.</p>
+      <p>How to fit an EU public emergency alert and cryptographic signature into a single 87-byte packet that any pocket radio can verify offline.</p>
     </li>
     <li>
       <span class="date">24 October 2026 <span class="post-tag">LoRa · Firmware &amp; SDR</span></span>
       <a href="/faro-and-sixi-observer-lora-mesh-stack/">Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios</a>
-      <p>Running LVGL 9.3 on the LilyGo T-Deck Plus alongside unmodified MeshCore firmware, clamping 868 MHz duty-cycle and ERP ceilings in code, and triangulating ghost-hop repeaters with local Ed25519 verification.</p>
+      <p>Building a touchscreen UI on the LilyGo T-Deck Plus alongside unmodified MeshCore firmware, enforcing regional radio limits, and mapping repeater paths with a local SDR bridge.</p>
     </li>
     <li>
       <span class="date">16 October 2026 <span class="post-tag">AI Security · Multi-turn</span></span>
@@ -48,78 +48,22 @@
     </li>
   </ul>
 
-  <p class="eyebrow">Off-grid packet radio &amp; embedded devices</p>
-  <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
-  <p>When power and mobile networks go down, cloud-dependent tools disappear first. I build an open-source, end-to-end LoRa &amp; <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> stack — from the 87-byte signed wire protocol verifiable offline on a microcontroller, to the handheld touchscreen UI and Linux desktop console, to the USB/SDR observer bridge:</p>
-
-  <a href="https://github.com/radek-sixi/sigillo"><img src="/assets/sixi-lora-flow.svg" alt="Off-grid LoRa mesh &amp; authenticated field communications: 1 Sign (sigillo v1.0-rc) → 2 Route (MeshCore) → 3 Operate (sixi-tdeck-plus / Faro) → 4 Observe (sixi-observer) → 5 Diagnose (GlassBoxEdge)."></a>
-
-  <div class="grid">
-    <div class="card card-full">
-      <p class="tag-line">Sign &amp; Verify · C99 · Python 3.14 · TypeScript · v1.0-rc</p>
-      <h3><a href="https://github.com/radek-sixi/sigillo">sigillo</a></h3>
-      <p>Compact signed frame for public alerts over low-bandwidth packet radio. Packs a 7-byte header, the 16-byte EU Common Alert Message Format (Galileo CAMF Issue 1.2) block, optional TLV extensions, and a 64-byte <code>Ed25519</code> signature into an <strong>87-byte base frame</strong> (well inside MeshCore's 165 B group limit). Includes a CC BY 4.0 specification, locked conformance vectors (<code>vectors/v1.json</code>), and three bit-exact reference libraries: <code>sigillo-c</code> (C99, gcc/clang ASan &amp; UBSan), <code>sigillo-py</code>, and <code>sigillo-ts</code>.</p>
-      <ul class="pills">
-        <li>87 B base frame (7 B header + 16 B CAMF + 64 B Ed25519)</li>
-        <li>Offline verification &amp; strict Ed25519 rules</li>
-        <li>Clockless node support (VALID_AGE_UNKNOWN + TIME beacons)</li>
-        <li>Primary &amp; backup roots · KEY / REVOKE / ROTATE</li>
-      </ul>
-    </div>
-
-    <div class="card card-full">
-      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9.3 · SDL2 · Apache-2.0</p>
-      <h3><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
-      <p>Clean-room touch, keyboard, and trackball UI for unmodified upstream MeshCore on the <strong>LilyGo T-Deck / T-Deck Plus / T-Deck MAX</strong> and <strong>Elecrow ThinkNode M9</strong>, plus companion builds for the <strong>LilyGo T-Beam S3 Supreme</strong> and <strong>Heltec WiFi LoRa 32 V3</strong>. Ships with a native Ubuntu Linux desktop console (<code>faro-console</code> over USB or TCP <code>:5000</code>), a headless 320×240 PNG simulator (<code>faro-sim</code>), and a 1-click browser WebSerial flasher.</p>
-      <ul class="pills">
-        <li>LilyGo T-Deck Plus / MAX · T-Beam S3 Supreme · Heltec V3</li>
-        <li>2D mesh topology graph &amp; SX1262 link-budget calculator</li>
-        <li>1 Hz regional RF &amp; ERP/duty-cycle clamping (EU 868/433, US/AU/BR 915)</li>
-        <li>Offline SD map tiles · trace path SNR · companion key-export lock</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Observe &amp; Triangulate · Python · LoRa · RTL-SDR V4</p>
-      <h3><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a></h3>
-      <p>Open-source (MIT) observer bridge for USB/serial MeshCore radios (T-Beam Supreme SX1262, Heltec V3/V4, RAK4631) and <strong>RTL-SDR Blog V4</strong> receivers: local 64-byte <code>Ed25519</code> advertisement verification, multi-hop SNR/RSSI telemetry, ML Bayesian ghost-hop repeater triangulation, and a 0 ms local WebSocket stream (<code>ws://127.0.0.1:8765/ws</code>).</p>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Route (Upstream) &amp; Edge OT · C++ · NVIDIA Jetson</p>
-      <h3><a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">MeshCore (Upstream)</a> &amp; <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a></h3>
-      <p>Upstream pull requests to MeshCore adding dynamic Wi-Fi for the LilyGO T-Beam Supreme SX1262 and fixing negative TX power conversion in radio preferences — alongside <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>, air-gapped inference and agentic diagnostics over live industrial telemetry on two NVIDIA Jetson edge nodes.</p>
-    </div>
-  </div>
-
-  <p><strong>Hardware &amp; embedded bench:</strong></p>
-  <ul class="pills">
-    <li>ESP32-S3 · STM32 · Raspberry Pi</li>
-    <li>SX1262 LoRa (868 / 433 / 915 MHz)</li>
-    <li>LilyGo T-Deck Plus &amp; T-Beam S3 Supreme</li>
-    <li>Heltec WiFi LoRa 32 V3 · RAK4631</li>
-    <li>RTL-SDR Blog V4</li>
-    <li>MeshCore · Meshtastic · LoRaWAN</li>
-    <li>C99 · C++ · LVGL 9.3 · SDL2</li>
-    <li>NVIDIA Jetson Thor &amp; Nano Super</li>
-  </ul>
-
   <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
   <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
-  <p>A native C++20/CUDA(<code>sm_110</code>) inference runtime engineered for hybrid linear-attention (<code>Gated DeltaNet</code> / <code>Mamba-SSM</code>) and sparse Mixture-of-Experts (<code>MoE</code>) architectures — with zero Python on the critical inference path, byte-exact VRAM planning, and 100% lossless speculative verification:</p>
+  <p>Modern open-weight models mix full attention, linear attention (<code>Gated DeltaNet</code>), and hundreds of sparse experts (<code>MoE</code>) — fast on paper, but hard to fit into predictable GPU memory and keep reproducible. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a modular C++20/CUDA engine built to run large hybrid models locally with strict memory caps, lossless speculative decoding, and zero Python in the runtime path:</p>
 
-  <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, C++20/CUDA hybrid MoE &amp; Gated DeltaNet inference engine: 1 Bind (.sixi + .sixi.idx) → 2 Plan (MemoryPlanner) → 3 Execute (CUDA sm_110, FP32 GDN) → 4 Draft (Suffix + MTP, n_rs_seq GDN ring) → 5 Serve (sixi-server, sixi-cli)."></a>
+  <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, Hybrid MoE &amp; Gated DeltaNet inference engine: 1 Verify (.sixi manifest) → 2 Plan (memory planner) → 3 Run (C++20 / CUDA) → 4 Accelerate (speculative decode) → 5 Serve (sixi-server, sixi-cli)."></a>
 
   <div class="grid">
     <div class="card card-full">
-      <p class="tag-line">Inference Engine · C++20 · CUDA sm_110 · OpenAI HTTP/SSE</p>
+      <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE</p>
       <h3><a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a></h3>
-      <p>Deterministic, memory-bounded execution for <code>unsloth/Qwen3.8-27B-GGUF</code> (<code>&lt; 20 GiB</code> VRAM at <code>17.27 GiB</code> measured footprint, plus a <code>&lt; 12 GiB</code> low-VRAM profile) and 512-expert <code>unsloth/Qwen3.8-Flash-Next-GGUF</code> (<code>&lt; 80 GiB</code> VRAM with <code>26.82 GiB</code> PLE offloaded via <code>mmap</code> / pinned ring). Delivers <strong>+14.2% throughput over <code>llama.cpp draft-mtp</code></strong> (5/5 benchmark wins on NVIDIA Thor) and up to <strong>32.02 tok/s (1.73x)</strong> on 512-expert MoE with <code>O(1)</code> GPU GDN state rollback.</p>
+      <p>Runs 27B hybrid models under <strong>&lt; 20 GiB VRAM</strong> on a single GPU (with a <code>&lt; 12 GiB</code> low-VRAM mode) and 512-expert MoE models under <strong>&lt; 80 GiB VRAM</strong> by streaming cold weights from host RAM or NVMe. Combines fast token drafting with GPU verification and instant state rollback — delivering <strong>+14.2% higher throughput than <code>llama.cpp</code></strong> across benchmarks and up to <strong>1.73× speedup</strong> on MoE models with 100% lossless, bit-exact outputs.</p>
       <ul class="pills">
-        <li>.sixi manifest &amp; atomic .sixi.idx sidecar</li>
-        <li>Full top-k MoE routing (0 dropped experts)</li>
-        <li>FP32 GDN state · q8_1_fp32 &amp; Blackwell nvfp4_fp32</li>
-        <li>Fused MTP + GPU greedy verifier · 0 Python</li>
+        <li>Predictable GPU memory planner</li>
+        <li>Bit-exact replay · zero dropped experts</li>
+        <li>Lossless speculative decoding (+14.2% vs llama.cpp)</li>
+        <li>Drop-in OpenAI HTTP/SSE server · 0 Python</li>
       </ul>
     </div>
   </div>
@@ -167,6 +111,61 @@
       <p>Hands-on AI agent red-teaming and security engineering labs, paired with <a href="https://github.com/radek-sixi/adk-demo-target">adk-demo-target</a>, a deliberately vulnerable bank agent.</p>
     </div>
   </div>
+
+  <p class="eyebrow">Off-grid packet radio &amp; embedded devices</p>
+  <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
+  <p>When power and mobile networks go down, cloud-dependent tools disappear first. I build an open-source, end-to-end LoRa &amp; <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> stack — from a compact signed alert format that any pocket radio can verify offline, to a touchscreen handheld UI and Linux desktop app, to a live radio receiver bridge:</p>
+
+  <a href="https://github.com/radek-sixi/sigillo"><img src="/assets/sixi-lora-flow.svg" alt="Off-grid LoRa mesh &amp; authenticated field communications: 1 Sign (sigillo) → 2 Route (MeshCore) → 3 Operate (sixi-tdeck-plus / Faro) → 4 Observe (sixi-observer) → 5 Edge AI (GlassBoxEdge)."></a>
+
+  <div class="grid">
+    <div class="card card-full">
+      <p class="tag-line">Sign &amp; Verify · C99 · Python · TypeScript · v1.0-rc</p>
+      <h3><a href="https://github.com/radek-sixi/sigillo">sigillo</a></h3>
+      <p>Compact signed alert format for low-bandwidth packet radio. Fits an EU public emergency alert and cryptographic signature into a single <strong>87-byte radio packet</strong> that any microcontroller or handheld radio can verify 100% offline. Ships with an open specification, shared test vectors, and reference libraries in C, Python, and TypeScript.</p>
+      <ul class="pills">
+        <li>87-byte signed public alert packet</li>
+        <li>100% offline signature verification</li>
+        <li>Works on clockless &amp; GPS-free nodes</li>
+        <li>Reference libraries in C99 · Python · TypeScript</li>
+      </ul>
+    </div>
+
+    <div class="card card-full">
+      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9 · Apache-2.0</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
+      <p>Open-source touchscreen, keyboard, and trackball UI for MeshCore LoRa radios on the <strong>LilyGo T-Deck Plus</strong>, <strong>T-Beam S3 Supreme</strong>, and <strong>Heltec V3</strong>. Includes a native Ubuntu Linux desktop companion app, a desktop simulator, a live mesh map and radio range calculator, and a 1-click browser flasher.</p>
+      <ul class="pills">
+        <li>LilyGo T-Deck Plus · T-Beam S3 Supreme · Heltec V3</li>
+        <li>Touchscreen handheld UI &amp; Linux desktop app</li>
+        <li>Live mesh map &amp; radio range calculator</li>
+        <li>Regional radio power &amp; airtime limits · 1-click web flasher</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Observe · Python · LoRa · RTL-SDR</p>
+      <h3><a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a></h3>
+      <p>Open-source receiver bridge for USB LoRa radios and RTL-SDR dongles: verifies node signatures on the air, tracks multi-hop signal quality, estimates repeater paths, and streams live radio telemetry locally.</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Route (Upstream) &amp; Edge AI · C++ · NVIDIA Jetson</p>
+      <h3><a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">MeshCore (Upstream)</a> &amp; <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a></h3>
+      <p>Upstream contributions to the MeshCore packet-radio mesh protocol (dynamic Wi-Fi and radio transmit-power fixes) — alongside <a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>, air-gapped local AI diagnostics over live industrial telemetry on two NVIDIA Jetson edge nodes.</p>
+    </div>
+  </div>
+
+  <p><strong>Hardware &amp; embedded bench:</strong></p>
+  <ul class="pills">
+    <li>NVIDIA Jetson Thor &amp; Nano Super</li>
+    <li>ESP32-S3 · STM32 · Raspberry Pi</li>
+    <li>LoRa (868 / 433 / 915 MHz) · RTL-SDR</li>
+    <li>LilyGo T-Deck Plus &amp; T-Beam S3 Supreme</li>
+    <li>Heltec V3 · RAK4631</li>
+    <li>MeshCore · Meshtastic · LoRaWAN</li>
+    <li>C99 · C++20 · CUDA · LVGL 9</li>
+  </ul>
 </main>
 <footer class="site">© 2026 Radek (Sixi) · <a href="https://radeksixi.web.app/">Portfolio</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radek-sixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="https://x.com/radeksixi">X</a></footer>
 <script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

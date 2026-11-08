@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <title>sixi-asi: C++20/CUDA hybrid MoE &amp; Gated DeltaNet inference engine — bind, plan, execute, draft, serve</title>
+  <title>sixi-asi: Hybrid MoE &amp; Gated DeltaNet inference engine — verify, plan, run, speed up, serve</title>
   <style>
     .bg { fill: #ffffff; }
     .card { fill: #f6f8fa; stroke: #d0d7de; }
@@ -37,76 +37,76 @@
 
   <rect class="bg" width="960" height="400" rx="12"/>
 
-  <text class="title" x="32" y="46">sixi-asi <tspan class="accent">·</tspan> C++20/CUDA hybrid MoE &amp; Gated DeltaNet engine</text>
-  <text class="sub" x="32" y="70">Deterministic, memory-bounded LLM inference for hybrid linear-attention (GDN) &amp; sparse MoE — zero Python in the path.</text>
+  <text class="title" x="32" y="46">sixi-asi <tspan class="accent">·</tspan> Hybrid MoE &amp; Gated DeltaNet inference engine</text>
+  <text class="sub" x="32" y="70">Run large hybrid language models locally in pure C++ and CUDA — predictable memory, bit-exact outputs, and zero Python.</text>
 
   <!-- five stages -->
   <g>
     <rect class="card" x="32" y="96" width="164" height="150" rx="10"/>
-    <text class="step" x="48" y="122">1 · BIND</text>
-    <text class="q" x="48" y="146">Lock GGUF shards</text>
-    <text class="repo" x="48" y="174">.sixi + .sixi.idx</text>
-    <text class="note" x="48" y="194">SHA-256 recipe hash</text>
-    <text class="note" x="48" y="220">hardened GGUF v2/v3</text>
-    <text class="note" x="48" y="236">4096 B O_DIRECT I/O</text>
+    <text class="step" x="48" y="122">1 · VERIFY</text>
+    <text class="q" x="48" y="146">Check the model</text>
+    <text class="repo" x="48" y="174">.sixi manifest</text>
+    <text class="note" x="48" y="196">locks weights &amp; config</text>
+    <text class="note" x="48" y="218">fast startup index,</text>
+    <text class="note" x="48" y="234">safe GGUF file loader</text>
   </g>
   <path class="arrow" d="M198,171 L214,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="core" x="218" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="234" y="122">2 · PLAN</text>
-    <text class="q" x="234" y="146">Fit the VRAM cap</text>
-    <text class="repo" x="234" y="174">MemoryPlanner</text>
-    <text class="note" x="234" y="194">&lt; 20 GiB / &lt; 80 GiB</text>
-    <text class="note" x="234" y="220">LRU/LFU expert cache</text>
-    <text class="note" x="234" y="236">mmap / pinned PLE</text>
+    <text class="q" x="234" y="146">Fit your GPU cap</text>
+    <text class="repo" x="234" y="174">memory planner</text>
+    <text class="note" x="234" y="196">exact VRAM cap upfront</text>
+    <text class="note" x="234" y="218">streams cold experts</text>
+    <text class="note" x="234" y="234">from RAM or NVMe</text>
   </g>
   <path class="arrow" d="M384,171 L400,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="card" x="404" y="96" width="164" height="150" rx="10"/>
-    <text class="step" x="420" y="122">3 · EXECUTE</text>
-    <text class="q" x="420" y="146">Zero-drop kernels</text>
-    <text class="repo" x="420" y="174">CUDA sm_110</text>
-    <text class="repo" x="420" y="190">FP32 GDN state</text>
-    <text class="note" x="420" y="218">top-k MoE (0 drops)</text>
-    <text class="note" x="420" y="236">q8_1 &amp; nvfp4_fp32</text>
+    <text class="step" x="420" y="122">3 · RUN</text>
+    <text class="q" x="420" y="146">Bit-exact outputs</text>
+    <text class="repo" x="420" y="174">C++20 · CUDA</text>
+    <text class="note" x="420" y="196">hybrid Attention + GDN</text>
+    <text class="note" x="420" y="218">all chosen experts run,</text>
+    <text class="note" x="420" y="234">reproducible results</text>
   </g>
   <path class="arrow" d="M570,171 L586,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="core" x="590" y="96" width="164" height="150" rx="10"/>
-    <text class="step" x="606" y="122">4 · DRAFT</text>
-    <text class="q" x="606" y="146">Verify &amp; rollback</text>
-    <text class="repo" x="606" y="174">Suffix + MTP</text>
-    <text class="repo" x="606" y="190">n_rs_seq GDN ring</text>
-    <text class="note" x="606" y="218">GPU greedy verifier</text>
-    <text class="note" x="606" y="236">O(1) state rollback</text>
+    <text class="step" x="606" y="122">4 · ACCELERATE</text>
+    <text class="q" x="606" y="146">Draft &amp; verify</text>
+    <text class="repo" x="606" y="174">speculative decode</text>
+    <text class="note" x="606" y="196">predicts next tokens</text>
+    <text class="note" x="606" y="218">verifies every step,</text>
+    <text class="note" x="606" y="234">instant state rollback</text>
   </g>
   <path class="arrow" d="M756,171 L772,171" marker-end="url(#a)"/>
 
   <g>
     <rect class="card" x="776" y="96" width="152" height="150" rx="10"/>
     <text class="step" x="792" y="122">5 · SERVE</text>
-    <text class="q" x="792" y="146">Native C++ API</text>
-    <text class="repo" x="792" y="174">sixi-server</text>
-    <text class="repo" x="792" y="190">sixi-cli · bench</text>
-    <text class="note" x="792" y="218">HTTP/SSE · budgets</text>
-    <text class="note" x="792" y="236">JSON tool validator</text>
+    <text class="q" x="792" y="146">Local HTTP API</text>
+    <text class="repo" x="792" y="174">sixi-server · cli</text>
+    <text class="note" x="792" y="196">OpenAI HTTP &amp; SSE</text>
+    <text class="note" x="792" y="218">separate thinking cap</text>
+    <text class="note" x="792" y="234">&amp; checked tool calls</text>
   </g>
 
   <!-- loop back -->
   <path class="arrow" d="M852,248 L852,262 Q852,268 846,268 L122,268 Q116,268 116,262 L116,252" marker-end="url(#a)" stroke-dasharray="4 4"/>
-  <text class="note" x="260" y="290">O(1) rollback across GDN + conv1d + KV + RNG states · bit-exact StrictReplay</text>
+  <text class="note" x="218" y="290">if a drafted token disagrees with the model, state rolls back instantly — 100% lossless output</text>
 
   <!-- KPIs -->
   <line class="rule" x1="32" y1="300" x2="928" y2="300"/>
-  <text class="kpil" x="32" y="324">sixi-asi on NVIDIA Thor · Qwen3.8-27B (&lt; 20 GiB) &amp; Qwen3.8-Flash-Next 512-expert MoE (&lt; 80 GiB)</text>
+  <text class="kpil" x="32" y="324">sixi-asi vs standard llama.cpp on the same GPU · Qwen 27B &amp; 512-expert MoE models</text>
   <g>
-    <text class="kpi" x="32" y="366">+14.2%</text><text class="kpil" x="32" y="384">vs llama.cpp draft-mtp (5/5)</text>
-    <text class="kpi" x="208" y="366">32.0 tok/s</text><text class="kpil" x="208" y="384">Flash-Next MoE peak (1.73x)</text>
-    <text class="kpi" x="404" y="366">17.27 GiB</text><text class="kpil" x="404" y="384">27B GPU footprint (&lt; 20 GiB)</text>
-    <text class="kpi" x="596" y="366">0 drops</text><text class="kpil" x="596" y="384">canonical FP32 · 100% lossless</text>
-    <text class="kpi" x="776" y="366">0 Python</text><text class="kpil" x="776" y="384">native C++20 · CUDA sm_110</text>
+    <text class="kpi" x="32" y="366">+14.2%</text><text class="kpil" x="32" y="384">faster than llama.cpp MTP</text>
+    <text class="kpi" x="216" y="366">1.73×</text><text class="kpil" x="216" y="384">peak speedup on MoE models</text>
+    <text class="kpi" x="408" y="366">&lt; 20 GiB</text><text class="kpil" x="408" y="384">runs 27B model on one GPU</text>
+    <text class="kpi" x="596" y="366">100%</text><text class="kpil" x="596" y="384">lossless · bit-exact replay</text>
+    <text class="kpi" x="776" y="366">0 Python</text><text class="kpil" x="776" y="384">pure C++20 &amp; CUDA runtime</text>
   </g>
 </svg>
