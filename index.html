@@ -27,6 +27,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">8 November 2026 <span class="post-tag">Inference · Benchmark</span></span>
+      <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</a>
+      <p>O(1) recurrent-state rollback, sampled speculation that passes a distribution test, a cross-request prefix cache, and a same-token benchmark: 21.9 tok/s vs ollama 21.1, llama-server draft-dflash 20.4 and plain AR 11.0 on Qwen3.8-27B.</p>
+    </li>
+    <li>
       <span class="date">26 October 2026 <span class="post-tag">LoRa · Protocol &amp; Crypto</span></span>
       <a href="/sigillo-87-byte-signed-alerts-for-lora/">Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</a>
       <p>How to fit an EU public emergency alert and cryptographic signature into a single 87-byte packet that any pocket radio can verify offline.</p>
@@ -50,7 +55,7 @@
 
   <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
   <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
-  <p>Modern open-source models mix full attention, linear attention (<code>Gated DeltaNet</code>), and hundreds of sparse experts (<code>MoE</code>) — fast on paper, but hard to fit into predictable GPU memory and keep reproducible. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a modular C++20/CUDA engine built for high-efficiency execution of large open-weight models on <strong>NVIDIA Jetson</strong> edge devices and the latest <strong>NVIDIA DGX Spark</strong> architecture — with strict memory caps, lossless speculative decoding, and zero Python in the runtime path:</p>
+  <p>Modern open-weight models mix full attention with linear attention (<code>Gated DeltaNet</code>) whose state cannot be truncated like a KV cache, which makes speculative decoding hard. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a C++20 speculative-decoding server for these models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified-memory hardware, with llama.cpp as the compute backend and zero Python in the runtime path. Public fork of my private research branch, version 0.8:</p>
 
   <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, Hybrid MoE &amp; Gated DeltaNet inference engine: 1 Verify (.sixi manifest) → 2 Plan (memory planner) → 3 Run (C++20 / CUDA) → 4 Accelerate (speculative decode) → 5 Serve (sixi-server, sixi-cli)."></a>
 
@@ -58,11 +63,11 @@
     <div class="card card-full">
       <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE</p>
       <h3><a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a></h3>
-      <p>Runs 27B hybrid models under <strong>&lt; 20 GiB VRAM</strong> on a single GPU (with a <code>&lt; 12 GiB</code> low-VRAM mode) and 512-expert MoE models under <strong>&lt; 80 GiB VRAM</strong> by streaming cold weights from host RAM or NVMe. Combines fast token drafting with GPU verification and instant state rollback — delivering <strong>+14.2% higher throughput than <code>llama.cpp</code></strong> across benchmarks and up to <strong>1.73× speedup</strong> on MoE models with 100% lossless, bit-exact outputs.</p>
+      <p>Speculative decoding for hybrid Gated-DeltaNet + attention models with <strong>O(1) recurrent-state rollback</strong>, lossless for greedy and sampled decoding, three drafters (anchored suffix, embedded MTP head, DFlash2 block drafter), a cross-request prefix cache, and a native Qwen3.8 chat template that renders byte-identically to llama.cpp's Jinja. Measured on an NVIDIA Thor with identical prompt tokens for every engine: <strong>21.9 tok/s vs ollama 21.1, llama-server draft-dflash 20.4 and plain AR 11.0</strong> on Qwen3.8-27B; second-turn TTFT 168 ms instead of 3.4 s.</p>
       <ul class="pills">
-        <li>Predictable GPU memory planner</li>
-        <li>Bit-exact replay · zero dropped experts</li>
-        <li>Lossless speculative decoding (+14.2% vs llama.cpp)</li>
+        <li>Lossless speculation, greedy and sampled (TVD-tested)</li>
+        <li>O(1) state rollback · 2.0× over AR</li>
+        <li>Prefix cache: 168 ms second-turn TTFT</li>
         <li>Drop-in OpenAI HTTP/SSE server · 0 Python</li>
       </ul>
     </div>

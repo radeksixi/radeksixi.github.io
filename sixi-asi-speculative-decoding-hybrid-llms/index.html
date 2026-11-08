@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</title>
+<meta name="description" content="Open-sourcing sixi-asi, a C++20 speculative-decoding server for Qwen3.8-class hybrid recurrent + attention models on NVIDIA unified memory: O(1) state rollback, lossless sampled speculation, prefix cache, and a same-token benchmark against llama-server and ollama (21.9 vs 21.1 vs 20.4 vs 11.0 tok/s).">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radek-sixi.github.io/sixi-asi-speculative-decoding-hybrid-llms/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs">
+<meta property="og:description" content="Same GGUF, same prompt tokens, same NVIDIA Thor: sixi-asi 21.9 tok/s, ollama 21.1, llama-server draft-dflash 20.4, llama-server AR 11.0. Every number ships with the script and the JSON.">
+<meta property="og:image" content="https://radek-sixi.github.io/assets/sixi-asi-flow.svg">
+<meta property="og:url" content="https://radek-sixi.github.io/sixi-asi-speculative-decoding-hybrid-llms/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-08">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</h1>
+<p class="meta">Radek (Sixi) · 8 November 2026 · <a href="https://github.com/radek-sixi/sixi-asi">source, benchmark scripts and raw results</a></p>
+
+<p class="lede">Hybrid models such as Qwen3.8 mix Gated DeltaNet layers, whose state is a fixed-size recurrence, with a few full-attention layers. That is great for long contexts and awkward for speculative decoding: a recurrent state cannot be truncated like a KV cache, so a rejected draft means either re-running the prefix or copying the whole state. sixi-asi is the server I built to make speculation on these models fast and provably lossless on a single NVIDIA unified-memory box. Today I am publishing it as a fork of my private research branch.</p>
+
+<h2>The decode loop</h2>
+<p>A step drafts <em>k</em> tokens, feeds anchor + <em>k</em> drafts to the target in one batch, accepts the longest matching prefix, and rolls the recurrent state back to the last accepted token in O(1) through llama.cpp's recurrent snapshot ring (<code>n_rs_seq</code>). No hundreds-of-megabytes state copy per token.</p>
+
+<p>Three drafters feed that loop:</p>
+<ul>
+  <li>an anchored suffix drafter (zero model cost; strong on code and repeated structure),</li>
+  <li>the model's embedded multi-token-prediction head, chained for <code>k=3</code>,</li>
+  <li>a DFlash2 block drafter: one pass over a block of mask tokens yields all drafts through a candidate lattice.</li>
+</ul>
+
+<p>The draft length is not a guess. On this hardware every additional verify row costs about 17 ms, because the 48 recurrent layers scan the batch tokens sequentially; a measured sweep put the optimum at <code>k=3</code> for both drafters, and <code>k=7</code> clearly behind. The server picks <code>k</code> from that measurement rather than from the drafter's nominal block size.</p>
+
+<p>Sampling is handled honestly. With temperature &gt; 0 the server detaches the GPU argmax sampler, reads real logits for the <em>k</em>+1 rows, and runs rejection sampling against the exact top-k / top-p / temperature distribution the autoregressive sampler would use. A test with 4000 seeds puts the total-variation distance between speculative and autoregressive two-token continuations at <strong>0.085</strong>, indistinguishable from the AR-vs-AR noise floor of 0.091; a deliberately wrong sampler scores 0.85.</p>
+
+<h2>Latency where agents feel it</h2>
+<p>Decode tok/s is the headline, but agent loops spend most of their wall time in prefill. Prefill speed is identical to llama.cpp on this box (about 266 tok/s on a 266-token prompt for both engines), so the only lever is not redoing it. sixi-asi keeps the live state when a request extends the previous conversation, rolls back within the snapshot ring when it diverges by a few tokens, and otherwise restores a composite snapshot (target plus drafter contexts) from RAM or NVMe. Second turn of a 1.1k-token conversation: <strong>168 ms</strong> to first token instead of 3.4 s.</p>
+
+<p>The chat side is equally unglamorous and equally necessary: a native Qwen3.8 template (tools, reasoning effort, thinking on/off, tool round trips) that renders byte-identically to llama.cpp's Jinja engine in 9/9 parity cases, reasoning budgets that force <code>&lt;/think&gt;</code> and let the model answer instead of returning nothing, and schema-validated tool calls in the model's native <code>&lt;function=…&gt;</code> syntax.</p>
+
+<h2>Numbers</h2>
+<p>NVIDIA Thor developer kit (122.9 GiB unified LPDDR5X, ~273 GB/s, CUDA 13.2). Qwen3.8-27B Q4_K_M, 256 generated tokens, greedy, <strong>identical prompt tokens for every engine</strong> (ollama driven through its raw endpoint with the same rendered prompt), medians of 2–3 runs. llama.cpp commit a691b234 for every engine except ollama's bundled runtime.</p>
+
+<table>
+  <thead>
+    <tr><th>Engine</th><th>decode tok/s, mean of 5 tasks</th><th>vs llama-server AR</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>sixi-asi, DFlash2 drafter</strong></td><td><strong>21.9</strong></td><td><strong>2.00×</strong></td></tr>
+    <tr><td>ollama 0.40.13, built-in draft-mtp</td><td>21.1</td><td>1.93×</td></tr>
+    <tr><td>llama-server <code>--spec-type draft-dflash</code></td><td>20.4</td><td>1.85×</td></tr>
+    <tr><td>sixi-asi, embedded MTP head</td><td>20.2</td><td>1.84×</td></tr>
+    <tr><td>llama-server <code>--spec-type draft-mtp</code></td><td>19.9</td><td>1.80×</td></tr>
+    <tr><td>llama-server AR</td><td>11.0</td><td>1.00×</td></tr>
+  </tbody>
+</table>
+
+<p>Quality gate on the same prompts (reasoning effort low, greedy): sixi-asi <strong>28/30 GSM8K</strong>, <strong>16/20 HumanEval-lite</strong>, tool protocol and a 41k-character needle pass; llama-server AR 27/30, 15/20, pass, pass. The misses are the same problems for both engines.</p>
+
+<h2>What the numbers do not say</h2>
+<ul>
+  <li>Plain autoregressive decoding runs at about 60% of the bandwidth roofline in every engine measured, 99–100 ms per token in-process for sixi-asi and llama-server alike. The speed-up is accepted drafts per weight read, not different kernels.</li>
+  <li>Every speculative engine, llama.cpp's own modes included, diverges from the autoregressive reference at the same near-tie tokens after a few hundred characters. The harness reports the divergence index instead of calling the output "bit-identical".</li>
+  <li>The lead over ollama is 3.6%. A device-side state snapshot and acceptance-adaptive draft length are the next two items; both are measurable with the same scripts.</li>
+</ul>
+
+<p class="takeaway">Every claim above ships with its script (<code>scripts/ab_bench.py</code>, <code>scripts/intel_eval.py</code>, <code>scripts/template_parity.py</code>) and the raw JSON under <code>configs/benchmarks/2026-11-08/</code>. If you can refute a number on your own machine, please open an issue.</p>
+
+<hr>
+<p>Source, Apache-2.0: <a href="https://github.com/radek-sixi/sixi-asi">github.com/radek-sixi/sixi-asi</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

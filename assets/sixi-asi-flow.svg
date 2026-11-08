@@ -38,7 +38,7 @@
   <rect class="bg" width="960" height="400" rx="12"/>
 
   <text class="title" x="32" y="46">sixi-asi <tspan class="accent">·</tspan> Hybrid MoE &amp; Gated DeltaNet inference engine</text>
-  <text class="sub" x="32" y="70">Run large hybrid language models locally in pure C++ and CUDA — predictable memory, bit-exact outputs, and zero Python.</text>
+  <text class="sub" x="32" y="70">Run large hybrid language models locally in pure C++ and CUDA — predictable memory, measured lossless speculation, and zero Python.</text>
 
   <!-- five stages -->
   <g>
@@ -97,16 +97,16 @@
 
   <!-- loop back -->
   <path class="arrow" d="M852,248 L852,262 Q852,268 846,268 L122,268 Q116,268 116,262 L116,252" marker-end="url(#a)" stroke-dasharray="4 4"/>
-  <text class="note" x="218" y="290">if a drafted token disagrees with the model, state rolls back instantly — 100% lossless output</text>
+  <text class="note" x="218" y="290">if a drafted token disagrees with the model, state rolls back in O(1) — lossless for greedy and sampled decoding</text>
 
   <!-- KPIs -->
   <line class="rule" x1="32" y1="300" x2="928" y2="300"/>
-  <text class="kpil" x="32" y="324">sixi-asi on NVIDIA Jetson &amp; DGX Spark · open-source Qwen 27B &amp; 512-expert MoE models</text>
+  <text class="kpil" x="32" y="324">sixi-asi on NVIDIA Jetson Thor &amp; DGX Spark · Qwen3.8-27B, same GGUF and prompt tokens for every engine</text>
   <g>
-    <text class="kpi" x="32" y="366">+14.2%</text><text class="kpil" x="32" y="384">faster than llama.cpp MTP</text>
-    <text class="kpi" x="216" y="366">1.73×</text><text class="kpil" x="216" y="384">peak speedup on MoE models</text>
-    <text class="kpi" x="408" y="366">&lt; 20 GiB</text><text class="kpil" x="408" y="384">runs 27B model on one GPU</text>
-    <text class="kpi" x="596" y="366">100%</text><text class="kpil" x="596" y="384">lossless · bit-exact replay</text>
+    <text class="kpi" x="32" y="366">2.0×</text><text class="kpil" x="32" y="384">over llama.cpp AR decoding</text>
+    <text class="kpi" x="216" y="366">21.9</text><text class="kpil" x="216" y="384">tok/s · ollama 21.1 · llama.cpp 20.4</text>
+    <text class="kpi" x="408" y="366">168 ms</text><text class="kpil" x="408" y="384">second-turn TTFT via prefix cache</text>
+    <text class="kpi" x="596" y="366">28/30</text><text class="kpil" x="596" y="384">GSM8K · 16/20 HumanEval quality gate</text>
     <text class="kpi" x="776" y="366">0 Python</text><text class="kpil" x="776" y="384">pure C++20 &amp; CUDA runtime</text>
   </g>
 </svg>
