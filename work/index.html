@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work with me · Radek (Sixi)</title>
-<meta name="description" content="AI agent security assessments, secure agentic platform architecture, and red-teaming in CI. Remote, from Switzerland.">
+<meta name="description" content="Local OSS &amp; Hybrid MoE model inference on NVIDIA Jetson and DGX Spark, AI agent security assessments, secure agentic platform architecture, and off-grid LoRa mesh systems. Remote, from Switzerland.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radek-sixi.github.io/work/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Work with me · Radek (Sixi)">
-<meta property="og:description" content="AI agent security assessments, secure agentic platform architecture, red-teaming in CI.">
+<meta property="og:description" content="High-efficiency OSS &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark, AI agent security assessments, and off-grid LoRa mesh systems.">
 <meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radek-sixi.github.io/work/">
 </head>
@@ -20,7 +20,16 @@
 </header>
 <main>
 <h1>Work with me</h1>
-<p class="lede">I help teams ship AI agents and connected edge/radio systems they can defend: find what really breaks, fix it in the design, and keep it fixed in CI. Remote, from Switzerland. Available for roles and contracts from November 2026.</p>
+<p class="lede">I help teams run open-source AI models faster on local hardware (NVIDIA Jetson &amp; DGX Spark), ship AI agents they can defend in production, and build off-grid edge and radio systems that keep working when the cloud doesn't. Remote, from Switzerland. Available for roles and contracts from November 2026.</p>
+
+<h2>Local LLM &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark</h2>
+<p>For a team running open-weight models locally on edge devices, dedicated appliances, or air-gapped infrastructure.</p>
+<ul>
+  <li>High-efficiency C++20/CUDA inference for modern hybrid Mixture-of-Experts (MoE) and linear-attention models (<a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a>) — with predictable GPU memory caps, lossless speculative decoding, and zero Python in the runtime path</li>
+  <li>Optimization and deployment for <strong>NVIDIA Jetson</strong> devices (Thor, Orin, Nano Super) and the latest <strong>NVIDIA DGX Spark</strong> architecture, fitting large 27B+ and multi-hundred-expert open-source models into tight unified-memory and power budgets</li>
+  <li>Bit-exact reproducible execution, drop-in OpenAI-compatible HTTP/SSE serving, separate reasoning/answer token budgets, and validated tool calling for regulated or air-gapped environments (<a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
+</ul>
+<p><em>Proof:</em> <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> runs 27B hybrid models under 20 GiB VRAM and 512-expert MoE models under 80 GiB, delivering +14.2% higher throughput than standard <code>llama.cpp</code> and up to 1.73× speedup on MoE workloads with 100% lossless outputs.</p>
 
 <h2>AI agent security assessment</h2>
 <p>For a team about to put an agent in front of customers or data.</p>
@@ -41,12 +50,12 @@
 </ul>
 <p><em>Proof:</em> 14 years in defence, pharma and building-automation systems; Microsoft Multi-Agent AI Solutions Expert and Azure Solutions Architect Expert.</p>
 
-<h2>Off-grid LoRa mesh, embedded C/C++ &amp; sovereign edge AI</h2>
-<p>For teams building packet-radio protocols, embedded field devices, or air-gapped edge inference.</p>
+<h2>Off-grid LoRa mesh &amp; embedded field systems</h2>
+<p>For teams building resilient packet-radio protocols, handheld/embedded field devices, or industrial edge systems.</p>
 <ul>
-  <li>Compact, offline-verifiable cryptographic wire protocols and conformance suites (<a href="https://github.com/radek-sixi/sigillo">sigillo</a>: 87-byte Ed25519-signed EU CAMF alert frames in C99, Python, and TypeScript)</li>
-  <li>Embedded C/C++ and LVGL 9 firmware on ESP32-S3 / STM32 / SX1262 LoRa hardware (<a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus / Faro</a> on LilyGo T-Deck Plus, T-Beam S3 Supreme, Heltec V3; <a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a> with RTL-SDR V4; upstream <a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">MeshCore</a> contributions)</li>
-  <li>Air-gapped LLM inference and agentic diagnostics over live industrial/building telemetry on NVIDIA Jetson edge hardware (<a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
+  <li>Compact, offline-verifiable signed radio protocols and reference libraries (<a href="https://github.com/radek-sixi/sigillo">sigillo</a>: 87-byte signed public alert packets in C, Python, and TypeScript)</li>
+  <li>Embedded C/C++ and LVGL 9 firmware on ESP32-S3 / STM32 / LoRa hardware (<a href="https://github.com/radek-sixi/sixi-tdeck-plus">sixi-tdeck-plus / Faro</a> handheld UI &amp; Linux desktop app; <a href="https://github.com/radek-sixi/sixi-observer">sixi-observer</a> LoRa &amp; SDR receiver bridge; upstream <a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradek-sixi">MeshCore</a> contributions)</li>
+  <li>Local AI diagnostics over live industrial and building telemetry on NVIDIA Jetson edge hardware (<a href="https://github.com/radek-sixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
 </ul>
 
 <h2>Red-teaming in CI</h2>
@@ -58,7 +67,7 @@
 </ul>
 
 <h2>How it starts</h2>
-<p>A 30-minute call: what the agent does, what it can touch, and what would hurt. Then a fixed-scope proposal. Email me at <a href="mailto:contact@sixi.ai">contact@sixi.ai</a>.</p>
+<p>A 30-minute call: what the system or agent does, what hardware or data it touches, and what would hurt. Then a fixed-scope proposal. Email me at <a href="mailto:contact@sixi.ai">contact@sixi.ai</a>.</p>
 </main>
 <footer class="site">© 2026 Radek (Sixi) · <a href="/">Home</a></footer>
 <script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
