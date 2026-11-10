@@ -27,6 +27,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">10 November 2026 <span class="post-tag">Inference · CUDA kernels</span></span>
+      <a href="/sixi-asi-0-9-thor-kernels-long-context/">sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</a>
+      <p>A 106-line llama.cpp kernel patch, block drafters and tail checkpoints: 23.2 to 45.3 tok/s on Qwen3.8-27B (3.8x autoregressive), level with NVIDIA TensorRT Edge-LLM on plain GGUF weights, and follow-up questions on a 63k-token document in 1 s instead of 209 s.</p>
+    </li>
+    <li>
       <span class="date">8 November 2026 <span class="post-tag">Inference · Benchmark</span></span>
       <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</a>
       <p>O(1) recurrent-state rollback, sampled speculation that passes a distribution test, a cross-request prefix cache, and a same-token benchmark: 21.9 tok/s vs ollama 21.1, llama-server draft-dflash 20.4 and plain AR 11.0 on Qwen3.8-27B.</p>
@@ -55,7 +60,7 @@
 
   <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
   <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
-  <p>Modern open-weight models mix full attention with linear attention (<code>Gated DeltaNet</code>) whose state cannot be truncated like a KV cache, which makes speculative decoding hard. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a C++20 speculative-decoding server for these models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified-memory hardware, with llama.cpp as the compute backend and zero Python in the runtime path. Public fork of my private research branch, version 0.8:</p>
+  <p>Modern open-weight models mix full attention with linear attention (<code>Gated DeltaNet</code>) whose state cannot be truncated like a KV cache, which makes speculative decoding hard. <a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a> is a C++20 speculative-decoding server for these models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified-memory hardware, with llama.cpp as the compute backend and zero Python in the runtime path. Public fork of my private research branch, version 0.9:</p>
 
   <a href="https://github.com/radek-sixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, Hybrid MoE &amp; Gated DeltaNet inference engine: 1 Verify (.sixi manifest) → 2 Plan (memory planner) → 3 Run (C++20 / CUDA) → 4 Accelerate (speculative decode) → 5 Serve (sixi-server, sixi-cli)."></a>
 
@@ -63,11 +68,11 @@
     <div class="card card-full">
       <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE</p>
       <h3><a href="https://github.com/radek-sixi/sixi-asi">sixi-asi</a></h3>
-      <p>Speculative decoding for hybrid Gated-DeltaNet + attention models with <strong>O(1) recurrent-state rollback</strong>, lossless for greedy and sampled decoding, three drafters (anchored suffix, embedded MTP head, DFlash2 block drafter), a cross-request prefix cache, and a native Qwen3.8 chat template that renders byte-identically to llama.cpp's Jinja. Measured on an NVIDIA Thor with identical prompt tokens for every engine: <strong>21.9 tok/s vs ollama 21.1, llama-server draft-dflash 20.4 and plain AR 11.0</strong> on Qwen3.8-27B; second-turn TTFT 168 ms instead of 3.4 s.</p>
+      <p>Speculative decoding for hybrid Gated-DeltaNet + attention models with <strong>O(1) recurrent-state rollback</strong>, lossless for greedy and sampled decoding, block drafters (DSpine, DSpark, DFlash2), a Thor-specific llama.cpp kernel patch, a prefix cache with tail checkpoints for long documents, and a native Qwen3.8 chat template that renders byte-identically to llama.cpp's Jinja. Measured on an NVIDIA Jetson AGX Thor with identical prompts for every engine: <strong>45.3 tok/s vs llama-server 43.7, NVIDIA TensorRT Edge-LLM 45.4 (NVFP4) and plain AR 11.9</strong> on Qwen3.8-27B; 65.7 tok/s on a reasoning workload at 28/30 GSM8K and 19/20 HumanEval; follow-up question on a 63k-token document in 1.0 s instead of 209 s.</p>
       <ul class="pills">
-        <li>Lossless speculation, greedy and sampled (TVD-tested)</li>
-        <li>O(1) state rollback · 2.0× over AR</li>
-        <li>Prefix cache: 168 ms second-turn TTFT</li>
+        <li>3.8× over autoregressive · lossless (TVD-tested)</li>
+        <li>Thor kernel patch: 8-row verify 163 → 88 ms</li>
+        <li>63k-token document: next question in 1 s</li>
         <li>Drop-in OpenAI HTTP/SSE server · 0 Python</li>
       </ul>
     </div>

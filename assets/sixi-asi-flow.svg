@@ -103,10 +103,10 @@
   <line class="rule" x1="32" y1="300" x2="928" y2="300"/>
   <text class="kpil" x="32" y="324">sixi-asi on NVIDIA Jetson Thor &amp; DGX Spark · Qwen3.8-27B, same GGUF and prompt tokens for every engine</text>
   <g>
-    <text class="kpi" x="32" y="366">2.0×</text><text class="kpil" x="32" y="384">over llama.cpp AR decoding</text>
-    <text class="kpi" x="216" y="366">21.9</text><text class="kpil" x="216" y="384">tok/s · ollama 21.1 · llama.cpp 20.4</text>
-    <text class="kpi" x="408" y="366">168 ms</text><text class="kpil" x="408" y="384">second-turn TTFT via prefix cache</text>
-    <text class="kpi" x="596" y="366">28/30</text><text class="kpil" x="596" y="384">GSM8K · 16/20 HumanEval quality gate</text>
+    <text class="kpi" x="32" y="366">3.8×</text><text class="kpil" x="32" y="384">over llama.cpp AR decoding</text>
+    <text class="kpi" x="216" y="366">45.3</text><text class="kpil" x="216" y="384">tok/s · llama.cpp 43.7 · AR 11.9</text>
+    <text class="kpi" x="408" y="366">1.0 s</text><text class="kpil" x="408" y="384">next question, 63k-token doc</text>
+    <text class="kpi" x="596" y="366">28/30</text><text class="kpil" x="596" y="384">GSM8K · 19/20 HumanEval</text>
     <text class="kpi" x="776" y="366">0 Python</text><text class="kpil" x="776" y="384">pure C++20 &amp; CUDA runtime</text>
   </g>
 </svg>

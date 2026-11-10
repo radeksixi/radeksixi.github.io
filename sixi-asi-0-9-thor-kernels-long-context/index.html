@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</title>
+<meta name="description" content="sixi-asi 0.9 doubles Qwen3.8-27B decode speed on NVIDIA Jetson AGX Thor (23.2 to 45.3 tok/s, 3.8x autoregressive) with a 106-line llama.cpp kernel patch, block drafters and tail checkpoints that cut follow-up questions on a 63k-token document from 209 s to 1 s. Measured against llama-server and NVIDIA TensorRT Edge-LLM.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radek-sixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor">
+<meta property="og:description" content="Same prompts, same NVIDIA Thor: sixi-asi 45.3 tok/s on plain Q4_K_M GGUF weights, TensorRT Edge-LLM 45.4 on NVFP4, llama-server 43.7, autoregressive 11.9. Follow-up questions on a 63k-token document in 1 s.">
+<meta property="og:image" content="https://radek-sixi.github.io/assets/engines-light.svg">
+<meta property="og:url" content="https://radek-sixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-10">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</h1>
+<p class="meta">Radek (Sixi) · 10 November 2026 · <a href="https://github.com/radek-sixi/sixi-asi">source, patches, benchmark scripts and raw results</a></p>
+
+<p class="lede">Two days ago sixi-asi 0.8 decoded Qwen3.8-27B at 23.2 tokens per second on an NVIDIA Jetson AGX Thor. Version 0.9 does 45.3 on the same weights, 3.8 times plain autoregressive decoding, and answers a follow-up question about a 63,000-token document in one second instead of three and a half minutes. Most of the gain came from finding out that an explanation I published in the 0.8 write-up was wrong.</p>
+
+<table>
+  <thead><tr><th></th><th>0.8</th><th>0.9</th></tr></thead>
+  <tbody>
+    <tr><td>Decode, mean of 5 tasks</td><td>23.2 tok/s</td><td><strong>45.3 tok/s</strong></td></tr>
+    <tr><td>Reasoning workload (GSM8K + HumanEval, thinking on)</td><td>-</td><td><strong>65.7 tok/s</strong>, 28/30 and 19/20</td></tr>
+    <tr><td>Next question about a 63k-token document</td><td>209 s</td><td><strong>1.0 s</strong> to first token</td></tr>
+    <tr><td>Verify pass of 8 rows</td><td>163 ms</td><td><strong>88 ms</strong></td></tr>
+  </tbody>
+</table>
+
+<h2>What I got wrong in 0.8</h2>
+<p>Speculative decoding drafts <em>k</em> tokens and verifies them in one batched pass of the target model. In 0.8 I measured that every extra row in that pass cost about 17 ms on Thor, attributed it to the 48 Gated DeltaNet layers scanning the batch sequentially, and tuned the server to short drafts (<em>k</em> = 3).</p>
+<p>A profile of one forward pass says otherwise. Quantized matrix products are 83 to 92% of GPU time. The recurrence is about 3 ms. The per-row cost came from llama.cpp's kernel selection: up to 8 rows it uses a matrix-vector kernel that decodes the 4-bit weights again for every row, and only from 9 rows on does it switch to a matrix-matrix kernel. Upstream keeps a tuned switch point for the RTX 4090, RTX 5090, DGX Spark and Jetson Orin. Thor (compute capability 11.0) had none and inherited the default.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/verify-cost-dark.svg">
+  <img src="/assets/verify-cost-light.svg" alt="Milliseconds per forward pass versus rows in the batch. Upstream llama.cpp climbs from 85 ms at 1 row to 163 ms at 8 rows, then 113 to 116 ms from 9 to 16 rows. With the patch it stays between 84 and 94 ms from 1 to 16 rows. The weight-read floor is about 58 ms.">
+</picture>
+
+<h2>The patch: 106 lines, two launch-shape changes</h2>
+<ul>
+  <li><strong>Switch point.</strong> On Thor, k-quants go to the matrix kernel from 4 rows. An 8-row pass drops from 163 to 101 ms.</li>
+  <li><strong>Occupancy.</strong> Nsight Compute showed the matrix kernel running one 256-thread block per SM for these skinny batches: 2 active warps per scheduler, 62% of cycles with nothing to issue, 29% of DRAM bandwidth. It was waiting on memory latency, not on bandwidth. Running 128 threads with 4 blocks per SM takes the 8-row pass to 88 ms and the 16-row pass from 116 to 94 ms.</li>
+</ul>
+<p>Neither change touches the weights or the arithmetic; <code>test-backend-ops</code> passes every MUL_MAT and MUL_MAT_ID case. One candidate from the sweep was faster than physics allows: 57 ms, below the roughly 58 ms it takes just to read 15.8 GB of weights at 273 GB/s. It failed 69 correctness cases and was dropped. A benchmark that beats the roofline is a bug report.</p>
+
+<h2>Drafters</h2>
+<p>With verification nearly flat from 4 to 16 rows, long drafts are free, so block drafters win. 0.9 drives three of them behind one interface: DSpine (16-token block), DSpark (Markov and confidence heads) and DFlash2. Two orchestration bugs were worth more than any tuning:</p>
+<ul>
+  <li>The context n-gram drafter replaced the neural draft on any 4-token match. A trace against llama-server showed token-identical DSpine drafts in both engines; sixi-asi simply was not asking DSpine in those steps, and accepted 6 tokens where DSpine got 11.</li>
+  <li>For 7-token drafters the adaptive policy backed off to 2 drafts on poor acceptance, which lands on the one batch size that is slower than the full block.</li>
+</ul>
+
+<h2>Numbers</h2>
+<p>NVIDIA Jetson AGX Thor developer kit (122.9 GiB unified LPDDR5X, about 273 GB/s, CUDA 13.2, MAXN). Qwen3.8-27B, greedy, batch 1, identical prompts for every engine, 256 generated tokens, thinking on, median of 3 runs per task. Every sixi-asi number was re-measured on the published build.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/engines-dark.svg">
+  <img src="/assets/engines-light.svg" alt="Decode tokens per second: TensorRT Edge-LLM DFlash2 on NVFP4 45.4, sixi-asi 0.9 DSpine on Q4_K_M 45.3, llama-server DSpine 43.7, sixi-asi DFlash2 41.4, sixi-asi DSpark 37.2, Edge-LLM DSpark 36.1, sixi-asi 0.8 23.2, llama-server autoregressive 11.9.">
+</picture>
+
+<p>NVIDIA's TensorRT Edge-LLM is the reference to beat on this box: a TensorRT engine with native NVFP4 weights on the Blackwell tensor cores. sixi-asi matches it on plain Q4_K_M GGUF weights, with no 15-minute engine build per configuration, and passes it on the workload that looks like real use:</p>
+
+<table>
+  <thead><tr><th>Engine</th><th>GSM8K</th><th>HumanEval</th><th>Tool calls</th><th>tok/s</th></tr></thead>
+  <tbody>
+    <tr><td><strong>sixi-asi, DSpine, Q4_K_M</strong></td><td>28/30</td><td>19/20</td><td>pass</td><td><strong>65.7</strong></td></tr>
+    <tr><td>TensorRT Edge-LLM, DFlash2, NVFP4</td><td>28/30</td><td>19/20</td><td>pass</td><td>61.5</td></tr>
+    <tr><td>sixi-asi, DSpine, UD-Q4_K_XL</td><td>28/30</td><td>19/20</td><td>pass</td><td>54.5</td></tr>
+  </tbody>
+</table>
+
+<p>All three miss the same three problems. I first ran this gate with a 1024-token cap and briefly believed NVFP4 was worse at code (15/20 against 18/20). It was not: the cap was cutting the model off mid-reasoning on three tasks, differently per run. With an 8192-token budget the scores are identical. Edge-LLM's server also defaults to thinking off, which makes it look 20% faster until both engines are asked to do the same work.</p>
+
+<h2>Long documents</h2>
+<p>A hybrid model's recurrent state cannot be rolled back further than its snapshot ring, and sixi-asi took its only snapshot at the end of the prompt, after the question. So a second question about the same document paid the whole prefill again. 0.9 leaves two device-side checkpoints near the end of every long prefill, 512 and 64 tokens before the end, each about a millisecond to take.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/long-context-dark.svg">
+  <img src="/assets/long-context-light.svg" alt="Time to first token for the next question about the same document. Full re-prefill: 11 s at 4k tokens, 50 s at 17k, 110 s at 36k, 209 s at 63k. With tail checkpoints: 0.7, 0.8, 0.9 and 1.0 seconds.">
+</picture>
+
+<p>Decode holds 19 to 29 tok/s with 63k tokens in context and 30 to 48 tok/s at 4k. The KV cache costs about 70 KB per token because only 17 layers are attention layers, so on a 122 GiB machine context length is a time budget, not a memory budget.</p>
+
+<h2>What the numbers do not say</h2>
+<ul>
+  <li>45.3 against 45.4 is a tie, on different weight formats. Batch 8 and multi-stream decoding are not measured yet, and that is where a TensorRT engine should pull ahead.</li>
+  <li>Plain autoregressive decoding is unchanged at 11.9 tok/s, about 70% of the bandwidth roofline. A 16-row verify is 94 ms against a floor near 68 ms. Both gaps are the next kernel work.</li>
+  <li>Block-scaled FP4 tensor-core instructions exist only on sm_120; on Thor they are reachable through tcgen05 alone. NVFP4 weights were not better than a good 4-bit k-quant for this model (KL divergence against BF16: UD-Q4_K_XL 0.009, NVFP4 0.024, Q4_K_M 0.025).</li>
+</ul>
+
+<p class="takeaway">Every claim ships with its script (<code>scripts/ab_bench.py</code>, <code>scripts/intel_eval.py</code>, <code>scripts/longctx_bench.py</code>), the kernel patch (<code>patches/llama.cpp/0003</code>) and the raw JSON under <code>configs/benchmarks/2026-11-10/</code>. If you can refute a number on your own Thor, please open an issue.</p>
+
+<hr>
+<p>Source, Apache-2.0: <a href="https://github.com/radek-sixi/sixi-asi">github.com/radek-sixi/sixi-asi</a>. Previous write-up: <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<script data-goatcounter="https://radek-sixi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
