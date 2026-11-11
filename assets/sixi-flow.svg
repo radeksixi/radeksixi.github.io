@@ -80,8 +80,7 @@
     <text class="q" x="606" y="146">Who finds what?</text>
     <text class="repo" x="606" y="174">agent-redteam-</text>
     <text class="repo" x="606" y="190">benchmark</text>
-    <text class="repo" x="606" y="214">agent-arena</text>
-    <text class="note" x="606" y="236">scored from the wire</text>
+    <text class="note" x="606" y="216">scored from the wire</text>
   </g>
   <path class="arrow" d="M756,171 L772,171" marker-end="url(#a)"/>
 
