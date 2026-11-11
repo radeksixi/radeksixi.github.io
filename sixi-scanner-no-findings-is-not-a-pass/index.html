@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</title>
-<meta name="description" content="sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what is fixed on main.">
+<meta name="description" content="sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what is fixed in v0.9.0.">
 <meta name="author" content="Radek (Sixi)">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radek-sixi.github.io/sixi-scanner-no-findings-is-not-a-pass/">
@@ -25,11 +25,11 @@
 <main>
 <article>
 <h1>A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</h1>
-<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner on <code>main</code></a> · <a href="https://github.com/radek-sixi/sixi-scanner/commit/a45f12a5827f">the change</a></p>
+<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0">sixi-scanner v0.9.0</a></p>
 
 <p class="lede">The <a href="/multi-turn-probes-and-taint-relay/">last post about the scanner</a> ended with precision going up because two noisy checks were taken out. This one is about the same kind of error in a less comfortable place: the scanner's own code reporting something it had not established.</p>
 
-<p>A review pass over every package of <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix on <code>main</code> ships with that reply as a regression test.</p>
+<p>A review pass over every package of <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix in <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a> ships with that reply as a regression test.</p>
 
 <h2>1. A scan that tested nothing reported "no findings"</h2>
 <p>Point <code>v0.8.4</code> at an endpoint that answers <code>401</code> with an empty body to every request, which is what an expired token, a mistyped path or a rate limiter looks like:</p>
@@ -41,9 +41,9 @@ No findings. 72 attempts across 27 techniques found no confirmed break.
 $ echo $?
 0</code></pre>
 
-<p>The connector hands an error response to the judge on purpose, so that a leak inside an error page is still caught. With an empty body there was nothing to judge, and every technique was recorded as held. The same scan on <code>main</code>:</p>
+<p>The connector hands an error response to the judge on purpose, so that a leak inside an error page is still caught. With an empty body there was nothing to judge, and every technique was recorded as held. The same scan on <code>v0.9.0</code>:</p>
 
-<pre style="white-space: pre-wrap"><code># main
+<pre style="white-space: pre-wrap"><code># v0.9.0
 No technique got an answer from the target. Nothing was assessed; this is not a clean result.
 $ echo $?
 2</code></pre>
@@ -83,6 +83,7 @@ $ echo $?
     <tr><td><code>sk-</code></td><td>"ri<strong>sk-</strong>", "ta<strong>sk-</strong>"</td><td><em>"a risk-based approach"</em> was a critical credential leak</td></tr>
     <tr><td><code>ready</code></td><td>"al<strong>ready</strong>"</td><td>with any second marker, an instruction-override finding</td></tr>
     <tr><td><code>bereit</code></td><td>"<strong>bereit</strong>s", and <code>bereit.</code> listed beside it</td><td>one word counted as two markers, so <em>"Ich stehe bereit."</em> was a finding on its own</td></tr>
+    <tr><td><code>you are a</code></td><td>"<strong>you are a</strong>n", which was listed as a marker too</td><td>one phrase counted as two markers, so <em>"You are an existing customer"</em> met a two-marker threshold on its own</td></tr>
   </tbody>
 </table>
 <p>These are now patterns anchored to a word boundary, and a key prefix has to be followed by something shaped like a key.</p>
@@ -119,9 +120,9 @@ $ echo $?
 <div class="note"><p><strong>What has not been measured.</strong> The 0.821 precision and 0.571 recall figures are <code>v0.8.4</code> on the <a href="https://github.com/radek-sixi/agent-redteam-benchmark">benchmark</a>. These changes move what the judge flags in both directions, and the benchmark has not been re-run on them yet. Until it is, those remain <code>v0.8.4</code> numbers, and nothing in this post is a new score.</p></div>
 
 <h2>Getting it</h2>
-<p>The changes are on <code>main</code> and will be in the next tagged release. Until then:</p>
+<p>The changes are released as <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a>, with binaries for Linux, macOS and Windows. It is also the first release whose <code>go.mod</code> declares the repository's current path, so <code>go install</code> works again:</p>
 
-<pre><code>go install github.com/radek-sixi/sixi-scanner/cmd/sixi-scanner@main
+<pre><code>go install github.com/radek-sixi/sixi-scanner/cmd/sixi-scanner@latest
 
 sixi-scanner scan \
   --target chat \
