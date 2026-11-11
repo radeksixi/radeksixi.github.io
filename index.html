@@ -27,6 +27,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">11 November 2026 <span class="post-tag">AI Security · Correctness</span></span>
+      <a href="/sixi-scanner-no-findings-is-not-a-pass/">A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</a>
+      <p>sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what changed: untested is no longer clean, a refusal is no longer a critical finding, and two probes now say something.</p>
+    </li>
+    <li>
       <span class="date">10 November 2026 <span class="post-tag">Inference · CUDA kernels</span></span>
       <a href="/sixi-asi-0-9-thor-kernels-long-context/">sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</a>
       <p>A 106-line llama.cpp kernel patch, block drafters and tail checkpoints: 23.2 to 45.3 tok/s on Qwen3.8-27B (3.8x autoregressive), level with NVIDIA TensorRT Edge-LLM on plain GGUF weights, and follow-up questions on a 63k-token document in 1 s instead of 209 s.</p>
@@ -88,7 +93,7 @@
     <div class="card">
       <p class="tag-line">Attack &amp; Ship · Go · v0.8.4</p>
       <h3><a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions. Reports as JSON, SARIF 2.1.0, or Markdown.</p>
+      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions. Reports as JSON, SARIF 2.1.0, or Markdown. On <code>main</code>: a scan that could not test everything says so, with exit code <code>3</code> and a "not tested" list in every format (<a href="/sixi-scanner-no-findings-is-not-a-pass/">write-up</a>).</p>
     </div>
 
     <div class="card">
