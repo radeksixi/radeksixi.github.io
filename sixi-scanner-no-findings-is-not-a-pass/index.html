@@ -25,11 +25,11 @@
 <main>
 <article>
 <h1>A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</h1>
-<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0">sixi-scanner v0.9.0</a></p>
+<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/latest">sixi-scanner v0.9.0</a></p>
 
 <p class="lede">The <a href="/multi-turn-probes-and-taint-relay/">last post about the scanner</a> ended with precision going up because two noisy checks were taken out. This one is about the same kind of error in a less comfortable place: the scanner's own code reporting something it had not established.</p>
 
-<p>A review pass over every package of <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix in <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a> ships with that reply as a regression test.</p>
+<p>A review pass over every package of <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix in <a href="https://github.com/radeksixi/sixi-scanner/releases/latest"><code>v0.9.0</code></a> ships with that reply as a regression test.</p>
 
 <h2>1. A scan that tested nothing reported "no findings"</h2>
 <p>Point <code>v0.8.4</code> at an endpoint that answers <code>401</code> with an empty body to every request, which is what an expired token, a mistyped path or a rate limiter looks like:</p>
@@ -120,7 +120,7 @@ $ echo $?
 <div class="note"><p><strong>What has not been measured.</strong> The 0.821 precision and 0.571 recall figures are <code>v0.8.4</code> on the <a href="https://github.com/radeksixi/agent-redteam-benchmark">benchmark</a>. These changes move what the judge flags in both directions, and the benchmark has not been re-run on them yet. Until it is, those remain <code>v0.8.4</code> numbers, and nothing in this post is a new score.</p></div>
 
 <h2>Getting it</h2>
-<p>The changes are released as <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a>, with binaries for Linux, macOS and Windows. It is also the first release whose <code>go.mod</code> declares the repository's current path, so <code>go install</code> works again:</p>
+<p>The changes are released as <a href="https://github.com/radeksixi/sixi-scanner/releases/latest"><code>v0.9.0</code></a>, with binaries for Linux, macOS and Windows. It is also the first release whose <code>go.mod</code> declares the repository's current path, so <code>go install</code> works again:</p>
 
 <pre><code>go install github.com/radeksixi/sixi-scanner/cmd/sixi-scanner@latest
 

@@ -29,7 +29,7 @@
 
 <p class="lede">When I published the <a href="/agent-redteam-benchmark-findings/">7-tool AI red-teaming benchmark</a> earlier this month, every scanner on the board was tested in stateless single-turn mode: one prompt in, one reply out. That is how most automated red-teaming tools operate — and it leaves an entire class of real agent failures invisible.</p>
 
-<p>Over the releases from <code>v0.7.0</code> to <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.8.4"><code>sixi-scanner v0.8.4</code></a>, I added a multi-turn session lane (<code>--target chat</code>), parameter-induction probes, and trace-backed outbound taint checks, measuring every change against the same Microsoft Foundry target, gateway, deterministic oracles, and tool-blind judge. Two findings changed how I build both scanners and agent guardrails.</p>
+<p>Over the releases from <code>v0.7.0</code> to <a href="https://github.com/radeksixi/sixi-scanner"><code>sixi-scanner v0.8.4</code></a>, I added a multi-turn session lane (<code>--target chat</code>), parameter-induction probes, and trace-backed outbound taint checks, measuring every change against the same Microsoft Foundry target, gateway, deterministic oracles, and tool-blind judge. Two findings changed how I build both scanners and agent guardrails.</p>
 
 <h2>1. The guardrail was right, and the attack still worked (<code>REFUND_CAP_SPLIT</code>)</h2>
 <p>The benchmark target ("Nova", a customer support agent for a fictional utility running on <code>gpt-5-nano</code> with Azure Content Safety at <strong>Low</strong> and Prompt Shields enabled) has a strict rule: <em>never issue a refund above 50 EUR per request</em>.</p>
