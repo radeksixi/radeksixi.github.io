@@ -7,25 +7,25 @@
 <meta name="description" content="sixi-asi 0.9 doubles Qwen3.8-27B decode speed on NVIDIA Jetson AGX Thor (23.2 to 45.3 tok/s, 3.8x autoregressive) with a 106-line llama.cpp kernel patch, block drafters and tail checkpoints that cut follow-up questions on a 63k-token document from 209 s to 1 s. Measured against llama-server and NVIDIA TensorRT Edge-LLM.">
 <meta name="author" content="Radek (Sixi)">
 <meta name="color-scheme" content="light dark">
-<link rel="canonical" href="https://radek-sixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor">
 <meta property="og:description" content="Same prompts, same NVIDIA Thor: sixi-asi 45.3 tok/s on plain Q4_K_M GGUF weights, TensorRT Edge-LLM 45.4 on NVFP4, llama-server 43.7, autoregressive 11.9. Follow-up questions on a 63k-token document in 1 s.">
-<meta property="og:image" content="https://radek-sixi.github.io/assets/engines-light.svg">
-<meta property="og:url" content="https://radek-sixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
+<meta property="og:image" content="https://radeksixi.github.io/assets/engines-light.svg">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-asi-0-9-thor-kernels-long-context/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="2026-11-10">
 </head>
 <body>
 <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</h1>
-<p class="meta">Radek (Sixi) · 10 November 2026 · <a href="https://github.com/radek-sixi/sixi-asi">source, patches, benchmark scripts and raw results</a></p>
+<p class="meta">Radek (Sixi) · 10 November 2026 · <a href="https://github.com/radeksixi/sixi-asi">source, patches, benchmark scripts and raw results</a></p>
 
 <p class="lede">Two days ago sixi-asi 0.8 decoded Qwen3.8-27B at 23.2 tokens per second on an NVIDIA Jetson AGX Thor. Version 0.9 does 45.3 on the same weights, 3.8 times plain autoregressive decoding, and answers a follow-up question about a 63,000-token document in one second instead of three and a half minutes. Most of the gain came from finding out that an explanation I published in the 0.8 write-up was wrong.</p>
 
@@ -103,7 +103,7 @@
 <p class="takeaway">Every claim ships with its script (<code>scripts/ab_bench.py</code>, <code>scripts/intel_eval.py</code>, <code>scripts/longctx_bench.py</code>), the kernel patch (<code>patches/llama.cpp/0003</code>) and the raw JSON under <code>configs/benchmarks/2026-11-10/</code>. If you can refute a number on your own Thor, please open an issue.</p>
 
 <hr>
-<p>Source, Apache-2.0: <a href="https://github.com/radek-sixi/sixi-asi">github.com/radek-sixi/sixi-asi</a>. Previous write-up: <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8</a>.</p>
+<p>Source, Apache-2.0: <a href="https://github.com/radeksixi/sixi-asi">github.com/radeksixi/sixi-asi</a>. Previous write-up: <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8</a>.</p>
 </article>
 </main>
 <footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>

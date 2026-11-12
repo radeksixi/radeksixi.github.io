@@ -7,13 +7,13 @@
 <meta name="description" content="A tool-blind benchmark of garak, promptfoo, DeepTeam, PyRIT, Azure's AI Red Teaming Agent and more against one Microsoft Foundry agent: what they reported, and what actually broke.">
 <meta name="author" content="Radek (Sixi)">
 <meta name="color-scheme" content="light dark">
-<link rel="canonical" href="https://radek-sixi.github.io/agent-redteam-benchmark-findings/">
+<link rel="canonical" href="https://radeksixi.github.io/agent-redteam-benchmark-findings/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:type" content="article">
 <meta property="og:title" content="I scored 7 AI red-teaming tools on a real Azure agent. Their own reports were 70–97% noise.">
 <meta property="og:description" content="The agent never said its secret. It e-mailed it. What a tool-blind benchmark found.">
-<meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
-<meta property="og:url" content="https://radek-sixi.github.io/agent-redteam-benchmark-findings/">
+<meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radeksixi.github.io/agent-redteam-benchmark-findings/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="2026-10-06">
 <meta property="article:modified_time" content="2026-10-07">
@@ -21,16 +21,16 @@
 <body>
 <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>I scored 7 AI red-teaming tools on a real Azure agent. Their own reports were 70–97% noise.</h1>
-<p class="meta">Radek (Sixi) · October 2026 (updated 7 October) · <a href="https://github.com/radek-sixi/agent-redteam-benchmark">data and code</a></p>
+<p class="meta">Radek (Sixi) · October 2026 (updated 7 October) · <a href="https://github.com/radeksixi/agent-redteam-benchmark">data and code</a></p>
 
 <p class="lede">If you're choosing an AI red-teaming tool today, you're probably comparing what each tool <em>says</em> it found. I wanted to know what they actually found. So I pointed seven of them at the same agent and scored every turn from the wire, ignoring the tools' own reports.</p>
 
-<p>Here's what happened. All of it is reproducible, and every confirmed violation is published in <a href="https://github.com/radek-sixi/agent-redteam-benchmark">the benchmark repository</a>.</p>
+<p>Here's what happened. All of it is reproducible, and every confirmed violation is published in <a href="https://github.com/radeksixi/agent-redteam-benchmark">the benchmark repository</a>.</p>
 
 <h2>The setup</h2>
 <ul>
@@ -83,7 +83,7 @@
 </ul>
 
 <h2>And my tool</h2>
-<p>After the baseline I open-sourced <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a>: a single Go binary with 21 techniques and no LLM inside. Measured on the same wire, with the same oracles and the same judge, v0.6.0 is <strong>1st on precision (0.688) and recall (0.833)</strong>, for $0.57 of cloud cost. A follow-up audit found recall at its ceiling on this target: it caught 34 of the 37 real leaks, and the other 3 are two judges disagreeing, not a missing marker.</p>
+<p>After the baseline I open-sourced <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a>: a single Go binary with 21 techniques and no LLM inside. Measured on the same wire, with the same oracles and the same judge, v0.6.0 is <strong>1st on precision (0.688) and recall (0.833)</strong>, for $0.57 of cloud cost. A follow-up audit found recall at its ceiling on this target: it caught 34 of the 37 real leaks, and the other 3 are two judges disagreeing, not a missing marker.</p>
 <p>Its gap is real and stated in the benchmark: <strong>breadth</strong>. It finds fewer <em>distinct</em> attacks than promptfoo or garak (6 against 89 and 67), and its runs were tuned against this target's ground truth while the others ran once. Read its row with that in mind.</p>
 <h3>Then and now</h3>
 <p>sixi-scanner began in 2025. The open-source rewrite came out this summer, and I maintain it in the open so anyone securing an AI agent can run it, read it and improve it. Here is the first build I measured, the legacy build's best run and the current release, all on this same target, gateway, oracles and judge:</p>
@@ -95,7 +95,7 @@
   <li><strong>The cost is breadth:</strong> the legacy LLM attacker confirmed 7 risk categories, and v0.6.0 confirms 4. That's where the open-source build has the most to gain.</li>
 </ul>
 <p>The first step on breadth is out. <strong>v0.7.0</strong> adds <em>false action claims</em>, the largest confirmed family sixi-scanner had never produced (58 turns in the baseline, 51 of them promptfoo's): the agent says <em>"I've emailed your account summary"</em> with no tool call behind it. Because the scanner holds the tool trace for every turn, it checks the claim against what actually ran, with no model and no false positive from a claim that turns out to be true. Replayed against recorded replies, it caught every judge-confirmed case and added no new false positives over the 1,282 replies in the v0.6.0 run. A full benchmark run of v0.7.0 hasn't been published yet.</p>
-<div class="note"><p><strong>Update (v0.8.4):</strong> Read the follow-up post, <a href="/multi-turn-probes-and-taint-relay/">What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</a>. Each release is measured on this same benchmark and published in <a href="https://github.com/radek-sixi/agent-redteam-benchmark">the benchmark repository</a>, wins and losses alike. Follow <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner on GitHub</a> to see them land.</p></div>
+<div class="note"><p><strong>Update (v0.8.4):</strong> Read the follow-up post, <a href="/multi-turn-probes-and-taint-relay/">What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</a>. Each release is measured on this same benchmark and published in <a href="https://github.com/radeksixi/agent-redteam-benchmark">the benchmark repository</a>, wins and losses alike. Follow <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner on GitHub</a> to see them land.</p></div>
 <p>If you want it in CI: <code>sixi-scanner scan --format sarif --out sixi.sarif</code> writes SARIF 2.1.0 for the GitHub Security tab, and an unreachable agent exits <code>2</code> instead of passing.</p>
 
 <h2>What I'd do if I were shipping an agent tomorrow</h2>
@@ -108,7 +108,7 @@
 </ol>
 
 <hr>
-<p>Everything (protocol, oracles, per-run KPIs and the confirmed turns) is at <a href="https://github.com/radek-sixi/agent-redteam-benchmark">github.com/radek-sixi/agent-redteam-benchmark</a>. If you maintain one of these tools and think I misconfigured it, <a href="https://github.com/radek-sixi/agent-redteam-benchmark/issues">open an issue</a> with your config and I'll re-run it.</p>
+<p>Everything (protocol, oracles, per-run KPIs and the confirmed turns) is at <a href="https://github.com/radeksixi/agent-redteam-benchmark">github.com/radeksixi/agent-redteam-benchmark</a>. If you maintain one of these tools and think I misconfigured it, <a href="https://github.com/radeksixi/agent-redteam-benchmark/issues">open an issue</a> with your config and I'll re-run it.</p>
 </article>
 </main>
 <footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>

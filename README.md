@@ -1,4 +1,4 @@
-# radek-sixi.github.io
+# radeksixi.github.io
 
 Personal site and writing of Radek (Sixi) Plain HTML and one stylesheet; no build step.
 

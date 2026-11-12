@@ -7,29 +7,29 @@
 <meta name="description" content="sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what is fixed in v0.9.0.">
 <meta name="author" content="Radek (Sixi)">
 <meta name="color-scheme" content="light dark">
-<link rel="canonical" href="https://radek-sixi.github.io/sixi-scanner-no-findings-is-not-a-pass/">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-scanner-no-findings-is-not-a-pass/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:type" content="article">
 <meta property="og:title" content="A clean scan that tested nothing: a correctness pass over sixi-scanner's own code">
 <meta property="og:description" content="Exit codes that separate clean from untested, rule recitation as its own finding, markers that no longer match inside other words, and two probes that now say something.">
-<meta property="og:image" content="https://radek-sixi.github.io/assets/headline.png">
-<meta property="og:url" content="https://radek-sixi.github.io/sixi-scanner-no-findings-is-not-a-pass/">
+<meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-scanner-no-findings-is-not-a-pass/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="2026-11-11">
 </head>
 <body>
 <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radek-sixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</h1>
-<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0">sixi-scanner v0.9.0</a></p>
+<p class="meta">Radek (Sixi) · 11 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0">sixi-scanner v0.9.0</a></p>
 
 <p class="lede">The <a href="/multi-turn-probes-and-taint-relay/">last post about the scanner</a> ended with precision going up because two noisy checks were taken out. This one is about the same kind of error in a less comfortable place: the scanner's own code reporting something it had not established.</p>
 
-<p>A review pass over every package of <a href="https://github.com/radek-sixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix in <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a> ships with that reply as a regression test.</p>
+<p>A review pass over every package of <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a> turned up two families of defect: scans that looked clean without testing anything, and harmless replies that became findings. None of them was found by the benchmark. Each was found by reading the code and writing the reply that breaks it, and each fix in <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a> ships with that reply as a regression test.</p>
 
 <h2>1. A scan that tested nothing reported "no findings"</h2>
 <p>Point <code>v0.8.4</code> at an endpoint that answers <code>401</code> with an empty body to every request, which is what an expired token, a mistyped path or a rate limiter looks like:</p>
@@ -117,12 +117,12 @@ $ echo $?
   <li>Custom technique definitions are validated more strictly: blank entries and a marker threshold above the number of markers are rejected.</li>
 </ul>
 
-<div class="note"><p><strong>What has not been measured.</strong> The 0.821 precision and 0.571 recall figures are <code>v0.8.4</code> on the <a href="https://github.com/radek-sixi/agent-redteam-benchmark">benchmark</a>. These changes move what the judge flags in both directions, and the benchmark has not been re-run on them yet. Until it is, those remain <code>v0.8.4</code> numbers, and nothing in this post is a new score.</p></div>
+<div class="note"><p><strong>What has not been measured.</strong> The 0.821 precision and 0.571 recall figures are <code>v0.8.4</code> on the <a href="https://github.com/radeksixi/agent-redteam-benchmark">benchmark</a>. These changes move what the judge flags in both directions, and the benchmark has not been re-run on them yet. Until it is, those remain <code>v0.8.4</code> numbers, and nothing in this post is a new score.</p></div>
 
 <h2>Getting it</h2>
-<p>The changes are released as <a href="https://github.com/radek-sixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a>, with binaries for Linux, macOS and Windows. It is also the first release whose <code>go.mod</code> declares the repository's current path, so <code>go install</code> works again:</p>
+<p>The changes are released as <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v0.9.0"><code>v0.9.0</code></a>, with binaries for Linux, macOS and Windows. It is also the first release whose <code>go.mod</code> declares the repository's current path, so <code>go install</code> works again:</p>
 
-<pre><code>go install github.com/radek-sixi/sixi-scanner/cmd/sixi-scanner@latest
+<pre><code>go install github.com/radeksixi/sixi-scanner/cmd/sixi-scanner@latest
 
 sixi-scanner scan \
   --target chat \
@@ -131,7 +131,7 @@ sixi-scanner scan \
   --out findings.sarif</code></pre>
 
 <hr>
-<p>The scanner is at <a href="https://github.com/radek-sixi/sixi-scanner">github.com/radek-sixi/sixi-scanner</a>; the benchmark it is measured on, with every run log, is at <a href="https://github.com/radek-sixi/agent-redteam-benchmark">github.com/radek-sixi/agent-redteam-benchmark</a>.</p>
+<p>The scanner is at <a href="https://github.com/radeksixi/sixi-scanner">github.com/radeksixi/sixi-scanner</a>; the benchmark it is measured on, with every run log, is at <a href="https://github.com/radeksixi/agent-redteam-benchmark">github.com/radeksixi/agent-redteam-benchmark</a>.</p>
 </article>
 </main>
 <footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
