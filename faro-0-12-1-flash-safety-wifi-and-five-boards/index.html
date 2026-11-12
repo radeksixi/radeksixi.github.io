@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</title>
+<meta name="description" content="What a full code review of Faro (sixi-tdeck-plus) found across flash persistence, multi-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, desktop companion framing, keypad focus, and ESP32-S3 idle power — and what shipped in v0.12.1.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/faro-0-12-1-flash-safety-wifi-and-five-boards/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards">
+<meta property="og:description" content="Two-pass CRC32 SPIFFS persistence, 2/3-byte repeater path decoding, POST+CSRF phone Wi-Fi provisioning, Polish localization at zero font flash cost, and 522 KB more free PSRAM on the T-Deck Plus.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radeksixi.github.io/faro-0-12-1-flash-safety-wifi-and-five-boards/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-12">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</h1>
+<p class="meta">Radek (Sixi) · 12 November 2026 · <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest">sixi-tdeck-plus (Faro) v0.12.1</a></p>
+
+<p class="lede">After shipping the initial <a href="/faro-and-sixi-observer-lora-mesh-stack/">Faro handheld UI and desktop console</a> for <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> LoRa radios and expanding it to five ESP32-S3 targets, I ran the same kind of <a href="/sixi-scanner-no-findings-is-not-a-pass/">line-by-line correctness review</a> over Faro's firmware, desktop companion client, and build pipeline. <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest"><code>v0.12.1</code></a> is the result.</p>
+
+<p>Embedded bugs rarely announce themselves on a clean bench. They wait for a battery brownout mid-save on SPIFFS, a 3-byte repeater path preset from another region, a 63-character WPA2 passphrase with punctuation, or a CMake release flag that quietly compiles your test assertions into no-ops. Every class of bug below now has a host regression test in CTest, and the firmware was verified on a live <strong>LilyGo T-Deck Plus</strong> (162 mesh contacts on EU 868) and a USB-attached <strong>Heltec V3</strong> before tagging.</p>
+
+<h2>1. A truncated SPIFFS file used to wipe in-memory state</h2>
+<p>Alongside upstream MeshCore's own NVS/SPIFFS identity store, Faro writes UI preferences, contact notes, and chat history to <code>/faro_ui.bin</code> (<code>FUI1</code>) and <code>/faro_msgs.bin</code> (<code>FMS1</code>) at most once a minute via write-to-<code>.tmp</code> and <code>rename()</code>. Reviewing the loader and writer turned up three failure modes under brownout or flash wear:</p>
+<ul>
+  <li><strong>Destructive load on partial files.</strong> <code>loadMessages()</code> cleared <code>_messages</code> before reading the record loop, and ignored short <code>fread()</code> counts mid-record. A truncated file wiped RAM state instead of keeping what was already valid.</li>
+  <li><strong>No checksum over stored records, and no <code>fsync</code> before rename.</strong> On embedded SPIFFS, <code>fclose()</code> without <code>fflush()</code> + <code>fsync(fileno(f))</code> followed by power loss can leave a renamed file short or leave the valid payload stranded in <code>.tmp</code>.</li>
+  <li><strong>Delayed history wipe.</strong> Running <code>clear history</code> in Settings › CLI cleared RAM and set a dirty flag, leaving <code>/faro_msgs.bin</code> on flash for up to 60 seconds if power was pulled immediately.</li>
+</ul>
+
+<p>In <code>v0.12.1</code>, both files append a magic + IEEE 802.3 <code>CRC32</code> trailer, <code>fsync</code> before <code>rename()</code>, and load in two passes: the entire stream and optional CRC trailer are validated first without touching live state, legacy pre-<code>0.12.1</code> files without the trailer still upgrade cleanly on first boot, an intact <code>.tmp</code> file is recovered automatically if power died mid-rename, and <code>clear history</code> unlinks both <code>/faro_msgs.bin</code> and <code>/faro_msgs.bin.tmp</code> immediately.</p>
+
+<p class="takeaway">Takeaway: atomic rename is only half of crash-safe persistence. Validate the whole record stream before mutating live state, and test what happens when power drops between <code>write</code> and <code>rename</code>.</p>
+
+<h2>2. Multi-byte repeater paths and bounded exports</h2>
+<p>MeshCore supports 1-, 2-, and 3-byte repeater path hashes (such as the <em>Canada 3-byte</em> preset), packing the stride into the top two bits of <code>path_len</code> (<code>hash_size = 1 &lt;&lt; (path_len &gt;&gt; 6)</code>) and the hop count into the low six bits (<code>path_len &amp; 0x3F</code>).</p>
+
+<table>
+  <thead>
+    <tr><th>Area</th><th>Bug before <code>0.12.1</code></th><th>Fix in <code>0.12.1</code></th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Advert &amp; RX hop counts</strong></td>
+      <td>Treated <code>pkt-&gt;path_len</code> as a raw byte count in discovered-contact callbacks, displaying <code>0x83</code> (131 hops) instead of 3 hops of 3 bytes, and dropped <code>last_snr</code> / <code>last_rssi</code> on discovery.</td>
+      <td>Decodes <code>pathHashSize()</code> and <code>pathHopCount()</code> consistently across adverts, chat headers, and contact cards, preserving link SNR/RSSI.</td>
+    </tr>
+    <tr>
+      <td><strong><code>AppStore::buildTracePath</code></strong></td>
+      <td>Indexed <code>out_path[64]</code> without checking <code>h * hash_size + sz &lt;= sizeof(out_path)</code> on malformed inputs.</td>
+      <td>Strict bounds check per hop for 1-, 2-, and 3-byte hashes before reading.</td>
+    </tr>
+    <tr>
+      <td><strong>SD JSON &amp; GPX exports</strong></td>
+      <td><code>fwrite(buf, 1, n, f)</code> used <code>snprintf</code>'s return value (which can exceed <code>sizeof(buf)</code> on truncation), and node names with quotes or <code>&lt;&amp;</code> broke JSON/XML.</td>
+      <td>Clamps write lengths to buffer capacity and escapes JSON strings in settings backups and XML entities in GPX tracks.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Hardening phone Wi-Fi provisioning</h2>
+<p>Typing a long random router password on a thumb keyboard is painful, so <code>0.11.1</code> added a temporary 5-minute WPA2 SoftAP (<code>Faro-XXXX</code>) serving a tiny HTML form at <code>192.168.4.1</code>. Reviewing it as an adversarial surface exposed four sharp edges:</p>
+<ol>
+  <li><strong><code>GET /save?ssid=...&amp;pwd=...</code> truncated encoded passwords.</strong> A 63-character WPA2 passphrase containing punctuation expands up to 3× when URL-encoded (<code>%XX</code>), overflowing a small query-line read buffer, and placed credentials in the request URI.</li>
+  <li><strong>No CSRF token and active companion port.</strong> Any page open in the phone's browser while joined to <code>Faro-XXXX</code> could forge a cross-origin request to <code>192.168.4.1</code>, and TCP port <code>5000</code> remained reachable during setup.</li>
+  <li><strong>Background STA channel hopping.</strong> If an older unreachable SSID was stored, ESP32 STA auto-reconnect kept scanning across channels, knocking the SoftAP off its channel while the user was submitting the form.</li>
+  <li><strong>Modulo bias in the setup AP password.</strong> Mapping random bytes onto the character alphabet with plain <code>%</code> slightly skewed character selection.</li>
+</ol>
+
+<p><code>0.12.1</code> moves submission to <code>POST /save</code> with a single-use random CSRF token verified in constant time, parses a body large enough for a worst-case URL-encoded 32-byte SSID + 63-character WPA2 passphrase, generates the temporary AP password via rejection sampling, pauses both STA reconnect scanning and TCP <code>:5000</code> until setup finishes or times out, and zeroes credential buffers on the stack before returning.</p>
+
+<h2>4. Desktop console resilience and the CMake <code>-DNDEBUG</code> trap</h2>
+<p><code>faro-console</code> runs the exact same LVGL 9.3 UI on Linux over SDL2, talking to a radio via USB serial or Wi-Fi TCP <code>:5000</code>. Four transport and build fixes landed here:</p>
+<ul>
+  <li><strong>Non-blocking TCP connect &amp; <code>SIGPIPE</code> immunity.</strong> Pointing <code>--tcp</code> at an offline IP previously blocked inside kernel SYN retries; it now uses non-blocking <code>connect()</code> + <code>poll()</code> (~3 s cap) and suppresses <code>SIGPIPE</code> when a radio reboots mid-frame.</li>
+  <li><strong>Interleaved <code>PUSH_*</code> frames during command round-trips.</strong> On a busy mesh, the radio emits asynchronous <code>PUSH_ADVERT</code> or <code>PUSH_RAW_DATA</code> frames between a command and its <code>RESP_*</code>. Instead of treating an interleaved push as a failed reply, the client now dispatches push frames into the store while continuing to wait for the matching response, caps incoming frames at <code>1024</code> bytes, sends the full 7-byte <code>reboot</code> payload upstream expects, appends outbound DMs and channel messages to local history immediately, and accepts full UTF-8 input (<code>SDL_TEXTINPUT</code>).</li>
+  <li><strong>Assertions that vanished in release-mode tests.</strong> Building CMake with <code>-DCMAKE_BUILD_TYPE=RelWithDebInfo</code> or <code>Release</code> adds <code>-DNDEBUG</code>, which stripped <code>assert(...)</code> checks — including expressions with side effects — from unit test binaries. Every test target now compiles with explicit <code>-UNDEBUG</code>, and side-effecting calls live outside <code>assert()</code>.</li>
+</ul>
+
+<pre><code># Always keep assertions armed in CTest targets, even in Release / RelWithDebInfo builds
+target_compile_options(test_core PRIVATE -UNDEBUG)
+target_compile_options(test_companion_client PRIVATE -UNDEBUG)
+target_compile_options(test_ui_sim PRIVATE -UNDEBUG)</code></pre>
+
+<p class="takeaway">Takeaway: if your test suite uses <code>&lt;cassert&gt;</code> and CI builds with <code>-DCMAKE_BUILD_TYPE=Release</code>, your tests are not running their assertions unless you pass <code>-UNDEBUG</code>.</p>
+
+<h2>5. Five boards, Polish (<code>PL</code>) at zero flash cost, and 522 KB more PSRAM</h2>
+<p>The rest of <code>0.12.1</code> focuses on hardware ergonomics across all five supported ESP32-S3 boards (<strong>LilyGo T-Deck / T-Deck Plus</strong>, <strong>T-Deck MAX</strong>, <strong>Elecrow ThinkNode M9</strong>, <strong>T-Beam S3 Supreme</strong>, and <strong>Heltec WiFi LoRa 32 V3</strong>):</p>
+<ul>
+  <li><strong>Polish (<code>PL</code>) UI localization at zero font flash cost.</strong> All 15 screens now ship in <strong>English, Italian, German, French, and Polish</strong> (<code>EN/IT/DE/FR/PL</code>). Because <code>faro_font_12</code>, <code>14</code>, and <code>16</code> already included the full Latin Extended-A block (<code>U+0100–U+017F</code>: <code>ą ć ę ł ń ó ś ź ż</code>), adding Polish required zero new font bitmaps — plus fixing a <code>snap.language % 4</code> modulo clamp in SD settings import so the fifth language survives backup and restore.</li>
+  <li><strong>ThinkNode M9 keypad navigation.</strong> On keypad-only hardware (<code>STC8H</code> at I2C <code>0x6C</code>), <code>App::isTyping()</code> previously returned true on every screen that <em>contained</em> a text box even when focus was on a button, stealing single-key shortcuts and turning <code>Enter</code> into "send empty draft" instead of clicking the focused control. Focus checks, arrow-key navigation inside open LVGL dropdowns, keypad backlight sleep sync, and skipping T-Deck I2C probes are all fixed.</li>
+  <li><strong>Measured PSRAM and idle power savings on the T-Deck Plus.</strong> Skipping LVGL SPI display flushes while <code>screen_off</code> is active, calling <code>i2s_stop()</code> when the buzzer finishes a tone, removing a <code>SPI.end()</code> call that tore down the shared LoRa/TFT/SD SPI bus on failed SD mounts, and removing a leftover 525 ms cold-boot PNG tile benchmark cut boot time and raised free PSRAM on a live T-Deck Plus from <strong>7.27 MB to 7.79 MB (+522 KB)</strong>.</li>
+  <li><strong>Same-origin Web Flasher.</strong> Browser WebSerial flashing via <a href="https://radeksixi.github.io/sixi-tdeck-plus/">radeksixi.github.io/sixi-tdeck-plus</a> now serves all five <code>-merged.bin</code> images from same-origin GitHub Pages paths rather than cross-origin GitHub Release redirects, avoiding browser CORS blocks out of the box.</li>
+</ul>
+
+<h2>Getting <code>v0.12.1</code></h2>
+<p>Firmware images (<code>-merged.bin</code> for first install at <code>0x0</code>, <code>-app.bin</code> at <code>0x10000</code> to update while keeping your MeshCore keys, contacts, and channels), the Ubuntu <code>amd64</code> desktop package (<code>faro-desktop_0.12.1_amd64.deb</code>), and <code>SHA256SUMS</code> are on the <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest"><code>v0.12.1</code> release page</a>, or flash directly from Chrome/Edge on the <a href="https://radeksixi.github.io/sixi-tdeck-plus/">1-click Web Flasher</a>:</p>
+
+<pre><code># Back up full 16 MB flash first, then update app partition (keeps keys, contacts &amp; channels)
+esptool --chip esp32s3 --port /dev/ttyACM0 --baud 921600 read-flash 0 ALL backup-$(date +%F).bin
+esptool --chip esp32s3 --port /dev/ttyACM0 --baud 921600 write-flash 0x10000 faro-tdeck-0.12.1-app.bin</code></pre>
+
+<hr>
+<p>Faro is Apache-2.0 at <a href="https://github.com/radeksixi/sixi-tdeck-plus">github.com/radeksixi/sixi-tdeck-plus</a>; the browser flasher and Mesh America catalog are at <a href="https://radeksixi.github.io/sixi-tdeck-plus/">radeksixi.github.io/sixi-tdeck-plus</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+</body>
+</html>

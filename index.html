@@ -27,6 +27,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">12 November 2026 <span class="post-tag">LoRa · Firmware &amp; Correctness</span></span>
+      <a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</a>
+      <p>What a line-by-line review of Faro (sixi-tdeck-plus) found and fixed across SPIFFS brownout recovery, 2/3-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, CMake release-mode test assertions, ThinkNode M9 keypad focus, Polish localization at zero font flash cost, and +522 KB free PSRAM on the T-Deck Plus.</p>
+    </li>
+    <li>
       <span class="date">11 November 2026 <span class="post-tag">AI Security · Correctness</span></span>
       <a href="/sixi-scanner-no-findings-is-not-a-pass/">A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</a>
       <p>sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what changed: untested is no longer clean, a refusal is no longer a critical finding, and two probes now say something.</p>
@@ -137,14 +142,14 @@
     </div>
 
     <div class="card card-full">
-      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9 · Apache-2.0</p>
+      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9 · Apache-2.0 · v0.12.1</p>
       <h3><a href="https://github.com/radeksixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
-      <p>Open-source touchscreen, keyboard, and trackball UI for MeshCore LoRa radios on the <strong>LilyGo T-Deck Plus</strong>, <strong>T-Beam S3 Supreme</strong>, and <strong>Heltec V3</strong>. Includes a native Ubuntu Linux desktop companion app, a desktop simulator, a live mesh map and radio range calculator, and a 1-click browser flasher.</p>
+      <p>Open-source touchscreen, keyboard, and trackball UI for MeshCore LoRa radios across five ESP32-S3 boards: <strong>LilyGo T-Deck / T-Deck Plus</strong>, <strong>T-Deck MAX</strong>, <strong>Elecrow ThinkNode M9</strong>, <strong>T-Beam S3 Supreme</strong>, and <strong>Heltec V3</strong>. Includes a native Ubuntu Linux desktop console (<code>faro-console</code>), a headless PNG simulator, offline SD-card maps, an SX1262 link-budget calculator, <code>EN/IT/DE/FR/PL</code> localization, and a <a href="https://radeksixi.github.io/sixi-tdeck-plus/">1-click WebSerial flasher</a>. New in <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest">v0.12.1</a>: CRC32-checked flash state with brownout recovery, hardened <code>POST</code>+CSRF phone Wi-Fi provisioning, 2/3-byte repeater path decoding, Polish UI, and +522 KB free PSRAM (<a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">write-up</a>).</p>
       <ul class="pills">
-        <li>LilyGo T-Deck Plus · T-Beam S3 Supreme · Heltec V3</li>
-        <li>Touchscreen handheld UI &amp; Linux desktop app</li>
-        <li>Live mesh map &amp; radio range calculator</li>
-        <li>Regional radio power &amp; airtime limits · 1-click web flasher</li>
+        <li>5 ESP32-S3 boards: T-Deck Plus/MAX · ThinkNode M9 · T-Beam Supreme · Heltec V3</li>
+        <li>Touchscreen handheld UI &amp; Linux desktop console · EN/IT/DE/FR/PL</li>
+        <li>Offline SD maps · 2D mesh graph · SX1262 link-budget calculator</li>
+        <li>Regional RF power &amp; duty limits · 1-click browser flasher</li>
       </ul>
     </div>
 
