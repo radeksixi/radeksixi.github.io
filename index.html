@@ -32,6 +32,11 @@
       <p>What a line-by-line review of Faro (sixi-tdeck-plus) found and fixed across SPIFFS brownout recovery, 2/3-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, CMake release-mode test assertions, ThinkNode M9 keypad focus, Polish localization at zero font flash cost, and +522 KB free PSRAM on the T-Deck Plus.</p>
     </li>
     <li>
+      <span class="date">12 November 2026 <span class="post-tag">Inference · Concurrency</span></span>
+      <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">sixi-asi 0.11: 32 concurrent streams on one Jetson Thor at 170 tok/s, in 27 GB instead of 70</a>
+      <p>Replaying a log of recurrent-layer inputs instead of keeping a state snapshot per row: 32 Qwen3.8-27B streams at 170 tok/s (129 before) in 27 GB of context memory, a follow-up that waits under 3 s behind sixteen agents' long prompts instead of 442 s, and default weights three times closer to BF16.</p>
+    </li>
+    <li>
       <span class="date">11 November 2026 <span class="post-tag">AI Security · Correctness</span></span>
       <a href="/sixi-scanner-no-findings-is-not-a-pass/">A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</a>
       <p>sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what changed: untested is no longer clean, a refusal is no longer a critical finding, and two probes now say something.</p>
@@ -83,6 +88,7 @@
         <li>3.8× over autoregressive · lossless (TVD-tested)</li>
         <li>Thor kernel patch: 8-row verify 163 → 88 ms</li>
         <li>63k-token document: next question in 1 s</li>
+        <li>32 concurrent streams: 170 tok/s in 27 GB</li>
         <li>Drop-in OpenAI HTTP/SSE server · 0 Python</li>
       </ul>
     </div>
