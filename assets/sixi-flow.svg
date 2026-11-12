@@ -45,10 +45,10 @@
     <rect class="card" x="32" y="96" width="164" height="150" rx="10"/>
     <text class="step" x="48" y="122">1 · REACH</text>
     <text class="q" x="48" y="146">Talk to any agent</text>
-    <text class="repo" x="48" y="174">redwire</text>
-    <text class="note" x="48" y="194">REST · MCP · A2A · WS</text>
-    <text class="note" x="48" y="220">upstream: PyRIT</text>
-    <text class="note" x="48" y="236">A2ATarget (merged)</text>
+    <text class="repo" x="48" y="174">PyRIT A2ATarget</text>
+    <text class="note" x="48" y="194">REST · MCP · A2A</text>
+    <text class="note" x="48" y="220">merged upstream +</text>
+    <text class="note" x="48" y="236">garak A2AGenerator</text>
   </g>
   <path class="arrow" d="M198,171 L214,171" marker-end="url(#a)"/>
 

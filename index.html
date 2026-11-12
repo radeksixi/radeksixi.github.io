@@ -87,7 +87,7 @@
   <h2>Attack, judge with code, prove on the wire, gate in CI</h2>
   <p>Most AI red-teaming tools tell you what <em>they think</em> broke. On a real agent, 70–97% of those flags were false alarms. Sixi is the open-source suite I build to close that gap:</p>
 
-  <a href="https://github.com/radeksixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (redwire, PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark) → 5 Ship (--format sarif). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
+  <a href="https://github.com/radeksixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark) → 5 Ship (--format sarif). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
 
   <div class="grid">
     <div class="card">
@@ -109,17 +109,13 @@
     </div>
 
     <div class="card">
-      <p class="tag-line">Reach · Transport Library · Go &amp; Upstream</p>
-      <h3><a href="https://github.com/radeksixi/redwire">redwire</a></h3>
-      <p>One <code>Send()</code> interface to reach any agent over REST, MCP, A2A, WebSocket, or a browser chat widget (SSRF-guarded). Upstream <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into Microsoft PyRIT</a>; <a href="https://github.com/NVIDIA/garak/pull/2225"><code>A2AGenerator</code> for NVIDIA garak</a> in review.</p>
-    </div>
-
-    <div class="card">
       <p class="tag-line">Learn · Hands-on Labs · Python</p>
       <h3><a href="https://github.com/radeksixi/agent-redteam-labs">agent-redteam-labs</a></h3>
       <p>Hands-on AI agent red-teaming and security engineering labs, paired with <a href="https://github.com/radeksixi/adk-demo-target">adk-demo-target</a>, a deliberately vulnerable bank agent.</p>
     </div>
   </div>
+
+  <p><strong>Upstream:</strong> <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into Microsoft PyRIT</a>; <a href="https://github.com/NVIDIA/garak/pull/2225"><code>A2AGenerator</code> for NVIDIA garak</a> in review.</p>
 
   <p class="eyebrow">Off-grid packet radio &amp; embedded devices</p>
   <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
