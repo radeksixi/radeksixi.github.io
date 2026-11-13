@@ -4,71 +4,56 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work with me · Radek (Sixi)</title>
-<meta name="description" content="Local OSS &amp; Hybrid MoE model inference on NVIDIA Jetson and DGX Spark, AI agent security assessments, secure agentic platform architecture, and off-grid LoRa mesh systems. Remote, from Switzerland.">
+<meta name="description" content="Local C++20/CUDA Hybrid MoE inference on NVIDIA Jetson and DGX Spark (sixi-asi), calibrated AI evaluation (laya-as-judge), AI agent red-teaming (sixi-scanner), and off-grid LoRa mesh systems. Remote, from Switzerland.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/work/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Work with me · Radek (Sixi)">
-<meta property="og:description" content="High-efficiency OSS &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark, AI agent security assessments, and off-grid LoRa mesh systems.">
+<meta property="og:description" content="Local C++/CUDA inference (sixi-asi), calibrated AI evaluation (laya-as-judge), AI agent security &amp; CI red-teaming (sixi-scanner), and off-grid LoRa mesh systems.">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/work/">
 </head>
 <body>
 <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://sixi.ai">Sixi Lab</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <h1>Work with me</h1>
-<p class="lede">I help teams run open-source AI models faster on local hardware (NVIDIA Jetson &amp; DGX Spark), ship AI agents they can defend in production, and build off-grid edge and radio systems that keep working when the cloud doesn't. Remote, from Switzerland. Available for roles and contracts from November 2026.</p>
+<p class="lede">I help teams run open-weight AI models faster on local hardware, replace noisy LLM judges with calibrated evaluation, test AI agents before they ship, and engineer off-grid edge and radio systems. Remote, from Switzerland.</p>
 
-<h2>Local LLM &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark</h2>
-<p>For a team running open-weight models locally on edge devices, dedicated appliances, or air-gapped infrastructure.</p>
+<a href="/"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab overview: 1 Infer (sixi-asi) → 2 Evaluate (laya-as-judge) → 3 Red-Team (sixi-scanner) · Field Core at sixi.ai (Rifugio, sigillo, Faro)."></a>
+
+<h2>1. Local LLM &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark</h2>
 <ul>
-  <li>High-efficiency C++20/CUDA inference for modern hybrid Mixture-of-Experts (MoE) and linear-attention models (<a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a>) — with predictable GPU memory caps, lossless speculative decoding, and zero Python in the runtime path</li>
-  <li>Optimization and deployment for <strong>NVIDIA Jetson</strong> devices (Thor, Orin, Nano Super) and the latest <strong>NVIDIA DGX Spark</strong> architecture, fitting large 27B+ and multi-hundred-expert open-source models into tight unified-memory and power budgets</li>
-  <li>Bit-exact reproducible execution, drop-in OpenAI-compatible HTTP/SSE serving, separate reasoning/answer token budgets, and validated tool calling for regulated or air-gapped environments (<a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
+  <li>Native C++20/CUDA inference for hybrid MoE and linear-attention models (<a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a>) with strict memory caps, lossless speculative decoding, input-log replay, and zero Python on the runtime path</li>
+  <li>Deployment on <strong>NVIDIA Jetson</strong> (Thor, Orin, Nano Super) and <strong>DGX Spark</strong> unified memory, plus OpenAI-compatible HTTP/SSE serving and schema-checked tool calls</li>
 </ul>
-<p><em>Proof:</em> <a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a> runs 27B hybrid models under 20 GiB VRAM and 512-expert MoE models under 80 GiB, delivering +14.2% higher throughput than standard <code>llama.cpp</code> and up to 1.73× speedup on MoE workloads with 100% lossless outputs.</p>
+<p><em>Proof:</em> on Jetson AGX Thor with Qwen3.8-27B, <a href="/sixi-asi-0-9-thor-kernels-long-context/">45.3 tok/s single-stream</a> (3.8× AR), <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">32 concurrent streams at 170 tok/s in 27 GB</a> instead of 70 GB, and 1.0 s follow-ups at 63k context.</p>
 
-<h2>AI agent security assessment</h2>
-<p>For a team about to put an agent in front of customers or data.</p>
+<h2>2. Calibrated AI evaluation &amp; secure agent platform architecture</h2>
 <ul>
-  <li>Red-teaming of your agent over its real interfaces (REST, MCP, A2A, chat), including indirect injection through tools and knowledge bases</li>
-  <li>Every finding with the exact prompt and reply, confirmed by deterministic checks rather than another model's opinion</li>
-  <li>Fixes in order of impact: tool allow-lists, session-level business rules, identity and least-privilege access</li>
-  <li>Evidence mapped to the EU AI Act, DORA, NIS2 and GDPR, ready for your risk and audit teams</li>
+  <li>Hybrid local + cloud evaluation (<a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a>): 7–14 ms local GPU encoders at $0.00 + selective cloud escalation and simplex probability calibration</li>
+  <li>Enterprise agent architecture on Microsoft Foundry or Google ADK: Entra agent identities, scoped MCP/A2A tools, governed AI gateways, and EU AI Act / DORA / GDPR evidence</li>
 </ul>
-<p><em>Proof:</em> <a href="/agent-redteam-benchmark-findings/">the 7-tool benchmark write-up</a> and <a href="/multi-turn-probes-and-taint-relay/">multi-turn &amp; taint-relay findings</a>, where this method caught what seven tools and an LLM judge missed.</p>
+<p><em>Proof:</em> <a href="/laya-as-judge-omega-11-of-11-benchmarks/">laya-as-judge v0.4.0</a> wins 11/11 benchmarks over Gemini Decision 1 across 2,250 questions (Top-1 ECE 0.0234, $0.77 total); 14 years across defence, pharma, and building-automation platforms.</p>
 
-<h2>Secure agentic platform architecture</h2>
-<p>For a team designing or reviewing an agent platform on Azure / Microsoft Foundry or Google ADK.</p>
+<h2>3. AI agent security assessment &amp; CI red-teaming</h2>
 <ul>
-  <li>Agent identity and authorization: on-behalf-of flows, non-human identities, scoped MCP tools</li>
-  <li>AI gateway, content safety and evaluation design (Azure API Management, Content Safety)</li>
-  <li>Architecture review with findings you can act on, not a slide deck</li>
+  <li>Wire-level red-teaming over REST, MCP, and A2A — including multi-turn state abuse and indirect injection through tools and knowledge bases</li>
+  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v0.9.1</a> wired into CI with native SARIF 2.1.0 output and custom deterministic business-rule oracles</li>
 </ul>
-<p><em>Proof:</em> 14 years in defence, pharma and building-automation systems; Microsoft Multi-Agent AI Solutions Expert and Azure Solutions Architect Expert.</p>
+<p><em>Proof:</em> <a href="/agent-redteam-benchmark-findings/">7-tool benchmark</a> and <a href="/multi-turn-probes-and-taint-relay/">multi-turn taint-relay</a> write-ups — 0.821 stateless precision (1st of 7) and 1.000 multi-turn precision.</p>
 
-<h2>Off-grid LoRa mesh &amp; embedded field systems</h2>
-<p>For teams building resilient packet-radio protocols, handheld/embedded field devices, or industrial edge systems.</p>
+<h2>4. Off-grid LoRa mesh &amp; embedded field systems</h2>
 <ul>
-  <li>Compact, offline-verifiable signed radio protocols and reference libraries (<a href="https://github.com/radeksixi/sigillo">sigillo</a>: 87-byte signed public alert packets in C, Python, and TypeScript)</li>
-  <li>Embedded C/C++ and LVGL 9 firmware on ESP32-S3 / STM32 / LoRa hardware (<a href="https://github.com/radeksixi/sixi-tdeck-plus">sixi-tdeck-plus / Faro</a> handheld UI &amp; Linux desktop app; <a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a> LoRa &amp; SDR receiver bridge; upstream <a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradeksixi">MeshCore</a> contributions)</li>
-  <li>Local AI diagnostics over live industrial and building telemetry on NVIDIA Jetson edge hardware (<a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
-</ul>
-
-<h2>Red-teaming in CI</h2>
-<p>For a team that wants agent security checked on every change, not once a year.</p>
-<ul>
-  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a> wired into your pipeline with native SARIF 2.1.0 output (<code>--format sarif</code>) so findings land directly in the GitHub Security tab</li>
-  <li>Custom checks for your agent's own business rules: the ones generic tools can't know</li>
-  <li>A handover so your team owns it afterwards</li>
+  <li>Autonomous off-grid MeshCore infrastructure (<a href="https://sixi.ai">Sixi Lab / Rifugio</a>) and compact offline-verifiable signed radio protocols (<a href="https://github.com/radeksixi/sigillo">sigillo v1.1-rc</a>: 87-byte Ed25519-signed EU CAMF alerts)</li>
+  <li>Embedded C/C++ and LVGL 9 firmware across five ESP32-S3 LoRa boards (<a href="https://github.com/radeksixi/sixi-tdeck-plus">Faro v0.12.1</a>), SDR telemetry (<a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a>, <a href="https://map.sixi.ai">map.sixi.ai</a>), and Jetson edge diagnostics (<a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a>)</li>
 </ul>
 
 <h2>How it starts</h2>
-<p>A 30-minute call: what the system or agent does, what hardware or data it touches, and what would hurt. Then a fixed-scope proposal. Email me at <a href="mailto:contact@sixi.ai">contact@sixi.ai</a>.</p>
+<p>A 30-minute call on what the system does, what hardware or data it touches, and what would hurt — followed by a fixed-scope proposal. Email <a href="mailto:contact@sixi.ai">contact@sixi.ai</a>.</p>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">Home</a></footer>
+<footer class="site">© 2026 Radek (Sixi) · <a href="https://sixi.ai">Sixi Lab</a> · <a href="https://radeksixi.web.app/">Portfolio</a> · <a href="/">Writing</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
 </body>
 </html>

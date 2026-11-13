@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 248" width="960" height="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>Sixi Lab — 1. sixi-asi (Inference) → 2. laya-as-judge (Evaluation) → 3. sixi-scanner (Red-Teaming) · Rifugio &amp; Swiss MeshCore (sixi.ai)</title>
+  <style>
+    .bg { fill: #ffffff; }
+    .core { fill: #fff8f0; stroke: #e36209; stroke-width: 1.8; }
+    .radio { fill: #f4f8ff; stroke: #0969da; stroke-width: 1.8; }
+    .title { fill: #1f2328; font-size: 20px; font-weight: 700; }
+    .sub { fill: #57606a; font-size: 13.5px; }
+    .accent { fill: #e36209; }
+    .step { fill: #9a4405; font-size: 11px; font-weight: 700; letter-spacing: .1em; }
+    .step-b { fill: #0550ae; font-size: 11px; font-weight: 700; letter-spacing: .09em; }
+    .name { fill: #1f2328; font-size: 17px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .name-sans { fill: #1f2328; font-size: 16.5px; font-weight: 700; }
+    .tag { fill: #57606a; font-size: 12px; font-weight: 500; }
+    .stat { fill: #1f2328; font-size: 12.5px; font-weight: 600; }
+    .note { fill: #57606a; font-size: 12px; }
+    .arrow { stroke: #8c959f; stroke-width: 2; fill: none; }
+    .head { fill: #8c959f; }
+    .div { stroke: #d0d7de; stroke-width: 1.5; stroke-dasharray: 5 5; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; }
+      .core { fill: #1f1610; stroke: #f0883e; }
+      .radio { fill: #0d1b2a; stroke: #4493f8; }
+      .title, .name, .name-sans, .stat { fill: #e6edf3; }
+      .sub, .tag, .note { fill: #8d96a0; }
+      .accent, .step { fill: #f0883e; }
+      .step-b { fill: #58a6ff; }
+      .arrow { stroke: #6e7681; }
+      .head { fill: #6e7681; }
+      .div { stroke: #30363d; }
+    }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="960" height="248" rx="12"/>
+
+  <text class="title" x="24" y="38">Sixi Lab <tspan class="accent">·</tspan> Radek (Sixi)</text>
+  <text class="sub" x="24" y="60">Three open-source AI pillars — infer locally, evaluate with calibrated code, red-team in CI — alongside Swiss off-grid radio at sixi.ai.</text>
+
+  <!-- 1. sixi-asi -->
+  <g>
+    <rect class="core" x="24" y="78" width="212" height="148" rx="10"/>
+    <text class="step" x="40" y="103">1 · INFER</text>
+    <text class="name" x="40" y="128">sixi-asi</text>
+    <text class="tag" x="40" y="148">C++20 · CUDA · v0.11 · 0 Python</text>
+    <text class="stat" x="40" y="176">45.3 tok/s single-stream (3.8×)</text>
+    <text class="note" x="40" y="196">32 streams @ 170 tok/s in 27 GB</text>
+    <text class="note" x="40" y="213">Hybrid MoE &amp; Gated DeltaNet</text>
+  </g>
+  <path class="arrow" d="M238,152 L251,152" marker-end="url(#arr)"/>
+
+  <!-- 2. laya-as-judge -->
+  <g>
+    <rect class="core" x="254" y="78" width="212" height="148" rx="10"/>
+    <text class="step" x="270" y="103">2 · EVALUATE</text>
+    <text class="name" x="270" y="128">laya-as-judge</text>
+    <text class="tag" x="270" y="148">Local GPU + Cascade · v0.4.0</text>
+    <text class="stat" x="270" y="176">11/11 wins vs Gemini Dec 1</text>
+    <text class="note" x="270" y="196">Top-1 ECE 0.0234 · $0.77 / 2,250 q</text>
+    <text class="note" x="270" y="213">7–14 ms local GPU encoders</text>
+  </g>
+  <path class="arrow" d="M468,152 L481,152" marker-end="url(#arr)"/>
+
+  <!-- 3. sixi-scanner -->
+  <g>
+    <rect class="core" x="484" y="78" width="212" height="148" rx="10"/>
+    <text class="step" x="500" y="103">3 · RED-TEAM</text>
+    <text class="name" x="500" y="128">sixi-scanner</text>
+    <text class="tag" x="500" y="148">Static Go CLI · v0.9.1</text>
+    <text class="stat" x="500" y="176">0.821 prec · 1.000 multi-turn</text>
+    <text class="note" x="500" y="196">27 probes · SARIF 2.1.0 CI gate</text>
+    <text class="note" x="500" y="213">+ agent-redteam-benchmark</text>
+  </g>
+
+  <line class="div" x1="710" y1="82" x2="710" y2="222"/>
+
+  <!-- 4. Rifugio & Swiss MeshCore -->
+  <g>
+    <rect class="radio" x="724" y="78" width="212" height="148" rx="10"/>
+    <text class="step-b" x="740" y="103">FIELD CORE · SIXI.AI</text>
+    <text class="name-sans" x="740" y="128">Rifugio &amp; MeshCore</text>
+    <text class="tag" x="740" y="148">Autonomous Swiss LoRa PRU</text>
+    <text class="stat" x="740" y="176">sigillo · 87 B signed alerts</text>
+    <text class="note" x="740" y="196">Faro v0.12.1 (5 ESP32-S3 boards)</text>
+    <text class="note" x="740" y="213">sixi-observer · map.sixi.ai</text>
+  </g>
+</svg>

@@ -4,24 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek (Sixi) — Senior Software Engineer &amp; AI Architect</title>
-<meta name="description" content="Radek (Sixi) builds C++20/CUDA hybrid MoE inference engines, measured red-teaming tools for AI agents, and off-grid LoRa mesh systems.">
+<meta name="description" content="Radek (Sixi) builds C++20/CUDA hybrid MoE inference engines (sixi-asi), calibrated AI evaluation (laya-as-judge), agent red-teaming tools (sixi-scanner), and Swiss off-grid LoRa mesh systems at Sixi Lab (sixi.ai / Rifugio).">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek (Sixi) — Senior Software Engineer &amp; AI Architect">
-<meta property="og:description" content="C++20/CUDA hybrid MoE inference (sixi-asi), measured security for AI agents (sixi-scanner, agent-redteam-benchmark), and off-grid LoRa mesh systems (sigillo, Faro, sixi-observer).">
+<meta property="og:description" content="1. sixi-asi (C++20/CUDA inference) · 2. laya-as-judge (calibrated evaluation) · 3. sixi-scanner (agent red-teaming) · Rifugio &amp; Swiss MeshCore at Sixi Lab (sixi.ai).">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/">
 </head>
 <body>
 <header class="site">
   <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <nav><a href="https://sixi.ai">Sixi Lab</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
-  <h1>I build local C++/CUDA inference engines, break AI agents and prove what really broke, and engineer systems that hold up when the network or the model doesn't.</h1>
-  <p class="lede">Senior Software Engineer &amp; AI Architect in Switzerland. Three open-source tracks: a native C++20/CUDA inference engine for hybrid MoE &amp; Gated DeltaNet language models, a measured AI agent red-teaming suite, and a complete off-grid LoRa mesh &amp; packet-radio stack.</p>
-  <p>14 years shipping software where failure is expensive: native C/C++ &amp; CUDA runtimes, defence edge devices, an IoT platform for global pharma, resilient off-grid packet-radio systems, and an agentic AI platform over live building telemetry. See my full <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a> (open to remote roles and contracts from November 2026).</p>
+  <h1>Local C++/CUDA inference, calibrated AI evaluation, agent red-teaming, and off-grid field systems.</h1>
+  <p class="lede">Senior Software Engineer &amp; AI Architect in Switzerland — 14 years shipping software where failure is expensive. Open-source AI tools and Swiss off-grid radio at <a href="https://sixi.ai">Sixi Lab (sixi.ai)</a>; see my <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a>.</p>
+
+  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab overview: 1 Infer (sixi-asi) → 2 Evaluate (laya-as-judge) → 3 Red-Team (sixi-scanner) · Field Core at sixi.ai (Rifugio, sigillo, Faro, sixi-observer)."></a>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
@@ -29,165 +30,128 @@
     <li>
       <span class="date">13 November 2026 <span class="post-tag">AI Evaluation · Calibration &amp; Routing</span></span>
       <a href="/laya-as-judge-omega-11-of-11-benchmarks/">laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE (0.0234), and total cost ($0.77)</a>
-      <p>Hybrid local CUDA encoders (Laya + Vega-U 0.8B with disjoint Test-Time Training) + selective packed Gemini 3.5 Flash-Lite / 3.8 Flash routing and 10-fold out-of-fold simplex meta-calibration across 2,250 real questions—used alongside sixi.ai (JevBench 92.8%, Video-MME 78.4%, Amazon ESCI 59.7% Macro-F1, ECE 0.0234, $0.77 total).</p>
+      <p>Hybrid local CUDA encoders (Laya + Vega-U 0.8B TTT) + selective packed Gemini cascade and 10-fold simplex meta-calibration across 2,250 questions (JevBench 92.8%, Video-MME 78.4%, ECE 0.0234, $0.77 total).</p>
     </li>
     <li>
       <span class="date">12 November 2026 <span class="post-tag">LoRa · Firmware &amp; Correctness</span></span>
       <a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</a>
-      <p>What a line-by-line review of Faro (sixi-tdeck-plus) found and fixed across SPIFFS brownout recovery, 2/3-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, CMake release-mode test assertions, ThinkNode M9 keypad focus, Polish localization at zero font flash cost, and +522 KB free PSRAM on the T-Deck Plus.</p>
+      <p>SPIFFS brownout recovery, 2/3-byte MeshCore repeater paths, SoftAP Wi-Fi CSRF protection, Polish localization at zero font flash cost, and +522 KB free PSRAM on the T-Deck Plus.</p>
     </li>
     <li>
       <span class="date">12 November 2026 <span class="post-tag">Inference · Concurrency</span></span>
       <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">sixi-asi 0.11: 32 concurrent streams on one Jetson Thor at 170 tok/s, in 27 GB instead of 70</a>
-      <p>Replaying a log of recurrent-layer inputs instead of keeping a state snapshot per row: 32 Qwen3.8-27B streams at 170 tok/s (129 before) in 27 GB of context memory, a follow-up that waits under 3 s behind sixteen agents' long prompts instead of 442 s, and default weights three times closer to BF16.</p>
+      <p>Replaying a compact log of recurrent-layer inputs instead of state snapshots: 32 Qwen3.8-27B streams at 170 tok/s in 27 GB, follow-ups under 3 s behind 16 long-prompt agents instead of 442 s, and weights 3× closer to BF16.</p>
     </li>
     <li>
       <span class="date">11 November 2026 <span class="post-tag">AI Security · Correctness</span></span>
       <a href="/sixi-scanner-no-findings-is-not-a-pass/">A clean scan that tested nothing: a correctness pass over sixi-scanner's own code</a>
-      <p>sixi-scanner v0.8.4 reported no findings and exited 0 against an endpoint that answered 401 to every prompt. What a review of the scanner's own code found, and what changed: untested is no longer clean, a refusal is no longer a critical finding, and two probes now say something.</p>
+      <p>Why unreachable targets must fail instead of passing clean, exit code 3 for partial coverage, and listing untested probes across JSON, SARIF, and Markdown.</p>
     </li>
     <li>
       <span class="date">10 November 2026 <span class="post-tag">Inference · CUDA kernels</span></span>
       <a href="/sixi-asi-0-9-thor-kernels-long-context/">sixi-asi 0.9: 45 tok/s from a 27B hybrid model on Jetson Thor, and the kernel switch point that was hiding it</a>
-      <p>A 106-line llama.cpp kernel patch, block drafters and tail checkpoints: 23.2 to 45.3 tok/s on Qwen3.8-27B (3.8x autoregressive), level with NVIDIA TensorRT Edge-LLM on plain GGUF weights, and follow-up questions on a 63k-token document in 1 s instead of 209 s.</p>
+      <p>A 106-line llama.cpp kernel patch, block drafters, and tail checkpoints: 23.2 to 45.3 tok/s on Qwen3.8-27B (3.8× AR), and 1 s follow-ups on a 63k-token document.</p>
     </li>
     <li>
       <span class="date">8 November 2026 <span class="post-tag">Inference · Benchmark</span></span>
       <a href="/sixi-asi-speculative-decoding-hybrid-llms/">sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</a>
-      <p>O(1) recurrent-state rollback, sampled speculation that passes a distribution test, a cross-request prefix cache, and a same-token benchmark: 21.9 tok/s vs ollama 21.1, llama-server draft-dflash 20.4 and plain AR 11.0 on Qwen3.8-27B.</p>
+      <p>O(1) recurrent-state rollback, distribution-tested sampled speculation, and a cross-request prefix cache on Qwen3.8-27B.</p>
     </li>
     <li>
       <span class="date">26 October 2026 <span class="post-tag">LoRa · Protocol &amp; Crypto</span></span>
       <a href="/sigillo-87-byte-signed-alerts-for-lora/">Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</a>
-      <p>How to fit an EU public emergency alert and cryptographic signature into a single 87-byte packet that any pocket radio can verify offline.</p>
+      <p>How to fit an EU public emergency alert and Ed25519 signature into a single 87-byte packet verifiable 100% offline.</p>
     </li>
     <li>
       <span class="date">24 October 2026 <span class="post-tag">LoRa · Firmware &amp; SDR</span></span>
       <a href="/faro-and-sixi-observer-lora-mesh-stack/">Faro &amp; sixi-observer: building an open-source handheld UI, Linux console, and SDR bridge for MeshCore LoRa radios</a>
-      <p>Building a touchscreen UI on the LilyGo T-Deck Plus alongside unmodified MeshCore firmware, enforcing regional radio limits, and mapping repeater paths with a local SDR bridge.</p>
+      <p>Touchscreen UI for unmodified MeshCore firmware, regional RF duty limits, and mapping repeater paths with a local SDR bridge.</p>
     </li>
     <li>
       <span class="date">16 October 2026 <span class="post-tag">AI Security · Multi-turn</span></span>
       <a href="/multi-turn-probes-and-taint-relay/">What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</a>
-      <p>Why per-request guardrails fail across a conversation, how an agent relayed prompt injection by e-mail seven times while an LLM judge called it compliant, and what changed in sixi-scanner v0.8.4.</p>
+      <p>Why per-request guardrails miss split-cap refunds and e-mail taint relays across turns, and what changed in sixi-scanner v0.8.4.</p>
     </li>
     <li>
       <span class="date">6 October 2026 <span class="post-tag">AI Security · Benchmark</span></span>
       <a href="/agent-redteam-benchmark-findings/">I scored 7 AI red-teaming tools on a real Azure agent. Their own reports were 70–97% noise.</a>
-      <p>The agent never said its secret. It e-mailed it. What a tool-blind benchmark found across 15,000 turns, and what to change before you ship an agent.</p>
+      <p>What a tool-blind wire-level benchmark found across 15,000 turns when the agent never spoke its secret — it e-mailed it.</p>
     </li>
   </ul>
 
-  <p class="eyebrow">sixi-asi · Native C++20 / CUDA inference runtime</p>
-  <h2>Hybrid MoE &amp; Gated DeltaNet inference engine</h2>
-  <p>Modern open-weight models mix full attention with linear attention (<code>Gated DeltaNet</code>) whose state cannot be truncated like a KV cache, which makes speculative decoding hard. <a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a> is a C++20 speculative-decoding server for these models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified-memory hardware, with llama.cpp as the compute backend and zero Python in the runtime path. Public fork of my private research branch, version 0.9:</p>
-
-  <a href="https://github.com/radeksixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi, Hybrid MoE &amp; Gated DeltaNet inference engine: 1 Verify (.sixi manifest) → 2 Plan (memory planner) → 3 Run (C++20 / CUDA) → 4 Accelerate (speculative decode) → 5 Serve (sixi-server, sixi-cli)."></a>
-
+  <p class="eyebrow">1 · Inference · C++20 / CUDA</p>
+  <h2>sixi-asi — Hybrid MoE &amp; Gated DeltaNet runtime</h2>
+  <a href="https://github.com/radeksixi/sixi-asi"><img src="/assets/sixi-asi-flow.svg" alt="sixi-asi: 1 Verify → 2 Plan → 3 Run → 4 Accelerate → 5 Serve."></a>
   <div class="grid">
     <div class="card card-full">
-      <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE</p>
+      <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE · v0.11</p>
       <h3><a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a></h3>
-      <p>Speculative decoding for hybrid Gated-DeltaNet + attention models with <strong>O(1) recurrent-state rollback</strong>, lossless for greedy and sampled decoding, block drafters (DSpine, DSpark, DFlash2), a Thor-specific llama.cpp kernel patch, a prefix cache with tail checkpoints for long documents, and a native Qwen3.8 chat template that renders byte-identically to llama.cpp's Jinja. Measured on an NVIDIA Jetson AGX Thor with identical prompts for every engine: <strong>45.3 tok/s vs llama-server 43.7, NVIDIA TensorRT Edge-LLM 45.4 (NVFP4) and plain AR 11.9</strong> on Qwen3.8-27B; 65.7 tok/s on a reasoning workload at 28/30 GSM8K and 19/20 HumanEval; follow-up question on a 63k-token document in 1.0 s instead of 209 s.</p>
+      <p>Lossless speculative-decoding server for hybrid Attention + <code>Gated DeltaNet</code> + sparse MoE models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified memory, with llama.cpp underneath and zero Python on the runtime path (<a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">0.11 write-up</a>, <a href="/sixi-asi-0-9-thor-kernels-long-context/">0.9 write-up</a>).</p>
       <ul class="pills">
-        <li>3.8× over autoregressive · lossless (TVD-tested)</li>
-        <li>Thor kernel patch: 8-row verify 163 → 88 ms</li>
-        <li>63k-token document: next question in 1 s</li>
-        <li>32 concurrent streams: 170 tok/s in 27 GB</li>
-        <li>Drop-in OpenAI HTTP/SSE server · 0 Python</li>
+        <li>45.3 tok/s single-stream (3.8× AR)</li>
+        <li>32 streams: 170 tok/s in 27 GB (was 70 GB)</li>
+        <li>16 long-prompt agents: &lt; 3 s vs 442 s</li>
+        <li>63k context follow-up: 1.0 s · 0 Python</li>
       </ul>
     </div>
   </div>
 
-  <p class="eyebrow">Sixi · Measured security for AI agents</p>
-  <h2>Attack, judge with code, prove on the wire, gate in CI</h2>
-  <p>Most AI red-teaming tools tell you what <em>they think</em> broke. On a real agent, 70–97% of those flags were false alarms. Sixi is the open-source suite I build to close that gap:</p>
-
-  <a href="https://github.com/radeksixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Sixi, measured security for AI agents: 1 Reach (PyRIT A2ATarget) → 2 Attack (sixi-scanner) → 3 Judge (oracles, laya-as-judge) → 4 Prove (agent-redteam-benchmark) → 5 Ship (--format sarif). sixi-scanner v0.8.4: precision 0.821 and recall 0.571 (both 1st of seven tools), 1.000 precision on multi-turn sessions."></a>
-
+  <p class="eyebrow">2 · Evaluation &amp; 3 · Red-Teaming</p>
+  <h2>laya-as-judge &amp; sixi-scanner — Calibrated evaluation and agent security</h2>
+  <a href="https://github.com/radeksixi/agent-redteam-benchmark"><img src="/assets/sixi-flow.svg" alt="Reach → Attack (sixi-scanner) → Judge (laya-as-judge) → Prove (agent-redteam-benchmark) → Ship (--format sarif)."></a>
   <div class="grid">
-    <div class="card">
-      <p class="tag-line">Attack &amp; Ship · Go · v0.9.0</p>
-      <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>CLI red-team scanner for LLM agents: 27 single- and multi-turn techniques, one static Go binary, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong> on the stateless benchmark, and <strong>1.000 precision (22/22)</strong> on multi-turn sessions (measured on v0.8.4). Reports as JSON, SARIF 2.1.0, or Markdown. New in <a href="https://github.com/radeksixi/sixi-scanner/releases/latest">v0.9.1</a>: a scan that could not test everything says so, with exit code <code>3</code> and a "not tested" list in every format (<a href="/sixi-scanner-no-findings-is-not-a-pass/">write-up</a>).</p>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Prove · Benchmark · Python</p>
-      <h3><a href="https://github.com/radeksixi/agent-redteam-benchmark">agent-redteam-benchmark</a></h3>
-      <p>Seven red-teaming tools (garak, promptfoo, DeepTeam, PyRIT, Azure AI Red Teaming Agent, agent-probe, sixi-scanner) vs one real Microsoft Foundry agent, scored from the wire by 10 deterministic oracles and a tool-blind judge.</p>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Judge · Hybrid Local + Gemini Cascade · Python · v0.4.0</p>
+    <div class="card card-full">
+      <p class="tag-line">2 · Evaluate &amp; Route · Python · CUDA / MLX · v0.4.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Calibrated typed-decision evaluation engine used alongside <a href="https://sixi.ai">sixi.ai</a>: local encoders (Laya + Vega-U 0.8B TTT) handle fast decisions at $0.00 and selectively escalate hard/multimodal cases. <strong>11/11 wins over Gemini Decision 1</strong> across 2,250 questions (Top-1 ECE 0.0234, $0.77 total; <a href="/laya-as-judge-omega-11-of-11-benchmarks/">write-up</a>).</p>
+      <p>Calibrated typed-decision evaluation engine (<code>Laya-Omega</code>): local GPU encoders (<code>Laya</code> + <code>Vega-U 0.8B</code> Test-Time Training at $0.00 / 7–14 ms) handle clear cases and escalate uncertain or multimodal cases to a packed Gemini cascade with 10-fold simplex meta-calibration (<a href="/laya-as-judge-omega-11-of-11-benchmarks/">write-up</a>).</p>
+      <ul class="pills">
+        <li>11/11 wins over Gemini Decision 1</li>
+        <li>Top-1 ECE 0.0234 across 2,250 questions</li>
+        <li>$0.77 total run cost · 7–14 ms local GPU</li>
+      </ul>
     </div>
 
     <div class="card">
-      <p class="tag-line">Learn · Hands-on Labs · Python</p>
-      <h3><a href="https://github.com/radeksixi/agent-redteam-labs">agent-redteam-labs</a></h3>
-      <p>Hands-on AI agent red-teaming and security engineering labs, paired with <a href="https://github.com/radeksixi/adk-demo-target">adk-demo-target</a>, a deliberately vulnerable bank agent.</p>
+      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · v0.9.1</p>
+      <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
+      <p>Static Go red-team scanner for LLM agents: 27 single- and multi-turn techniques, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong>, <strong>1.000 multi-turn precision</strong>, SARIF 2.1.0 output, and exit code <code>3</code> on partial coverage (<a href="/sixi-scanner-no-findings-is-not-a-pass/">write-up</a>).</p>
+    </div>
+
+    <div class="card">
+      <p class="tag-line">Benchmark &amp; Labs · Python</p>
+      <h3><a href="https://github.com/radeksixi/agent-redteam-benchmark">agent-redteam-benchmark</a> &amp; <a href="https://github.com/radeksixi/agent-redteam-labs">labs</a></h3>
+      <p>Seven red-teaming tools scored from the wire by 10 deterministic oracles + a tool-blind judge against a live Microsoft Foundry agent, paired with hands-on hardening labs and <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into PyRIT</a>.</p>
     </div>
   </div>
 
-  <p><strong>Upstream:</strong> <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into Microsoft PyRIT</a>; <a href="https://github.com/NVIDIA/garak/pull/2225"><code>A2AGenerator</code> for NVIDIA garak</a> in review.</p>
-
-  <p class="eyebrow">Off-grid packet radio &amp; embedded devices</p>
-  <h2>LoRa mesh, authenticated alerts &amp; field hardware</h2>
-  <p>When power and mobile networks go down, cloud-dependent tools disappear first. I build an open-source, end-to-end LoRa &amp; <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> stack — from a compact signed alert format that any pocket radio can verify offline, to a touchscreen handheld UI and Linux desktop app, to a live radio receiver bridge:</p>
-
-  <a href="https://github.com/radeksixi/sigillo"><img src="/assets/sixi-lora-flow.svg" alt="Off-grid LoRa mesh &amp; authenticated field communications: 1 Sign (sigillo) → 2 Route (MeshCore) → 3 Operate (sixi-tdeck-plus / Faro) → 4 Observe (sixi-observer) → 5 Edge AI (GlassBoxEdge)."></a>
-
+  <p class="eyebrow">Field Core · Sixi Lab (<a href="https://sixi.ai">sixi.ai</a>)</p>
+  <h2>Rifugio &amp; Swiss MeshCore — Off-grid radio and embedded hardware</h2>
+  <a href="https://sixi.ai"><img src="/assets/sixi-lora-flow.svg" alt="Sign (sigillo) → Route (MeshCore) → Operate (Faro) → Observe (sixi-observer) → Edge AI (GlassBoxEdge)."></a>
   <div class="grid">
     <div class="card card-full">
-      <p class="tag-line">Sign &amp; Verify · C99 · Python · TypeScript · v1.0-rc</p>
-      <h3><a href="https://github.com/radeksixi/sigillo">sigillo</a></h3>
-      <p>Compact signed alert format for low-bandwidth packet radio. Fits an EU public emergency alert and cryptographic signature into a single <strong>87-byte radio packet</strong> that any microcontroller or handheld radio can verify 100% offline. Ships with an open specification, shared test vectors, and reference libraries in C, Python, and TypeScript.</p>
+      <p class="tag-line">Flagship Programme · Autonomous Swiss MeshCore PRU · sixi.ai</p>
+      <h3><a href="https://sixi.ai">Rifugio · Sixi Lab</a> &amp; <a href="https://github.com/radeksixi/sigillo">sigillo v1.1-rc</a></h3>
+      <p>Autonomous solar emergency infrastructure for Swiss <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> LoRa networks, paired with <strong>sigillo</strong> — an open specification and C99/Python/TypeScript libraries fitting an Ed25519-signed EU CAMF public alert into a single <strong>87-byte</strong> offline-verifiable radio packet (<a href="/sigillo-87-byte-signed-alerts-for-lora/">write-up</a>).</p>
       <ul class="pills">
-        <li>87-byte signed public alert packet</li>
-        <li>100% offline signature verification</li>
-        <li>Works on clockless &amp; GPS-free nodes</li>
-        <li>Reference libraries in C99 · Python · TypeScript</li>
+        <li>Autonomous off-grid MeshCore emergency nodes</li>
+        <li>87-byte Ed25519-signed offline alerts (Sigillo)</li>
+        <li>C99 · Python · TypeScript reference libraries</li>
       </ul>
     </div>
 
-    <div class="card card-full">
-      <p class="tag-line">Operate (Handheld &amp; PC) · C/C++ · LVGL 9 · Apache-2.0 · v0.12.1</p>
+    <div class="card">
+      <p class="tag-line">Handheld &amp; Linux UI · LVGL 9 · v0.12.1</p>
       <h3><a href="https://github.com/radeksixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
-      <p>Open-source touchscreen, keyboard, and trackball UI for MeshCore LoRa radios across five ESP32-S3 boards: <strong>LilyGo T-Deck / T-Deck Plus</strong>, <strong>T-Deck MAX</strong>, <strong>Elecrow ThinkNode M9</strong>, <strong>T-Beam S3 Supreme</strong>, and <strong>Heltec V3</strong>. Includes a native Ubuntu Linux desktop console (<code>faro-console</code>), a headless PNG simulator, offline SD-card maps, an SX1262 link-budget calculator, <code>EN/IT/DE/FR/PL</code> localization, and a <a href="https://radeksixi.github.io/sixi-tdeck-plus/">1-click WebSerial flasher</a>. New in <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest">v0.12.1</a>: CRC32-checked flash state with brownout recovery, hardened <code>POST</code>+CSRF phone Wi-Fi provisioning, 2/3-byte repeater path decoding, Polish UI, and +522 KB free PSRAM (<a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">write-up</a>).</p>
-      <ul class="pills">
-        <li>5 ESP32-S3 boards: T-Deck Plus/MAX · ThinkNode M9 · T-Beam Supreme · Heltec V3</li>
-        <li>Touchscreen handheld UI &amp; Linux desktop console · EN/IT/DE/FR/PL</li>
-        <li>Offline SD maps · 2D mesh graph · SX1262 link-budget calculator</li>
-        <li>Regional RF power &amp; duty limits · 1-click browser flasher</li>
-      </ul>
+      <p>Open-source UI and Ubuntu console for MeshCore radios across <strong>5 ESP32-S3 boards</strong> (T-Deck Plus/MAX, ThinkNode M9, T-Beam Supreme, Heltec V3), with offline maps, <code>EN/IT/DE/FR/PL</code>, and a <a href="https://radeksixi.github.io/sixi-tdeck-plus/">1-click WebSerial flasher</a> (<a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">write-up</a>).</p>
     </div>
 
     <div class="card">
-      <p class="tag-line">Observe · Python · LoRa · RTL-SDR</p>
-      <h3><a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a></h3>
-      <p>Open-source receiver bridge for USB LoRa radios and RTL-SDR dongles: verifies node signatures on the air, tracks multi-hop signal quality, estimates repeater paths, and streams live radio telemetry locally.</p>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Route (Upstream) &amp; Edge AI · C++ · NVIDIA Jetson</p>
-      <h3><a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradeksixi">MeshCore (Upstream)</a> &amp; <a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a></h3>
-      <p>Upstream contributions to the MeshCore packet-radio mesh protocol (dynamic Wi-Fi and radio transmit-power fixes) — alongside <a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a>, air-gapped local AI diagnostics over live industrial telemetry on two NVIDIA Jetson edge nodes.</p>
+      <p class="tag-line">Radio Telemetry &amp; Edge AI · Python · Jetson</p>
+      <h3><a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a> &amp; <a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a></h3>
+      <p>USB LoRa &amp; RTL-SDR receiver bridge feeding <a href="https://map.sixi.ai">map.sixi.ai</a>, <a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradeksixi">upstream MeshCore PRs</a>, and air-gapped local AI diagnostics on NVIDIA Jetson edge nodes.</p>
     </div>
   </div>
-
-  <p><strong>Hardware &amp; embedded bench:</strong></p>
-  <ul class="pills">
-    <li>NVIDIA Jetson Thor &amp; Nano Super</li>
-    <li>ESP32-S3 · STM32 · Raspberry Pi</li>
-    <li>LoRa (868 / 433 / 915 MHz) · RTL-SDR</li>
-    <li>LilyGo T-Deck Plus &amp; T-Beam S3 Supreme</li>
-    <li>Heltec V3 · RAK4631</li>
-    <li>MeshCore · Meshtastic · LoRaWAN</li>
-    <li>C99 · C++20 · CUDA · LVGL 9</li>
-  </ul>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="https://radeksixi.web.app/">Portfolio</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
+<footer class="site">© 2026 Radek (Sixi) · <a href="https://sixi.ai">Sixi Lab</a> · <a href="https://radeksixi.web.app/">Portfolio</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
 </body>
 </html>
