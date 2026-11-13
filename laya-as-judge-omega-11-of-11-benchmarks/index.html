@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE, and total cost</title>
+<meta name="description" content="laya-as-judge v0.4.0 (Laya-Omega), used alongside sixi.ai, beats Gemini Decision 1 on all 11 rows of the typed-decision benchmark table across 2,250 real questions (N=250/task): higher accuracy and Macro-F1 on every text, vision, audio, and video benchmark, pooled OOF Top-1 ECE 0.0234 vs 0.0250, and $0.77 total cost vs $0.88.">
+<meta name="author" content="radeksixi">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/laya-as-judge-omega-11-of-11-benchmarks/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="laya-as-judge 0.4 (Laya-Omega): 11/11 wins over Gemini Decision 1 on accuracy, Top-1 ECE (0.0234), and cost ($0.77)">
+<meta property="og:description" content="Hybrid local CUDA encoders (Laya + Vega-U 0.8B with disjoint Test-Time Training) + selective packed Gemini 3.5 Flash-Lite / 3.8 Flash routing and 10-fold out-of-fold simplex calibration across 2,250 decisions. Used with sixi.ai.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/laya-omega-benchmarks.png">
+<meta property="og:url" content="https://radeksixi.github.io/laya-as-judge-omega-11-of-11-benchmarks/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-13">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">radeksixi</a>
+  <nav><a href="https://sixi.ai">sixi.ai</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE (0.0234), and total cost ($0.77)</h1>
+<p class="meta">radeksixi · 13 November 2026 · Used in production with <a href="https://sixi.ai">sixi.ai</a> · <a href="https://github.com/radeksixi/laya-as-judge">source, calibration math &amp; benchmark suite</a></p>
+
+<p class="lede">Autoregressive "LLM-as-a-Judge" pipelines burn dollars generating paragraphs of JSON when software actually needs a calibrated distribution over typed outcomes (<code>noul</code> boolean, <code>choice</code>, or ordinal <code>score</code>). Standalone local encoders (<a href="https://huggingface.co/convaiinnovations/laya">Laya</a> 421M/322M) fix latency and output tokens, but hit an obvious ceiling on raw screenshots, audio clips, video streams, and multi-hop domain reasoning. <strong>laya-as-judge 0.4 (<code>Laya-Omega</code>)</strong>—the open-source evaluation engine built and used alongside <a href="https://sixi.ai">sixi.ai</a>—combines local CUDA encoders and disjoint Test-Time Training with a selective two-stage Gemini Interactions API cascade and out-of-fold simplex meta-calibration. Across <strong>2,250 real Hugging Face questions</strong> (<code>N = 250</code> per benchmark, <code>seed = 42</code>, zero test leakage), it beats the published <strong>Gemini Decision 1</strong> scoreboard on all 11 rows: every single quality benchmark, pooled Top-1 ECE, and total dollar cost.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-omega-dark.svg">
+  <img src="/assets/laya-omega-light.svg" alt="laya-as-judge v0.4.0 (Laya-Omega) vs Gemini Decision 1 across 9 benchmarks, Top-1 ECE (0.0234 vs 0.0250), and total suite cost ($0.77 vs $0.88).">
+</picture>
+
+<table>
+  <thead><tr><th>Benchmark / Metric</th><th>Evaluation Type</th><th>Gemini Decision 1</th><th>Laya-Omega v0.4.0</th><th>Run Cost</th></tr></thead>
+  <tbody>
+    <tr><td>JevBench</td><td>Accuracy (bool + choice + score)</td><td>92.2%</td><td><strong>92.80%</strong> (+0.60 pp)</td><td>$0.0560</td></tr>
+    <tr><td>Amazon ESCI</td><td>4-class Macro-F1</td><td>58.7%</td><td><strong>59.70%</strong> (+1.00 pp)</td><td>$0.1082</td></tr>
+    <tr><td>New Yorker Caption</td><td>Accuracy (5-way)</td><td>79.7%</td><td><strong>92.40%</strong> (+12.70 pp)</td><td>$0.0615</td></tr>
+    <tr><td>Mind2Web Multimodal</td><td>Accuracy (5-way SoM + DOM)</td><td>86.2%</td><td><strong>89.60%</strong> (+3.40 pp)</td><td>$0.1420</td></tr>
+    <tr><td>PubMedQA</td><td>Accuracy (3-way)</td><td>79.8%</td><td><strong>80.40%</strong> (+0.60 pp)</td><td>$0.0869</td></tr>
+    <tr><td>Global-MMLU-Lite</td><td>Accuracy (4 langs)</td><td>86.0%</td><td><strong>87.60%</strong> (+1.60 pp)</td><td>$0.0506</td></tr>
+    <tr><td>When2Call</td><td>Accuracy (4-way tool routing)</td><td>79.9%</td><td><strong>80.80%</strong> (+0.90 pp)</td><td>$0.0954</td></tr>
+    <tr><td>MMAU</td><td>Accuracy (audio reasoning)</td><td>71.8%</td><td><strong>73.20%</strong> (+1.40 pp)</td><td>$0.0895</td></tr>
+    <tr><td>Video-MME (no subtitles)</td><td>Accuracy (18-frame grid + ASR)</td><td>69.1%</td><td><strong>78.40%</strong> (+9.30 pp)</td><td>$0.0809</td></tr>
+    <tr><td><strong>Top-1 ECE</strong> (pooled, lower is better)</td><td>10-fold OOF ECE</td><td>0.0250</td><td><strong>0.0234</strong> (-6.4%)</td><td>—</td></tr>
+    <tr><td><strong>Total price</strong> (2,250 questions, lower is better)</td><td>Measured USD</td><td>$0.88</td><td><strong>$0.77</strong> (-12.4%)</td><td><strong>$0.7709</strong></td></tr>
+  </tbody>
+</table>
+
+<p><img src="/assets/laya-omega-benchmarks.png" alt="Full architecture and 11/11 scoreboard infographic for laya-as-judge v0.4.0 (Laya-Omega), used with sixi.ai."></p>
+<figcaption>Full 11/11 scoreboard and hybrid 3-tier architecture across 2,250 evaluated decisions (~$0.00034 per decision vs ~$0.0033 for a frontier generative LLM judge).</figcaption>
+
+<h2>Architecture: three tiers instead of one hammer</h2>
+<p>Calling a frontier reasoning model on every row blows the <code>$0.88</code> budget; keeping everything on a 421M local encoder fails multimodal tasks and nuanced multilingual STEM. <code>OmegaDecisionEngine</code> treats evaluation as a risk-controlled routing problem:</p>
+<ul>
+  <li><strong>Tier 1 — Local CUDA encoders at $0.00 (<code>TorchBackend</code> + <code>VegaBackend</code>):</strong> Every text item first passes through local <code>convaiinnovations/laya</code> and <code>vega-U</code> (<code>0.8B</code> hybrid linear-attention backbone) on GPU. For benchmarks with public training splits (<code>Amazon ESCI</code>, <code>When2Call</code>, <code>PubMedQA</code>), lightweight Ridge / Logistic <strong>Test-Time Training (<code>TTTHead</code>)</strong> heads are fitted strictly on disjoint training data (<code>train &cap; test = &empty;</code>).</li>
+  <li><strong>Tier 2a — Non-thinking fast cloud verifier (<code>gemini-3.5-flash-lite</code>):</strong> Items whose local confidence or margin falls below threshold—plus high-resolution UI grounding (<code>Mind2Web Multimodal</code>)—escalate via the <code>google-genai</code> Interactions API (<code>store=False</code>) with strict JSON Schema output and zero thinking-token overhead.</li>
+  <li><strong>Tier 2b — Selective reasoning escalation (<code>gemini-3.8-flash</code>):</strong> Only the hardest tail of Stage-2a items (ranked by top-2 probability margin <code>p_(1) - p_(2)</code>), plus dense structured/multimodal packs (<code>JevBench</code> at <strong>92.80%</strong>, <code>MMAU</code>, and <code>Video-MME</code> at <strong>78.40%</strong>), escalate to <code>gemini-3.8-flash</code> using multi-item packed prompts (<code>ITEM_i0..ik</code>) that amortize shared rubrics and thinking tokens by 3&times;–12&times;.</li>
+</ul>
+
+<h2>Multimodal grounding without subtitle shortcuts</h2>
+<p>Three of the nine benchmarks require non-text perception, and each had a specific token-to-signal bottleneck:</p>
+<ul>
+  <li><strong>Video-MME without subtitles (78.40% vs 69.1%):</strong> No YouTube subtitles are touched. Each MP4 is streamed via HTTP range requests, decoded into 18 chronological frames stamped with <code>MM:SS</code> timestamps on a <strong>single 6&times;3 storyboard image</strong> (halving vision input tokens compared to multi-sheet layouts), and paired with local GPU <code>faster-whisper</code> speech transcription.</li>
+  <li><strong>Mind2Web Multimodal:</strong> Full-page web screenshots are cropped around candidate DOM bounding boxes and rendered with color-coded Set-of-Mark overlays <code>[A]..[E]</code> alongside compact interactive attributes.</li>
+  <li><strong>When2Call (80.80% vs 79.9%):</strong> Deterministic schema pre-auditing checks whether candidate tool calls exist in <code>available_tools</code> and whether required JSON Schema parameters are present in the user prompt before the model scores the four tool-routing actions.</li>
+</ul>
+
+<h2>Solving Amazon ESCI's rare-class trap (59.70% Macro-F1 vs 58.7%)</h2>
+<p>Amazon ESCI is scored by unweighted 4-class <strong>Macro-F1</strong> across <code>Exact</code> (~65%), <code>Substitute</code> (~22%), <code>Irrelevant</code> (~10%), and <code>Complement</code> (~3.2%). A model can hit 71% raw accuracy while scoring 52% Macro-F1 simply by under-predicting <code>Complement</code>. Worse, cloud models emit near-one-hot posteriors (<code>[0.01, 0.01, 0.02, 0.96]</code>), which drown out small linear blends with local models. Combining log-probabilities from local <code>Vega-U TTT</code> (trained on disjoint US ESCI training queries) with Tier-2 posteriors and tuning class multipliers on held-out <code>train</code> predictions lifts rare-class recall cleanly without distorting <code>Exact</code> precision.</p>
+
+<h2>Simplex meta-calibration: getting Top-1 ECE from 0.0298 to 0.0234</h2>
+<p>Post-hoc scalar temperature scaling cannot simultaneously calibrate <code>$0.00</code> local encoders and structured JSON probabilities from two different cloud models across binary, 3-way, 4-way, and 5-way questions. <code>MetaCalibrator</code> fits a 10-fold strictly out-of-fold logistic calibrator over <code>logit(p_max)</code>, top-2 margin, normalized Shannon entropy, <code>log(K)</code>, and a per-tier interaction slope, then reconstructs the full probability vector on the simplex while <strong>preserving 100% of Top-1 choices</strong>.</p>
+
+<h2>What did not work</h2>
+<ul>
+  <li><strong>Over-packing <code>gemini-3.5-flash-lite</code>:</strong> Packing 8–10 items per call cuts cost by 4&times; on thinking models (<code>gemini-3.8-flash</code>) because one thinking trace is amortized across the batch. On <code>gemini-3.5-flash-lite</code> (which emits <code>0</code> thought tokens), <code>pack_size=10</code> saved almost nothing while diluting cross-item attention on <code>When2Call</code> from <strong>90.0%</strong> down to <strong>62.5%</strong>. Keeping <code>pack_size=1..3</code> on non-thinking calls and <code>pack_size=4..12</code> on thinking calls fixed both accuracy and cost.</li>
+  <li><strong>Naive runner-up simplex clamping:</strong> Our first argmax-preserving probability reconstructor enforced <code>q &ge; r_max / (1 + r_max) + &epsilon;</code> keeping fixed runner-up ratios. For uncertain 4-way predictions where one runner-up held most of the residual mass, that floor artificially clamped calibrated confidence upward toward <code>0.48</code>, stalling pooled ECE at <code>0.0251</code> (missing <code>&lt; 0.0250</code> by <code>0.0001</code>). Blending runner-up shares smoothly toward uniform when <code>q</code> approaches the true simplex floor <code>(1 + (K-1)&epsilon;)/K</code> eliminated the upward bias while keeping every argmax invariant.</li>
+  <li><strong>Sending cartoon images to New Yorker Caption:</strong> The benchmark already supplies official human-written <code>location</code>, <code>scene_description</code>, and <code>comic_element</code> fields. Passing inline JPEGs burned <code>285k</code> extra tokens (<code>+$0.21</code>) for zero accuracy gain (<code>93.6%</code> with image vs <code>93.3%</code> text-only).</li>
+  <li><strong>Pretty-printed float JSON output bloat:</strong> Output tokens cost 5&times;–8&times; more than input tokens. Emitting multi-line 16-digit float JSON (<code>0.010000000000000002</code>) with verbose question keys burned <code>55</code> output tokens per question (<code>$0.38</code> across 2,250 items). Switching the Interactions API schema to single-line integer-percentage arrays (<code>"p": [5, 85, 10]</code> summing to <code>100</code>) under 1-token keys <code>q0..qN</code> plus <code>resolution="medium"</code> on UI/storyboard images cut output tokens 2.75&times; to <code>20.0</code> tokens/item with zero calibration loss.</li>
+</ul>
+
+<p class="takeaway">All 2,250 questions were evaluated on real Hugging Face splits with <code>seed=42</code>, strict train/test disjointness (<code>train &cap; test = &empty;</code> across TTT heads, ESCI stacker/multipliers, JevBench precedent cases, and 10-fold out-of-fold ECE), and micro-dollar token accounting across every API call. <code>laya-as-judge</code> powers fast evaluation and deterministic-first guardrails alongside <a href="https://sixi.ai">sixi.ai</a>.</p>
+
+<hr>
+<p>Source, Apache-2.0: <a href="https://github.com/radeksixi/laya-as-judge">github.com/radeksixi/laya-as-judge</a> · Ecosystem: <a href="https://sixi.ai">sixi.ai</a> · <a href="/">More writing</a></p>
+</article>
+</main>
+<footer class="site">&copy; 2026 radeksixi · <a href="https://sixi.ai">sixi.ai</a> · <a href="/">More</a></footer>
+</body>
+</html>

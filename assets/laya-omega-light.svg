@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 620" width="880" height="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="laya-as-judge v0.4.0 (Laya-Omega) vs Gemini Decision 1 across 11 metrics">
+<title>laya-as-judge v0.4.0 (Laya-Omega) vs. Gemini Decision 1 — 11/11 Benchmark Wins</title>
+<rect width="880" height="620" rx="10" fill="#fcfcfb"/>
+<text x="26" y="34" fill="#0b0b0b" font-size="18" font-weight="700">laya-as-judge v0.4.0 (Laya-Omega) vs. Gemini Decision 1 — 11 / 11 Wins</text>
+<text x="26" y="54" fill="#52514e" font-size="12.5">2,250 real Hugging Face questions (N=250/task, seed=42, train ∩ test = ∅) · Used with sixi.ai · github.com/radeksixi/laya-as-judge</text>
+<rect x="26" y="68" width="12" height="12" rx="3" fill="#eb6834"/>
+<text x="44" y="78" fill="#52514e" font-size="12">Gemini Decision 1 (Baseline)</text>
+<rect x="225" y="68" width="12" height="12" rx="3" fill="#2a78d6"/>
+<text x="243" y="78" fill="#0b0b0b" font-size="12" font-weight="600">Laya-Omega v0.4.0 (Local Laya + Vega-U 0.8B TTT + Gemini 3.5 Flash-Lite / 3.8 Flash)</text>
+<line x1="218.0" y1="94.0" x2="218.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="218.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">0%</text>
+<line x1="322.0" y1="94.0" x2="322.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="322.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">20%</text>
+<line x1="426.0" y1="94.0" x2="426.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="426.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">40%</text>
+<line x1="530.0" y1="94.0" x2="530.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="530.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">60%</text>
+<line x1="634.0" y1="94.0" x2="634.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="634.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">80%</text>
+<line x1="738.0" y1="94.0" x2="738.0" y2="492.0" stroke="#e4e3de" stroke-width="1"/>
+<text x="738.0" y="508.0" fill="#52514e" font-size="11" text-anchor="middle">100%</text>
+<text x="206.0" y="113.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">JevBench</text>
+<text x="206.0" y="127.0" fill="#52514e" font-size="10.5" text-anchor="end">Typed Bool+Choice+Score</text>
+<rect x="218.0" y="102.0" width="479.4" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="703.4" y="111.5" fill="#52514e" font-size="11">92.2%</text>
+<rect x="218.0" y="116.0" width="482.6" height="13" rx="3" fill="#2a78d6"/>
+<text x="706.6" y="126.5" fill="#0b0b0b" font-size="12" font-weight="700">92.8%</text>
+<text x="854" y="122.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+0.6 pp</text>
+<text x="206.0" y="156.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">New Yorker Caption</text>
+<text x="206.0" y="170.0" fill="#52514e" font-size="10.5" text-anchor="end">Editorial Irony (5-way)</text>
+<rect x="218.0" y="145.0" width="414.4" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="638.4" y="154.5" fill="#52514e" font-size="11">79.7%</text>
+<rect x="218.0" y="159.0" width="480.5" height="13" rx="3" fill="#2a78d6"/>
+<text x="704.5" y="169.5" fill="#0b0b0b" font-size="12" font-weight="700">92.4%</text>
+<text x="854" y="165.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+12.7 pp</text>
+<text x="206.0" y="199.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Mind2Web Multimodal</text>
+<text x="206.0" y="213.0" fill="#52514e" font-size="10.5" text-anchor="end">Vision + DOM Grounding</text>
+<rect x="218.0" y="188.0" width="448.2" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="672.2" y="197.5" fill="#52514e" font-size="11">86.2%</text>
+<rect x="218.0" y="202.0" width="465.9" height="13" rx="3" fill="#2a78d6"/>
+<text x="689.9" y="212.5" fill="#0b0b0b" font-size="12" font-weight="700">89.6%</text>
+<text x="854" y="208.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+3.4 pp</text>
+<text x="206.0" y="242.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Global-MMLU-Lite</text>
+<text x="206.0" y="256.0" fill="#52514e" font-size="10.5" text-anchor="end">Multilingual STEM (4 langs)</text>
+<rect x="218.0" y="231.0" width="447.2" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="671.2" y="240.5" fill="#52514e" font-size="11">86.0%</text>
+<rect x="218.0" y="245.0" width="455.5" height="13" rx="3" fill="#2a78d6"/>
+<text x="679.5" y="255.5" fill="#0b0b0b" font-size="12" font-weight="700">87.6%</text>
+<text x="854" y="251.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+1.6 pp</text>
+<text x="206.0" y="285.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">When2Call</text>
+<text x="206.0" y="299.0" fill="#52514e" font-size="10.5" text-anchor="end">Agentic Tool-Use Routing</text>
+<rect x="218.0" y="274.0" width="415.5" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="639.5" y="283.5" fill="#52514e" font-size="11">79.9%</text>
+<rect x="218.0" y="288.0" width="420.2" height="13" rx="3" fill="#2a78d6"/>
+<text x="644.2" y="298.5" fill="#0b0b0b" font-size="12" font-weight="700">80.8%</text>
+<text x="854" y="294.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+0.9 pp</text>
+<text x="206.0" y="328.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">PubMedQA</text>
+<text x="206.0" y="342.0" fill="#52514e" font-size="10.5" text-anchor="end">Biomedical Evidence (3-way)</text>
+<rect x="218.0" y="317.0" width="415.0" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="639.0" y="326.5" fill="#52514e" font-size="11">79.8%</text>
+<rect x="218.0" y="331.0" width="418.1" height="13" rx="3" fill="#2a78d6"/>
+<text x="642.1" y="341.5" fill="#0b0b0b" font-size="12" font-weight="700">80.4%</text>
+<text x="854" y="337.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+0.6 pp</text>
+<text x="206.0" y="371.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Video-MME (no-sub)</text>
+<text x="206.0" y="385.0" fill="#52514e" font-size="10.5" text-anchor="end">18-Frame Grid + Whisper ASR</text>
+<rect x="218.0" y="360.0" width="359.3" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="583.3" y="369.5" fill="#52514e" font-size="11">69.1%</text>
+<rect x="218.0" y="374.0" width="407.7" height="13" rx="3" fill="#2a78d6"/>
+<text x="631.7" y="384.5" fill="#0b0b0b" font-size="12" font-weight="700">78.4%</text>
+<text x="854" y="380.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+9.3 pp</text>
+<text x="206.0" y="414.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">MMAU Audio</text>
+<text x="206.0" y="428.0" fill="#52514e" font-size="10.5" text-anchor="end">Acoustic / Music / Speech</text>
+<rect x="218.0" y="403.0" width="373.4" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="597.4" y="412.5" fill="#52514e" font-size="11">71.8%</text>
+<rect x="218.0" y="417.0" width="380.6" height="13" rx="3" fill="#2a78d6"/>
+<text x="604.6" y="427.5" fill="#0b0b0b" font-size="12" font-weight="700">73.2%</text>
+<text x="854" y="423.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+1.4 pp</text>
+<text x="206.0" y="457.0" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Amazon ESCI (Macro-F1)</text>
+<text x="206.0" y="471.0" fill="#52514e" font-size="10.5" text-anchor="end">4-Class Shopping Relevance</text>
+<rect x="218.0" y="446.0" width="305.2" height="11" rx="3" fill="#eb6834" opacity="0.88"/>
+<text x="529.2" y="455.5" fill="#52514e" font-size="11">58.7%</text>
+<rect x="218.0" y="460.0" width="310.4" height="13" rx="3" fill="#2a78d6"/>
+<text x="534.4" y="470.5" fill="#0b0b0b" font-size="12" font-weight="700">59.7%</text>
+<text x="854" y="466.0" fill="#1a7f37" font-size="12" font-weight="700" text-anchor="end">+1.0 pp</text>
+<rect x="26" y="524" width="265" height="76" rx="8" fill="#f4f3ef" stroke="#dcdad3"/>
+<text x="40" y="545" fill="#52514e" font-size="11" font-weight="600">POOLED TOP-1 ECE (LOWER IS BETTER)</text>
+<text x="40" y="570" fill="#0b0b0b" font-size="20" font-weight="700">0.0234</text>
+<text x="122" y="569" fill="#52514e" font-size="12">vs 0.0250 baseline</text>
+<text x="40" y="588" fill="#1a7f37" font-size="11.5" font-weight="600">10-fold OOF Simplex Meta-Calibration (-6% error)</text>
+<rect x="306" y="524" width="265" height="76" rx="8" fill="#f4f3ef" stroke="#dcdad3"/>
+<text x="320" y="545" fill="#52514e" font-size="11" font-weight="600">TOTAL SUITE COST (2,250 DECISIONS)</text>
+<text x="320" y="570" fill="#0b0b0b" font-size="20" font-weight="700">$0.77</text>
+<text x="388" y="569" fill="#52514e" font-size="12">vs $0.88 baseline</text>
+<text x="320" y="588" fill="#1a7f37" font-size="11.5" font-weight="600">-12% cost (~$0.00034/decision)</text>
+<rect x="586" y="524" width="268" height="76" rx="8" fill="#f4f3ef" stroke="#dcdad3"/>
+<text x="600" y="545" fill="#52514e" font-size="11" font-weight="600">HYBRID ARCHITECTURE · SIXI.AI</text>
+<text x="600" y="565" fill="#0b0b0b" font-size="12" font-weight="600">Local GPU ($0): Laya + Vega-U 0.8B TTT</text>
+<text x="600" y="582" fill="#52514e" font-size="11.5">Tier-2: Packed Gemini 3.5 Lite → 3.8 Flash</text>
+</svg>

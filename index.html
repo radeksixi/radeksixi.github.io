@@ -27,6 +27,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">13 November 2026 <span class="post-tag">AI Evaluation · Calibration &amp; Routing</span></span>
+      <a href="/laya-as-judge-omega-11-of-11-benchmarks/">laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE (0.0234), and total cost ($0.77)</a>
+      <p>Hybrid local CUDA encoders (Laya + Vega-U 0.8B with disjoint Test-Time Training) + selective packed Gemini 3.5 Flash-Lite / 3.8 Flash routing and 10-fold out-of-fold simplex meta-calibration across 2,250 real questions—used alongside sixi.ai (JevBench 92.8%, Video-MME 78.4%, Amazon ESCI 59.7% Macro-F1, ECE 0.0234, $0.77 total).</p>
+    </li>
+    <li>
       <span class="date">12 November 2026 <span class="post-tag">LoRa · Firmware &amp; Correctness</span></span>
       <a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</a>
       <p>What a line-by-line review of Faro (sixi-tdeck-plus) found and fixed across SPIFFS brownout recovery, 2/3-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, CMake release-mode test assertions, ThinkNode M9 keypad focus, Polish localization at zero font flash cost, and +522 KB free PSRAM on the T-Deck Plus.</p>
@@ -114,9 +119,9 @@
     </div>
 
     <div class="card">
-      <p class="tag-line">Judge · Local LLM &amp; Oracles · Python</p>
+      <p class="tag-line">Judge · Hybrid Local + Gemini Cascade · Python · v0.4.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Local LLM-as-a-judge returning typed verdicts in milliseconds: deterministic oracles evaluate business rules first, calling a model only when code cannot decide.</p>
+      <p>Calibrated typed-decision evaluation engine used alongside <a href="https://sixi.ai">sixi.ai</a>: local encoders (Laya + Vega-U 0.8B TTT) handle fast decisions at $0.00 and selectively escalate hard/multimodal cases. <strong>11/11 wins over Gemini Decision 1</strong> across 2,250 questions (Top-1 ECE 0.0234, $0.77 total; <a href="/laya-as-judge-omega-11-of-11-benchmarks/">write-up</a>).</p>
     </div>
 
     <div class="card">
