@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sixi-ASI Engine 1.0.0-rc1: download it, run Qwen3.8 on a Jetson Thor, serve 32 requests at once</title>
+<meta name="description" content="Sixi-ASI Engine 1.0.0-rc1 is a ready-to-run archive for the NVIDIA Jetson AGX Thor: Qwen3.8-27B at 44 tok/s on one stream (3.7x plain decoding), 171 tok/s in total with 32 requests at once, JSON answers that always parse, and an OpenAI-compatible server that runs as a background service.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-asi-1-0-rc1-download-and-run-on-jetson-thor/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sixi-ASI Engine 1.0.0-rc1: download it, run Qwen3.8 on a Jetson Thor">
+<meta property="og:description" content="One archive, three commands: Qwen3.8-27B at 44 tok/s on one stream and 171 tok/s with 32 requests at once on an NVIDIA Jetson AGX Thor, with JSON answers that always parse and an OpenAI-compatible local service.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/sixi-rc1-streams-light.png">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-asi-1-0-rc1-download-and-run-on-jetson-thor/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-14">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Sixi-ASI Engine 1.0.0-rc1: download it, run Qwen3.8 on a Jetson Thor, serve 32 requests at once</h1>
+<p class="meta">Radek (Sixi) · 14 November 2026 · <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0-rc1">download, measured results and benchmark scripts</a></p>
+
+<p class="lede">Until now, running sixi-asi meant building it. The first release candidate of 1.0 is one 50 MB archive for the NVIDIA Jetson AGX Thor: unpack it, download a model with one command, and talk to Qwen3.8-27B at 44 tokens per second, or serve thirty-two requests at once at 171 tokens per second in total. Every number below was measured on the files of that archive.</p>
+
+<pre><code>tar xzf sixi-asi-1.0.0-rc1-jetson-thor-aarch64.tar.gz
+cd sixi-asi-1.0.0-rc1-jetson-thor-aarch64
+./sixi setup      # checks that this machine can run the release
+./sixi pull       # Qwen3.8-27B and its drafter, 18.9 GB
+./sixi chat       # talk to it in the terminal</code></pre>
+
+<table>
+  <thead><tr><th>NVIDIA Jetson AGX Thor, Qwen3.8-27B</th><th>1.0.0-rc1</th></tr></thead>
+  <tbody>
+    <tr><td>One stream, default weights (UD-Q4_K_XL v3.1)</td><td><strong>44.1 tok/s</strong>, 3.7x plain decoding</td></tr>
+    <tr><td>4 / 16 / 32 requests at once, in total</td><td><strong>98 / 152 / 171 tok/s</strong></td></tr>
+    <tr><td>llama.cpp v1.0.0 on the same machine and weights, with its built-in MTP drafts</td><td>29.3 tok/s</td></tr>
+    <tr><td>16 agents with an 18k-token prompt each: wait for the next turn</td><td><strong>under 3 s</strong></td></tr>
+    <tr><td>JSON answers that parse, with a schema, 120 cases</td><td><strong>120 of 120</strong> (103 without the constraint)</td></tr>
+    <tr><td>Quality gate</td><td>GSM8K 28/30, HumanEval 19/20, tool calls and a needle test pass</td></tr>
+    <tr><td>Qwen3.8-Flash-Next, one stream</td><td>53 tok/s on code, 45 in conversation</td></tr>
+  </tbody>
+</table>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-rc1-streams-dark.svg">
+  <img src="/assets/sixi-rc1-streams-light.svg" alt="Total tokens per second with 4, 8, 16 and 32 concurrent requests on NVIDIA Jetson AGX Thor, Qwen3.8-27B Q4_K_M with the DSpine drafter. Version 0.10: 94.2, 113.5, 128.8, 129.4. Version 1.0.0-rc1: 102.9, 129.0, 143.7, 172.0.">
+</picture>
+
+<h2>What is in the archive</h2>
+<p>The engine, one command to drive it, and the scripts the numbers come from.</p>
+<ul>
+  <li><strong><code>./sixi run</code></strong> answers one prompt; <code>--json</code> returns exactly one JSON object and <code>--schema file.json</code> an object that matches your schema.</li>
+  <li><strong><code>./sixi serve --parallel 4</code></strong> is an OpenAI-compatible server on <code>http://127.0.0.1:8089/v1</code>: any OpenAI client works by changing the base URL.</li>
+  <li><strong><code>./sixi service install</code></strong> keeps that server in the background as a systemd user service, the way a local model service does. It is ready 8 to 15 seconds after a start and <code>./sixi chat</code> then uses it instead of loading the model again.</li>
+  <li><strong>Two models by name</strong>: Qwen3.8-27B with the DSpine drafter (the measured configuration) and Qwen3.8-Flash-Next with its MTP draft head. Both are Apache-2.0 and are downloaded from their authors' Hugging Face repositories, resumable and checksummed.</li>
+</ul>
+
+<h2>Answers that always parse</h2>
+<p>New in this version: <code>response_format</code> with <code>json_object</code> or a JSON schema. A model asked for JSON usually writes it, and now and then closes an answer with <code>")</code> or <code>"&gt;</code> instead of <code>"}</code>: in the test below, 7 answers in 30. With the constraint the model can only write tokens that keep the document valid, so a finished answer always parses and nothing follows its closing brace. It holds with speculative drafts and with parallel streams, and reasoning stays free: the constraint starts after it.</p>
+<table>
+  <thead><tr><th>Same prompt, schema included</th><th>With <code>response_format</code></th><th>Without</th></tr></thead>
+  <tbody>
+    <tr><td>10 agent-style schemas, prompts in five languages</td><td><strong>30/30</strong> valid</td><td>23/30</td></tr>
+    <tr><td>30 general schemas</td><td><strong>90/90</strong></td><td>80/90</td></tr>
+    <tr><td>General schemas, sampled instead of greedy</td><td>90/90</td><td></td></tr>
+    <tr><td>General schemas with reasoning on</td><td>30/30</td><td></td></tr>
+  </tbody>
+</table>
+<p>The cost is about 2% of the speed on answers the model would have written correctly anyway. One practical note: put the schema in the prompt as well. The constraint guarantees the form; the prompt is what makes the model want those keys.</p>
+
+<h2>Next to llama.cpp v1.0.0</h2>
+<p>llama.cpp 1.0 came out this week, and the engine now runs on it. Its release notes recommend the model's built-in MTP head for speculative decoding, so that is the comparison: the same Thor, the same weights, the same five prompts.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-rc1-engines-dark.svg">
+  <img src="/assets/sixi-rc1-engines-light.svg" alt="Decode tokens per second, one stream, Qwen3.8-27B on NVIDIA Jetson AGX Thor: Sixi-ASI 1.0.0-rc1 with the DSpine drafter on Q4_K_M 46.0, TensorRT Edge-LLM 0.11.1 DFlash2 45.4, Sixi-ASI 1.0.0-rc1 DSpine on UD-Q4_K_XL (default) 44.1, llama.cpp v1.0.0 llama-server with built-in MTP 29.3, llama.cpp v1.0.0 llama-server plain decoding 12.1">
+</picture>
+
+<p>Plain decoding runs at 12.1 tok/s, llama-server with built-in MTP at 29.3, this engine at 44.1 on the default weights and 46.0 on Q4_K_M. A quantized KV cache, also recommended there, changes nothing at short contexts on this machine (27.3 tok/s with three drafts against 27.2). A caution about this kind of table: it is five prompts, and two runs whose answers differ in a few tokens can differ by several percent, so I read it to the nearest ten percent, not to the decimal.</p>
+
+<h2>How the numbers were taken</h2>
+<ul>
+  <li>On the released archive, not on a development build, with nothing else on the GPU.</li>
+  <li>Greedy decoding, identical prompts for every engine, 256 generated tokens; totals for several streams include prompt loading.</li>
+  <li>The figures for 8, 16 and 32 streams are means of three runs (112.9-122.8, 145.9-155.1, 169.3-172.6 tok/s). A single run at 8 to 16 streams spreads by several percent, and after three days without a restart the machine itself was 10% slower there, for every build including the previous release. It was restarted before the final measurements.</li>
+  <li>The scripts are in the archive (<code>scripts/</code>), so the tables can be repeated on another Thor.</li>
+</ul>
+
+<p class="takeaway">1.0.0-rc1 performs like 0.11 on one stream and on many, and adds structured answers, a newer backend and a form you can install in a minute. From this version it is released in binary form, free to use for any purpose. Full tables: <a href="https://github.com/radeksixi/sixi-asi/blob/main/docs/RESULTS.md">docs/RESULTS.md</a>.</p>
+
+<hr>
+<p>Download: <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0-rc1">github.com/radeksixi/sixi-asi, release v1.0.0-rc1</a>. Previous write-up: <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">sixi-asi 0.11</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+</body>
+</html>
