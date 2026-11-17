@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sixi-ASI Engine 1.0.0-rc3: what two days under a talking agent found, and the engine's sources</title>
+<meta name="description" content="Sixi-ASI Engine 1.0.0-rc3 for the NVIDIA Jetson AGX Thor: a sampling defect fixed, role calls of an agent 2.5 to 4 times faster, one-word spoken answers heard in their language (a Polish 'nie' no longer comes back as 'Yeah.'), and the engine's sources in the repository again.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sixi-ASI Engine 1.0.0-rc3: what two days under a talking agent found">
+<meta property="og:description" content="A sampling defect fixed, an agent's role calls 2.5 to 4 times faster, a spoken 'nie' that is no longer heard as 'Yeah.', and the engine's sources in the repository. Qwen3.8-27B on an NVIDIA Jetson AGX Thor.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/sixi-rc3-roles-light.png">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-17">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Sixi-ASI Engine 1.0.0-rc3: what two days under a talking agent found, and the engine's sources</h1>
+<p class="meta">Radek (Sixi) · 17 November 2026 · <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0-rc3">download, measured results and check scripts</a></p>
+
+<p class="lede">The second release candidate spent two days under an agent that talks and listens: about 4,500 chat requests and 2,600 speech requests, none of them failed. It still brought back a list. A sampled answer that began with a stray character, calls that took up to four times longer than they had to, and a spoken Polish "nie" that came back as "Yeah.". The third candidate fixes that list, every number below was measured on its archive, and the engine's sources are in the repository again.</p>
+
+<pre><code>tar xzf sixi-asi-1.0.0-rc3-jetson-thor-aarch64.tar.gz
+cd sixi-asi-1.0.0-rc3-jetson-thor-aarch64
+./sixi setup      # checks that this machine can run the release
+./sixi pull       # Qwen3.8-27B, its drafter and image projector, 19.8 GB
+./sixi chat       # talk to it in the terminal</code></pre>
+
+<table>
+  <thead><tr><th>NVIDIA Jetson AGX Thor, Qwen3.8-27B</th><th>1.0.0-rc3</th><th>1.0.0-rc2</th></tr></thead>
+  <tbody>
+    <tr><td>A sampled answer after a greedy one to the same prompt: right</td><td><strong>45 of 45</strong></td><td>20 of 45</td></tr>
+    <tr><td>An agent's role call with a 1,500-token system prompt: alone / 5 / 8 sessions at once</td><td><strong>1.3 / 4.5 / 6.6 s</strong></td><td>3.4 / 15.7 / 26.8 s</td></tr>
+    <tr><td>One-word spoken answers of Polish speakers heard right</td><td><strong>201 of 300</strong></td><td>80 of 300</td></tr>
+    <tr><td>... and heard as another word</td><td><strong>21</strong></td><td>153</td></tr>
+    <tr><td>One stream over 60 prompts (math, code, everyday questions)</td><td>54.7 tok/s</td><td>54.7 tok/s</td></tr>
+    <tr><td>32 requests at once, in total</td><td>183 tok/s</td><td>172 tok/s</td></tr>
+    <tr><td>Quality gate</td><td colspan="2">GSM8K 28/30, HumanEval 19/20, tool calls and a needle test pass; JSON with a schema 118 of 120</td></tr>
+  </tbody>
+</table>
+
+<h2>The same prompt, first greedy, then sampled</h2>
+<p>An agent that does not like its own answer asks again with a temperature. Up to rc2, when the first answer to a prompt had been written at temperature 0, a sampled request for the same prompt began with a stray character nine times in ten: a <code>*</code>, a <code>+</code>, a digit. With a prompt that demands JSON the answer was that character alone. The engine keeps what it has computed for a prompt, and in this one case it kept too little to sample from.</p>
+<p>No gate of mine had ever asked the same prompt twice with two temperatures, so the gate has a new check now: five questions with one certain answer, greedy and then sampled with six seeds, and the other way round. rc2 gives 20 right of 45, rc3 gives 45. It is in the archive as <code>scripts/sampling_check.py</code>.</p>
+
+<h2>An agent with roles pays for its prompts</h2>
+<p>A turn of that agent is three calls, each with its own system prompt of one to two thousand tokens and an answer of twenty. Such a call is almost all prompt, and reading a prompt does not get faster with more requests at once. What decides its cost is how much of the prompt the server still has, and rc2 had none of it: three roles pushed each other's prompts out, even inside one session.</p>
+<p>rc3 keeps the end of every long system prompt on its own, and every later call with that system prompt starts from there, whichever conversation it belongs to.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-rc3-roles-dark.svg">
+  <img src="/assets/sixi-rc3-roles-light.svg" alt="Seconds per role call of an agent, three roles with 1,500-token system prompts, Qwen3.8-27B on NVIDIA Jetson AGX Thor. One session: 3.4 s in 1.0.0-rc2, 1.3 s in 1.0.0-rc3. Five sessions at once: 15.7 and 4.5 s. Eight sessions at once: 26.8 and 6.6 s.">
+</picture>
+
+<p>86% of the prompt tokens are not read again (rc2: 0 to 7%), and the server answers 1.2 such calls a second in total instead of 0.35. There is one rule to follow on the agent's side: the system message has to be identical from call to call. Whatever changes per turn belongs in the user message. <code>usage.prompt_cached_tokens</code> in every answer says whether it worked.</p>
+
+<h2>"Nie" is not "Yeah."</h2>
+<p>The speech service recognises with Parakeet, which has no input for the language: it decides from the audio. A word of one syllable is too little to decide from, and it writes an English word. Of 80 clips of Polish speakers saying "nie", it heard 2 right and wrote "Yeah." for 37. For an agent that asks a yes-or-no question, that is the worst word to get wrong.</p>
+<p>Silence around the clip does not help, and a second recogniser told the language is better but slow and inventive (it wrote "Dzięki za oglądanie" for some clips). What helps is context in the right language: with <code>language=pl</code> in the request, the service hears a short clip together with a phrase in Polish spoken by its own voice, and takes the phrase off the text again. The same for German, French and Italian.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-rc3-short-answers-dark.svg">
+  <img src="/assets/sixi-rc3-short-answers-light.svg" alt="Percent of one-word spoken clips heard right, without and with the language in the request. Polish, 300 clips: 27 and 67 percent. German, 280: 15 and 45. French, 317: 24 and 46. Italian, 161: 24 and 47.">
+</picture>
+
+<table>
+  <thead><tr><th>Right / another word / nothing</th><th>Without the language</th><th>With it</th></tr></thead>
+  <tbody>
+    <tr><td>Polish, 300 clips of 8 words</td><td>80 / 153 / 67</td><td><strong>201 / 21 / 78</strong></td></tr>
+    <tr><td>German, 280 of 7 words</td><td>41 / 171 / 68</td><td><strong>126 / 18 / 136</strong></td></tr>
+    <tr><td>French, 317 of 8 words</td><td>76 / 172 / 69</td><td><strong>146 / 35 / 136</strong></td></tr>
+    <tr><td>Italian, 161 of 6 words</td><td>38 / 98 / 25</td><td><strong>76 / 33 / 52</strong></td></tr>
+  </tbody>
+</table>
+<p>The number I care about most is the middle one. A wrong word looks like an answer; an empty text only makes the agent ask again. Wrong words fall from every second clip to one in fourteen for Polish, at 0.2 to 0.35 seconds a clip on CPU cores. Where even that is too many, <code>certain=1</code> returns a text only when the clip was heard the same way twice (180 right, 12 wrong, 108 empty on the Polish clips).</p>
+<p>A caution about these clips: they are single words cut out of sentences that people read aloud (the Multilingual Spoken Words Corpus, CC-BY 4.0), so they are harder than an answer said on its own, and two thirds is a floor, not the rate you will see. Words said by the service's own voices come back 30 of 30 in Polish with the better of its two voices. The check is in the archive (<code>scripts/speech_short_check.py</code>) and takes a folder of your own recordings.</p>
+
+<h2>Smaller things</h2>
+<ul>
+  <li><strong>Logs.</strong> After two days the engine's log had 2.2 million lines, 2.1 million of them debug lines of the library underneath. They are gone, and the speech service's log no longer holds any recognised or spoken text: timings and character counts only.</li>
+  <li><strong>The same audio twice.</strong> A voice draws random noise, so one sentence is different audio every time. <code>"deterministic": true</code> in a synthesis request gives the same audio for the same text, which is what a test needs.</li>
+  <li><strong>Numbers in a small picture.</strong> The model sees a picture at one row per 32 by 32 pixels. Of fifteen 480-pixel pictures of a six-digit number it reads 5 at the picture's own 225 rows and 14 with <code>--image-min-tokens 1024</code>. llama.cpp's own server reads the same 5 and 14 at the same settings; the guide now says when to raise the rows.</li>
+</ul>
+
+<h2>The engine's sources</h2>
+<p>From rc1 the engine went out as an archive only. With rc3 its sources are in the repository again, under Apache-2.0: the server and its API, speculative decoding, parallel streams, structured answers, images, request priority, the prompt states described above, the <code>sixi</code> and <code>sixi-speech</code> commands, the tests and the measurement scripts.</p>
+<pre><code>cmake -B build -DCMAKE_BUILD_TYPE=Release -DSIXI_VERSION_SUFFIX=-rc3
+cmake --build build -j
+ctest --test-dir build --output-on-failure</code></pre>
+<p>The programs load their backend at run time, and that part stays binary for now: the archive's library is llama.cpp v1.0.0 with this engine's kernel and drafter changes. A server built from the repository and run with that library writes the same tokens at the same speed as the released one (60 of 60 prompts of the speed test, 54.9 against 54.7 tok/s).</p>
+
+<h2>How the numbers were taken</h2>
+<ul>
+  <li>On the released archive, unpacked fresh, not on a development build. Its programs and library are the files the full gate ran on in the morning; only texts and Python scripts changed after it.</li>
+  <li>Greedy decoding and identical prompts unless a row says otherwise. Other work used the machine's CPU cores that day, so wherever rc3 is compared with rc2 the two ran in turn.</li>
+  <li>That mattered once. rc3 keeps eight prompt states where rc2 kept four, and two alternating runs made it look as if that cost one percent of single-stream speed. Ten runs later it was the spread of a shared machine: 54.7 tok/s with 4 states, 55.1 with 8, 54.9 with 16 in the same hour. I had already written the one percent down, and took it out again.</li>
+  <li>The higher totals for many requests at once come from prompt loading, not from decoding: the test repeats five prompts and rc3 still has all of them. A stream decodes as fast as in rc2.</li>
+</ul>
+
+<p class="takeaway">rc3 decodes like rc2 and is a better thing to build an agent on: a second, sampled try works, a role's long prompt is read once, and a one-word answer is heard in the language it was said in. Full tables: <a href="https://github.com/radeksixi/sixi-asi/blob/main/docs/RESULTS.md">docs/RESULTS.md</a>; a talking agent on one Thor: <a href="https://github.com/radeksixi/sixi-asi/blob/main/docs/VOICE-AGENT.md">docs/VOICE-AGENT.md</a>.</p>
+
+<hr>
+<p>Download and sources: <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0-rc3">github.com/radeksixi/sixi-asi, release v1.0.0-rc3</a>. Previous write-up: <a href="/sixi-asi-1-0-rc1-download-and-run-on-jetson-thor/">Sixi-ASI Engine 1.0.0-rc1</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+</body>
+</html>
