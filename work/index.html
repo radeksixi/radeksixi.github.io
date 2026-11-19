@@ -29,7 +29,7 @@
   <li>Native C++20/CUDA inference for hybrid MoE and linear-attention models (<a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a>) with strict memory caps, lossless speculative decoding, input-log replay, and zero Python on the runtime path</li>
   <li>Deployment on <strong>NVIDIA Jetson</strong> (Thor, Orin, Nano Super) and <strong>DGX Spark</strong> unified memory, plus OpenAI-compatible HTTP/SSE serving and schema-checked tool calls</li>
 </ul>
-<p><em>Proof:</em> on Jetson AGX Thor with Qwen3.8-27B, <a href="/sixi-asi-0-9-thor-kernels-long-context/">45.3 tok/s single-stream</a> (3.8× AR), <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">32 concurrent streams at 170 tok/s in 27 GB</a> instead of 70 GB, and 1.0 s follow-ups at 63k context.</p>
+<p><em>Proof:</em> on Jetson AGX Thor with Qwen3.8-27B, <a href="/sixi-asi-1-0-rc1-download-and-run-on-jetson-thor/">46.0 tok/s single-stream</a> on plain GGUF (vs TensorRT Edge-LLM NVFP4 45.4 and llama.cpp MTP 29.3), <a href="/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">32 concurrent streams at 183 tok/s in 27 GB</a>, multi-role agent calls in 1.3 s instead of 3.4 s, and 1.0 s follow-ups at 63k context — with Apache-2.0 engine sources.</p>
 
 <h2>2. Calibrated AI evaluation &amp; secure agent platform architecture</h2>
 <ul>
@@ -40,10 +40,10 @@
 
 <h2>3. AI agent security assessment &amp; CI red-teaming</h2>
 <ul>
-  <li>Wire-level red-teaming over REST, MCP, and A2A — including multi-turn state abuse and indirect injection through tools and knowledge bases</li>
-  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v0.9.1</a> wired into CI with native SARIF 2.1.0 output and custom deterministic business-rule oracles</li>
+  <li>Wire-level red-teaming over REST, MCP, and A2A — including passive MCP/A2A tool-poisoning inspection (<code>surface</code>), multi-turn sleeper/state abuse, and deterministic per-call &amp; cumulative tool-call policies</li>
+  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v1.0.0</a> (45 probes, 7 structural oracles, zero dependencies) wired into CI with native SARIF 2.1.0, HTML reports, <code>--log-jsonl</code> telemetry, and honest scan-to-scan <code>diff</code></li>
 </ul>
-<p><em>Proof:</em> <a href="/agent-redteam-benchmark-findings/">7-tool benchmark</a> and <a href="/multi-turn-probes-and-taint-relay/">multi-turn taint-relay</a> write-ups — 0.821 stateless precision (1st of 7) and 1.000 multi-turn precision.</p>
+<p><em>Proof:</em> <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">v1.0.0 benchmarks</a> (0.763 zero-LLM marker precision, -38% FPs on 1,480 Foundry turns; live ADK &amp; MCP/A2A verification), <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw 2026.11.5 sandbox hardening benchmark</a>, and <a href="/agent-redteam-benchmark-findings/">7-tool benchmark</a> (0.821 precision, 1st of 7; 1.000 multi-turn precision).</p>
 
 <h2>4. Off-grid LoRa mesh &amp; embedded field systems</h2>
 <ul>

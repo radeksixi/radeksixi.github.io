@@ -46,10 +46,10 @@
     <rect class="core" x="24" y="78" width="212" height="148" rx="10"/>
     <text class="step" x="40" y="103">1 · INFER</text>
     <text class="name" x="40" y="128">sixi-asi</text>
-    <text class="tag" x="40" y="148">C++20 · CUDA · v0.11 · 0 Python</text>
-    <text class="stat" x="40" y="176">45.3 tok/s single-stream (3.8×)</text>
-    <text class="note" x="40" y="196">32 streams @ 170 tok/s in 27 GB</text>
-    <text class="note" x="40" y="213">Hybrid MoE &amp; Gated DeltaNet</text>
+    <text class="tag" x="40" y="148">C++20 · CUDA · v1.0.0-rc3</text>
+    <text class="stat" x="40" y="176">46.0 tok/s vs TensorRT 45.4</text>
+    <text class="note" x="40" y="196">32 streams @ 183 tok/s · 27 GB</text>
+    <text class="note" x="40" y="213">Role calls 1.3 s vs 3.4 s · 0 Py</text>
   </g>
   <path class="arrow" d="M238,152 L251,152" marker-end="url(#arr)"/>
 
@@ -70,10 +70,10 @@
     <rect class="core" x="484" y="78" width="212" height="148" rx="10"/>
     <text class="step" x="500" y="103">3 · RED-TEAM</text>
     <text class="name" x="500" y="128">sixi-scanner</text>
-    <text class="tag" x="500" y="148">Static Go CLI · v0.9.1</text>
+    <text class="tag" x="500" y="148">Static Go CLI · v1.0.0 · 0 deps</text>
     <text class="stat" x="500" y="176">0.821 prec · 1.000 multi-turn</text>
-    <text class="note" x="500" y="196">27 probes · SARIF 2.1.0 CI gate</text>
-    <text class="note" x="500" y="213">+ agent-redteam-benchmark</text>
+    <text class="note" x="500" y="196">45 probes · MCP/A2A · wire policy</text>
+    <text class="note" x="500" y="213">Foundry + OpenClaw benchmarks</text>
   </g>
 
   <line class="div" x1="710" y1="82" x2="710" y2="222"/>
