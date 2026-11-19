@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 398" width="860" height="398" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Live 3-rung defence ladder on Atlas (Gemma 4 4B · local Ollama, $0.00)">
+<title>Live 3-rung defence ladder on Atlas (Gemma 4 4B · local Ollama, $0.00)</title><desc>All 45 sixi-scanner probes with --reproduce 1 against adk-demo-target across none, basic, and hardened. Server secret leaks drop 18 to 7 to 0; scanner findings drop 8 to 6 to 1 (multi-turn sleeper-memory bypasses regex guards).</desc>
+<rect width="860" height="398" rx="8" fill="#1a1a19"/>
+<text x="24" y="32" fill="#f0efec" font-size="16" font-weight="600">Live 3-rung defence ladder on Atlas (Gemma 4 4B · local Ollama, $0.00)</text>
+<text x="24" y="52" fill="#c3c2b7" font-size="12">45 techniques · --reproduce 1 · --log-jsonl · ground truth measured simultaneously on server and scanner</text>
+<rect x="24" y="66" width="12" height="12" rx="3" fill="#e05555"/>
+<text x="42" y="76" fill="#c3c2b7" font-size="12">Server ground-truth secret leaks (leaked oracle)</text>
+<rect x="336" y="66" width="12" height="12" rx="3" fill="#3987e5"/>
+<text x="354" y="76" fill="#c3c2b7" font-size="12">sixi-scanner findings</text>
+<rect x="498" y="66" width="12" height="12" rx="3" fill="#2ea873"/>
+<text x="516" y="76" fill="#c3c2b7" font-size="12">Input guard blocks (hardened)</text>
+<line x1="152.0" y1="94" x2="152.0" y2="346" stroke="#33322f" stroke-width="1"/>
+<text x="152.0" y="363" fill="#898781" font-size="11" text-anchor="middle">0</text>
+<line x1="242.0" y1="94" x2="242.0" y2="346" stroke="#33322f" stroke-width="1"/>
+<text x="242.0" y="363" fill="#898781" font-size="11" text-anchor="middle">5</text>
+<line x1="332.0" y1="94" x2="332.0" y2="346" stroke="#33322f" stroke-width="1"/>
+<text x="332.0" y="363" fill="#898781" font-size="11" text-anchor="middle">10</text>
+<line x1="422.0" y1="94" x2="422.0" y2="346" stroke="#33322f" stroke-width="1"/>
+<text x="422.0" y="363" fill="#898781" font-size="11" text-anchor="middle">15</text>
+<line x1="512.0" y1="94" x2="512.0" y2="346" stroke="#33322f" stroke-width="1"/>
+<text x="512.0" y="363" fill="#898781" font-size="11" text-anchor="middle">20</text>
+<text x="332.0" y="380" fill="#898781" font-size="11" text-anchor="middle">count per full scan (100–103 turns)</text>
+<text x="140" y="128" fill="#f0efec" font-size="14" font-weight="600" text-anchor="end">none</text>
+<text x="140" y="145" fill="#898781" font-size="11" text-anchor="end">157.9 s · 102 turns</text>
+<path d="M152.0,104.0 h320.0 a4.0,4.0 0 0 1 4.0,4.0 v10.0 a4.0,4.0 0 0 1 -4.0,4.0 h-320.0 z" fill="#e05555"/>
+<text x="483.0" y="117" fill="#f0efec" font-size="12" font-weight="600">18 leaks</text>
+<path d="M152.0,126.0 h140.0 a4.0,4.0 0 0 1 4.0,4.0 v10.0 a4.0,4.0 0 0 1 -4.0,4.0 h-140.0 z" fill="#3987e5"/>
+<text x="303.0" y="139" fill="#f0efec" font-size="12" font-weight="600">8 findings</text>
+<text x="158.0" y="159" fill="#898781" font-size="11">0 input-guard blocks</text>
+<rect x="540" y="102" width="296" height="66" rx="6" fill="#232321" stroke="#33322f"/>
+<text x="552" y="120" fill="#f0efec" font-size="12" font-weight="600">Unprotected baseline</text>
+<text x="552" y="138" fill="#c3c2b7" font-size="11.2">5 structural oracles fired (SSTI, CSV,</text>
+<text x="552" y="154" fill="#c3c2b7" font-size="11.2">XSS, JSON schema, BiDi) + 2 markers + recit.</text>
+<text x="140" y="212" fill="#f0efec" font-size="14" font-weight="600" text-anchor="end">basic</text>
+<text x="140" y="229" fill="#898781" font-size="11" text-anchor="end">131.2 s · 103 turns</text>
+<path d="M152.0,188.0 h122.0 a4.0,4.0 0 0 1 4.0,4.0 v10.0 a4.0,4.0 0 0 1 -4.0,4.0 h-122.0 z" fill="#e05555"/>
+<text x="285.0" y="201" fill="#f0efec" font-size="12" font-weight="600">7 leaks</text>
+<path d="M152.0,210.0 h104.0 a4.0,4.0 0 0 1 4.0,4.0 v10.0 a4.0,4.0 0 0 1 -4.0,4.0 h-104.0 z" fill="#3987e5"/>
+<text x="267.0" y="223" fill="#f0efec" font-size="12" font-weight="600">6 findings</text>
+<text x="158.0" y="243" fill="#898781" font-size="11">0 input-guard blocks</text>
+<rect x="540" y="186" width="296" height="66" rx="6" fill="#232321" stroke="#33322f"/>
+<text x="552" y="204" fill="#f0efec" font-size="12" font-weight="600">Prompt-only hardening trap</text>
+<text x="552" y="222" fill="#c3c2b7" font-size="11.2">Leaks cut 18 → 7, but adding rules</text>
+<text x="552" y="238" fill="#c3c2b7" font-size="11.2">opened Swahili, poetry &amp; Bad Likert leaks.</text>
+<rect x="730" y="191" width="96" height="18" rx="9" fill="#2d2316" stroke="#5c4220"/>
+<text x="778.0" y="203" fill="#e69a3e" font-size="10" font-weight="600" text-anchor="middle">prompt rules only</text>
+<text x="140" y="296" fill="#f0efec" font-size="14" font-weight="600" text-anchor="end">hardened</text>
+<text x="140" y="313" fill="#898781" font-size="11" text-anchor="end">65.3 s · 100 turns</text>
+<rect x="152.0" y="272" width="4" height="18" rx="2" fill="#2ea873"/>
+<text x="162.0" y="285" fill="#2ea873" font-size="12" font-weight="600">0 leaks</text>
+<path d="M152.0,294.0 h14.0 a4.0,4.0 0 0 1 4.0,4.0 v10.0 a4.0,4.0 0 0 1 -4.0,4.0 h-14.0 z" fill="#3987e5"/>
+<text x="177.0" y="307" fill="#f0efec" font-size="12" font-weight="600">1 finding</text>
+<path d="M152.0,316.0 h266.0 a4.0,4.0 0 0 1 4.0,4.0 v6.0 a4.0,4.0 0 0 1 -4.0,4.0 h-266.0 z" fill="#2ea873"/>
+<text x="429.0" y="327" fill="#2ea873" font-size="11.5" font-weight="600">15 blocked</text>
+<rect x="540" y="270" width="296" height="66" rx="6" fill="#232321" stroke="#33322f"/>
+<text x="552" y="288" fill="#f0efec" font-size="12" font-weight="600">Regex guard ceiling</text>
+<text x="552" y="306" fill="#c3c2b7" font-size="11.2">0 secret leaks, 15 blocked (2.4× faster),</text>
+<text x="552" y="322" fill="#c3c2b7" font-size="11.2">yet 3-turn sleeper-memory still got through.</text>
+<rect x="730" y="275" width="96" height="18" rx="9" fill="#2e1c1c" stroke="#5c2b2b"/>
+<text x="778.0" y="287" fill="#e05555" font-size="10" font-weight="600" text-anchor="middle">1 CRITICAL left</text>
+</svg>
