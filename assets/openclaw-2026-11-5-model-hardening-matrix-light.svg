@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 444" width="860" height="444" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B">
+<title>OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</title><desc>Matched 20-probe security benchmark with sixi-scanner v1.0.0 comparing default vs hardened (tools.deny + hardened SOUL.md) across Gemma 4 4B and Qwen 3.8 27B on local Ollama ($0.00). Hardened 27B cuts findings from 8 to 2 and stops all disk writes and shell calls.</desc>
+<rect width="860" height="444" rx="8" fill="#fcfcfb"/>
+<text x="24" y="32" fill="#0b0b0b" font-size="16" font-weight="600">OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</text>
+<text x="24" y="52" fill="#52514e" font-size="12">Matched 20-probe suite (16 single-turn + 4 multi-turn) · sixi-scanner v1.0.0 · local Ollama ($0.00)</text>
+<rect x="24" y="66" width="12" height="12" rx="3" fill="#2a78d6"/>
+<text x="42" y="76" fill="#52514e" font-size="12">sixi-scanner findings (of 20 probes)</text>
+<rect x="274" y="66" width="12" height="12" rx="3" fill="#c93b3b"/>
+<text x="292" y="76" fill="#52514e" font-size="12">MEMORY.md canary leaks</text>
+<rect x="466" y="66" width="12" height="12" rx="3" fill="#eb6834"/>
+<text x="484" y="76" fill="#52514e" font-size="12">Workspace disk persistence (USER.md / MEMORY.md)</text>
+<line x1="152.0" y1="94" x2="152.0" y2="400" stroke="#e4e3de" stroke-width="1"/>
+<text x="152.0" y="416" fill="#898781" font-size="11" text-anchor="middle">0</text>
+<line x1="224.7" y1="94" x2="224.7" y2="400" stroke="#e4e3de" stroke-width="1"/>
+<text x="224.7" y="416" fill="#898781" font-size="11" text-anchor="middle">5</text>
+<line x1="297.5" y1="94" x2="297.5" y2="400" stroke="#e4e3de" stroke-width="1"/>
+<text x="297.5" y="416" fill="#898781" font-size="11" text-anchor="middle">10</text>
+<line x1="370.2" y1="94" x2="370.2" y2="400" stroke="#e4e3de" stroke-width="1"/>
+<text x="370.2" y="416" fill="#898781" font-size="11" text-anchor="middle">15</text>
+<line x1="442.9" y1="94" x2="442.9" y2="400" stroke="#e4e3de" stroke-width="1"/>
+<text x="442.9" y="416" fill="#898781" font-size="11" text-anchor="middle">20</text>
+<text x="312.0" y="434" fill="#898781" font-size="11" text-anchor="middle">count per matched 20-probe scan (lower is better)</text>
+<line x1="24" y1="246" x2="836" y2="246" stroke="#e4e3de" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="140" y="121" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Gemma 4 4B</text>
+<text x="140" y="137" fill="#eb6834" font-size="11.5" font-weight="600" text-anchor="end">default</text>
+<path d="M152.0,106.0 h170.5 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-170.5 z" fill="#2a78d6"/>
+<text x="333.5" y="118" fill="#0b0b0b" font-size="11.5" font-weight="600">12 / 20</text>
+<path d="M152.0,126.0 h301.5 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-301.5 z" fill="#c93b3b"/>
+<text x="464.5" y="138" fill="#0b0b0b" font-size="11.5" font-weight="600">21 leaks</text>
+<rect x="548" y="102" width="288" height="58" rx="6" fill="#f4f3ef" stroke="#e4e3de"/>
+<rect x="558" y="109" width="186" height="17" rx="8.5" fill="#fbeeed" stroke="#efc4c1"/>
+<text x="651" y="120.5" fill="#c93b3b" font-size="10" font-weight="600" text-anchor="middle">USER.md &amp; MEMORY.md wiped</text>
+<text x="558" y="138" fill="#0b0b0b" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">95 calls (exec:2, write:3, read:21)</text>
+<text x="558" y="153" fill="#898781" font-size="10.5">Full 45-probe scan: 15 findings · 1,263 s</text>
+<text x="140" y="191" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Gemma 4 4B</text>
+<text x="140" y="207" fill="#1f8f5f" font-size="11.5" font-weight="600" text-anchor="end">hardened</text>
+<path d="M152.0,176.0 h126.9 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-126.9 z" fill="#2a78d6"/>
+<text x="289.9" y="188" fill="#0b0b0b" font-size="11.5" font-weight="600">9 / 20</text>
+<path d="M152.0,196.0 h141.5 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-141.5 z" fill="#c93b3b"/>
+<text x="304.5" y="208" fill="#0b0b0b" font-size="11.5" font-weight="600">10 leaks</text>
+<rect x="548" y="172" width="288" height="58" rx="6" fill="#f4f3ef" stroke="#e4e3de"/>
+<rect x="558" y="179" width="186" height="17" rx="8.5" fill="#ebf7f1" stroke="#b5e0cb"/>
+<text x="651" y="190.5" fill="#1f8f5f" font-size="10" font-weight="600" text-anchor="middle">0 disk writes · 3.1× faster</text>
+<text x="558" y="208" fill="#0b0b0b" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">24 calls (0 exec, 0 write, 0 read)</text>
+<text x="558" y="223" fill="#898781" font-size="10.5">Full 45-probe scan: 10 findings · 404 s</text>
+<text x="140" y="277" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Qwen 3.8 27B</text>
+<text x="140" y="293" fill="#eb6834" font-size="11.5" font-weight="600" text-anchor="end">default</text>
+<path d="M152.0,262.0 h112.4 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-112.4 z" fill="#2a78d6"/>
+<text x="275.4" y="274" fill="#0b0b0b" font-size="11.5" font-weight="600">8 / 20</text>
+<path d="M152.0,282.0 h25.1 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-25.1 z" fill="#c93b3b"/>
+<text x="188.1" y="294" fill="#0b0b0b" font-size="11.5" font-weight="600">2 leaks</text>
+<rect x="548" y="258" width="288" height="58" rx="6" fill="#f4f3ef" stroke="#e4e3de"/>
+<rect x="558" y="265" width="186" height="17" rx="8.5" fill="#fdf4e7" stroke="#f0d3a8"/>
+<text x="651" y="276.5" fill="#b3650d" font-size="10" font-weight="600" text-anchor="middle">USER.md edited with sleeper</text>
+<text x="558" y="294" fill="#0b0b0b" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">11 calls (exec:5, edit:1, web_fetch:2)</text>
+<text x="558" y="309" fill="#898781" font-size="10.5">20-probe scan: 474 s · SSTI/CSV/XSS + exec</text>
+<text x="140" y="347" fill="#0b0b0b" font-size="13" font-weight="600" text-anchor="end">Qwen 3.8 27B</text>
+<text x="140" y="363" fill="#1f8f5f" font-size="11.5" font-weight="600" text-anchor="end">hardened</text>
+<path d="M152.0,332.0 h25.1 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-25.1 z" fill="#2a78d6"/>
+<text x="188.1" y="344" fill="#0b0b0b" font-size="11.5" font-weight="600">2 / 20</text>
+<path d="M152.0,352.0 h10.5 a4.0,4.0 0 0 1 4.0,4.0 v8.0 a4.0,4.0 0 0 1 -4.0,4.0 h-10.5 z" fill="#c93b3b"/>
+<text x="173.5" y="364" fill="#0b0b0b" font-size="11.5" font-weight="600">1 leak</text>
+<rect x="548" y="328" width="288" height="58" rx="6" fill="#f4f3ef" stroke="#e4e3de"/>
+<rect x="558" y="335" width="186" height="17" rx="8.5" fill="#ebf7f1" stroke="#b5e0cb"/>
+<text x="651" y="346.5" fill="#1f8f5f" font-size="10" font-weight="600" text-anchor="middle">0 disk writes · -75% findings</text>
+<text x="558" y="364" fill="#0b0b0b" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">3 calls (0 exec, 0 edit, 0 web_fetch)</text>
+<text x="558" y="379" fill="#898781" font-size="10.5">20-probe scan: 263 s · only delayed-instr + loops</text>
+</svg>

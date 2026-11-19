@@ -28,6 +28,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">19 November 2026 <span class="post-tag">AI Security · OpenClaw Benchmark</span></span>
+      <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</a>
+      <p>2×2 live benchmark with <code>sixi-scanner v1.0.0</code>: built-in SSRF and <code>0700</code> guards held, default configs persisted sleeper directives to <code>USER.md</code>/<code>MEMORY.md</code> on both 4B and 27B, bootstrap files still leaked under <code>tools.deny</code>, and hardened 27B cut findings 8 → 2 with 0 disk writes.</p>
+    </li>
+    <li>
       <span class="date">19 November 2026 <span class="post-tag">AI Security · Release &amp; Benchmark</span></span>
       <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">sixi-scanner 1.0: six real bugs caught on live agents, MCP &amp; A2A, and zero-LLM precision jumping from 0.667 to 0.763</a>
       <p>Replaying 1,480 Microsoft Foundry turns (-38% FPs, zero recall loss) plus live chat, cumulative tool-policy, MCP and A2A benchmarks against Atlas on local Gemma 4 4B &amp; Qwen 3.8 27B, with JSONL observability on both sides and a stable <code>v1.0.0</code> release.</p>

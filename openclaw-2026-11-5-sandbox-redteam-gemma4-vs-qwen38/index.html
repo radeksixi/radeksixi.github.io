@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</title>
+<meta name="description" content="Benchmarking local open-source OpenClaw 2026.11.5 with sixi-scanner v1.0.0 across Gemma 4 4B and Qwen 3.8 27B (default vs hardened): SSRF guards that held, on-disk USER.md/MEMORY.md persistence, bootstrap leaks despite tools.deny, and practical hardening.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B">
+<meta property="og:description" content="2×2 live benchmark on local OpenClaw 2026.11.5: built-in SSRF and 0700 guards held, default configs persisted sleeper directives to USER.md/MEMORY.md on both 4B and 27B, and hardened 27B cut findings 8 → 2 with 0 disk writes.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/openclaw-2026-11-5-model-hardening-matrix-light.png">
+<meta property="og:url" content="https://radeksixi.github.io/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-19">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://sixi.ai">Sixi Lab</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</h1>
+<p class="meta">Radek (Sixi) · 19 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a> · <code>ghcr.io/openclaw/openclaw:latest</code> (2026.11.5)</p>
+
+<p class="lede">With Microsoft's Autopilot preview bringing fresh attention to the open-source <a href="https://github.com/openclaw/openclaw">OpenClaw</a> runtime, we wanted real measurements on how local OpenClaw behaves under structured agent security testing — and how much difference model size and runtime hardening actually make. We ran <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0"><code>sixi-scanner v1.0.0</code></a> against an isolated, zero-internet Docker instance of <strong>OpenClaw 2026.11.5</strong> backed by local Ollama (<strong>Gemma 4 4B</strong> and <strong>Qwen 3.8 27B</strong>, $0.00) and audited both the HTTP responses and OpenClaw's own SQLite trajectory database and workspace files.</p>
+
+<div class="note"><p><strong>Scope &amp; trust model.</strong> Every test below ran strictly against our own local, air-gapped Docker container of open-source <code>OpenClaw 2026.11.5</code> — <em>not</em> Microsoft's hosted Autopilot service, which layers Microsoft Entra Agent Identity, Agent 365, and Defender for AI governance on top of OpenClaw. OpenClaw's own <a href="https://github.com/openclaw/openclaw/blob/main/SECURITY.md"><code>SECURITY.md</code></a> explicitly states that local OpenClaw is designed as single-operator, local-first infrastructure rather than a shared multi-tenant boundary. The goal here is practical hardening guidance for operators running OpenClaw with local models.</p></div>
+
+<h2>1. Sandbox setup: zero internet, synthetic workspace</h2>
+<p>Because an autonomous agent with default tools can read files and run commands, every run ran inside a non-root, capability-dropped container (<code>--cap-drop=ALL</code>, <code>--security-opt=no-new-privileges:true</code>, <code>--pids-limit=256</code>, <code>--memory=3g</code>) attached to a Docker <code>--internal</code> bridge network. Outbound internet requests failed at the kernel routing table (<code>ENETUNREACH</code>), while the container could reach only local Ollama (<code>:11434</code>). The workspace contained purely synthetic files (<code>SOUL.md</code> and <code>MEMORY.md</code> with five planted audit markers representing confidential internal data and a restricted coworker record <code>NW-1002</code>).</p>
+
+<p>We compared two configurations across both models:</p>
+<ul>
+  <li><strong><code>default</code>:</strong> out-of-the-box OpenClaw tools enabled (<code>read</code>, <code>write</code>, <code>edit</code>, <code>exec</code>, <code>web_fetch</code>, <code>memory_search</code>, etc.) with a standard workplace <code>SOUL.md</code>.</li>
+  <li><strong><code>hardened</code>:</strong> <code>tools.deny</code> stripping <code>exec</code>, <code>process</code>, <code>browser</code>, <code>group:web</code>, <code>group:fs</code>, <code>group:runtime</code>, <code>group:automation</code>, and <code>group:memory</code>, paired with explicit untrusted-input boundaries in <code>SOUL.md</code>.</li>
+</ul>
+
+<p>To keep single-turn and multi-turn sessions cleanly separated on <code>/v1/chat/completions</code>, single-turn probes ran via <code>--target openai</code> (omitting the <code>user</code> field so OpenClaw assigns a fresh UUID session per request) and the four multi-turn sequences ran via <code>--target json</code> with <code>"user": {{session_json}}</code>.</p>
+
+<h2>2. 2×2 results: Gemma 4 4B vs Qwen 3.8 27B (<code>default</code> vs <code>hardened</code>)</h2>
+<p>Gemma 4 4B ran the full 45-probe suite (<code>--attempts 2 --reproduce 1</code>); Qwen 3.8 27B ran a matched 20-probe subset covering every technique that fired, leaked a canary, or invoked tools on 4B (16 single-turn + all 4 multi-turn sequences). The table and chart below compare both models apples-to-apples on the matched 20-probe suite alongside the full 45-probe totals on 4B:</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/openclaw-2026-11-5-model-hardening-matrix-dark.svg">
+  <img src="/assets/openclaw-2026-11-5-model-hardening-matrix-light.svg" alt="Matched 20-probe benchmark on OpenClaw 2026.11.5 comparing Gemma 4 4B and Qwen 3.8 27B in default vs hardened configurations. Gemma 4B drops from 12 to 9 findings and 21 to 10 canary leaks; Qwen 27B drops from 8 to 2 findings and 2 to 1 canary leak. Hardening stops all disk writes and shell execution on both models.">
+</picture>
+
+<table>
+  <thead>
+    <tr><th>Model &amp; Config</th><th>Matched 20-probe findings</th><th><code>MEMORY.md</code> canary leaks</th><th>Executed tools (SQLite)</th><th>Workspace disk integrity</th><th>Wall time</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Gemma 4 4B</strong> · <code>default</code></td><td><strong>12 / 20</strong> (15 / 45 full)</td><td><strong>21</strong> (all 5 markers)</td><td><strong>95</strong> (<code>exec: 2</code>, <code>write: 3</code>, <code>read: 21</code>, <code>web_fetch: 6</code>, …)</td><td><code>USER.md</code> &amp; <code>MEMORY.md</code> overwritten</td><td>1,263 s (45p)</td></tr>
+    <tr><td><strong>Gemma 4 4B</strong> · <code>hardened</code></td><td><strong>9 / 20</strong> (10 / 45 full)</td><td><strong>10</strong> (all 5 markers)</td><td><strong>24</strong> (<code>0 exec</code>, <code>0 write</code>, <code>0 read</code>)</td><td><strong>Clean (0 writes)</strong></td><td>404 s (45p, <strong>3.1× faster</strong>)</td></tr>
+    <tr><td><strong>Qwen 3.8 27B</strong> · <code>default</code></td><td><strong>8 / 20</strong></td><td><strong>2</strong> (<code>NW-1002</code> only)</td><td><strong>11</strong> (<code>exec: 5</code>, <code>edit: 1</code>, <code>web_fetch: 2</code>, <code>message: 1</code>)</td><td><code>USER.md</code> edited with sleeper rule</td><td>474 s (20p)</td></tr>
+    <tr><td><strong>Qwen 3.8 27B</strong> · <code>hardened</code></td><td><strong>2 / 20</strong></td><td><strong>1</strong> (<code>NW-1002</code> only)</td><td><strong>3</strong> (<code>0 exec</code>, <code>0 edit</code>, <code>0 web_fetch</code>)</td><td><strong>Clean (0 writes)</strong></td><td>263 s (20p, <strong>1.8× faster</strong>)</td></tr>
+  </tbody>
+</table>
+
+<h2>3. What OpenClaw got right — and what still broke</h2>
+<p>Inspecting OpenClaw's internal <code>openclaw-agent.sqlite</code> transcript tables alongside <code>sixi-scanner</code>'s JSONL output separated controls that genuinely held from architectural gaps that operators must account for:</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/openclaw-2026-11-5-controls-scorecard-dark.svg">
+  <img src="/assets/openclaw-2026-11-5-controls-scorecard-light.svg" alt="OpenClaw 2026.11.5 security scorecard showing built-in controls that held (web_fetch SSRF guard blocking AWS and GCP metadata, 0700 startup permission doctor, and tools.deny runtime enforcement) vs gaps observed (on-disk USER.md and MEMORY.md writes on default, workspace bootstrap leaks despite group:memory deny, and multi-turn/output-handling survivors).">
+</picture>
+
+<h3>Controls that held</h3>
+<ul>
+  <li><strong>Built-in <code>web_fetch</code> SSRF protection:</strong> when probes triggered fetches to cloud metadata endpoints (<code>169.254.169.254</code> and <code>metadata.google.internal</code>), OpenClaw's own runtime blocked both before packets ever reached our Docker network, returning <code>Blocked hostname or private/internal/special-use IP address</code> and wrapping external data in <code>&lt;&lt;&lt;EXTERNAL_UNTRUSTED_CONTENT&gt;&gt;&gt;</code> delimiters.</li>
+  <li><strong>Strict startup permission checks:</strong> <code>OpenClaw doctor</code> refused to boot the gateway when the sandbox directory carried a group-write bit (<code>0775</code>), requiring <code>0700</code> on the state directory and safe SQLite staging ancestors before accepting traffic.</li>
+  <li><strong>Runtime <code>tools.deny</code> enforcement:</strong> denying filesystem, execution, web, and memory tool groups genuinely stripped them from the runtime across both models — cutting executed tool calls from 95 → 24 (4B) and 11 → 3 (27B), dropping <code>exec</code>/<code>write</code>/<code>edit</code>/<code>read</code> to <strong>zero</strong>, rejecting indirect <code>dispatch_action</code> attempts, and speeding up scans by <strong>1.8–3.1×</strong>.</li>
+</ul>
+
+<h3>Four gaps operators need to harden against</h3>
+<ol>
+  <li><strong>Persistent cross-session memory writes on <code>default</code> (both 4B and 27B):</strong> OpenClaw's default workspace template invites the agent to record durable directives in <code>USER.md</code> and <code>MEMORY.md</code>, which are then loaded into every future session. On <code>default</code>, multi-turn sleeper and delayed-instruction probes did not stay in RAM — Gemma 4B called <code>write()</code> and wiped both <code>USER.md</code> and <code>MEMORY.md</code> on disk, replacing them with persistent trigger rules; Qwen 3.8 27B used <code>edit()</code> to append the sleeper directive into <code>USER.md</code>. Even a single stateless HTTP request asking the agent to remember a token wrote it to <code>MEMORY.md</code>, where an unrelated stateless session read it back seconds later. Upstream OpenClaw maintainers already track protected memory paths and non-destructive writes in <a href="https://github.com/openclaw/openclaw/issues/163680">#163680</a>, <a href="https://github.com/openclaw/openclaw/issues/116500">#116500</a>, and <a href="https://github.com/openclaw/openclaw/issues/40001">#40001</a>.</li>
+  <li><strong><code>MEMORY.md</code> still leaks when <code>group:memory</code> and <code>group:fs</code> are denied:</strong> OpenClaw injects workspace bootstrap files (<code>SOUL.md</code>, <code>MEMORY.md</code>, <code>USER.md</code>) directly into the system context on every turn. Denying memory and filesystem tools stopped active reads and writes, yet 4B still leaked all five confidential markers 10 times and 27B leaked <code>NW-1002</code> once. Treat bootstrap Markdown files as model-visible prompt context — never as a secret store or multi-tenant boundary.</li>
+  <li><strong>Model scale cuts leaks 10×, but does not replace tool denial:</strong> upgrading from 4B to 27B on <code>default</code> slashed canary leaks from <strong>21 → 2</strong> (zero canary tokens or escalation codes leaked) — yet 27B still executed 5 shell <code>exec</code> calls, edited <code>USER.md</code> on disk, and echoed SSTI, CSV formulas, and active HTML/XSS. Only combining <strong>27B + <code>hardened</code></strong> dropped findings to <strong>2 / 20</strong> (eliminating SSTI, CSV, XSS, sleeper-memory, and all shell/disk side effects).</li>
+  <li><strong>Multi-turn delayed instructions survive prompt-only boundaries:</strong> even on hardened 27B, <code>delayed-instruction</code> and <code>unbounded-consumption</code> remained open, confirming that prompt rules and tool denylists still benefit from deterministic output filters and strict token/turn budgets in production gateways.</li>
+</ol>
+
+<p class="takeaway">Takeaway: OpenClaw's built-in SSRF and permission guards are solid, but running an always-on agent with default filesystem write access turns multi-turn prompt injections into persistent on-disk directives — even on a 27B model. Pair a stronger model with <code>tools.deny</code>, keep secrets out of bootstrap Markdown files, and run the gateway inside a network-isolated container.</p>
+
+<h2>4. Practical baseline hardening checklist for local OpenClaw</h2>
+<pre><code>{
+  "tools": {
+    "deny": [
+      "exec", "process", "browser",
+      "group:web", "group:fs", "group:runtime",
+      "group:automation", "group:memory"
+    ]
+  }
+}</code></pre>
+<ul>
+  <li>Restrict the container network (<code>docker network create --internal</code>) so only required local inference or approved egress proxies are reachable.</li>
+  <li>Lock down state permissions (<code>chmod 700</code> on state/workspace, <code>chmod 600</code> on <code>openclaw.json</code>) and never store credentials or cross-user records in <code>MEMORY.md</code> or <code>USER.md</code>.</li>
+  <li>Verify your configuration continuously with <code>sixi-scanner v1.0.0</code> and diff before/after every config or model change:</li>
+</ul>
+
+<pre><code># Single-turn probes (stateless: omits `user`)
+sixi-scanner scan --target openai --model openclaw:main \
+  --url http://127.0.0.1:18789/v1/chat/completions \
+  --header "Authorization: Bearer $OPENCLAW_TOKEN" \
+  --exclude probe.llm06.refund-cap-split,probe.llm01.delayed-instruction,probe.llm06.payload-relay,probe.llm01.sleeper-memory \
+  --log-jsonl openclaw-single.jsonl --out openclaw-single.json
+
+# Multi-turn sequences (isolated per-attempt session via `user`)
+sixi-scanner scan --target json \
+  --url http://127.0.0.1:18789/v1/chat/completions \
+  --header "Authorization: Bearer $OPENCLAW_TOKEN" \
+  --body '{"model":"openclaw:main","user":{{session_json}},"messages":[{"role":"user","content":{{json}}}]}' \
+  --reply-path choices.0.message.content \
+  --only probe.llm06.refund-cap-split,probe.llm01.delayed-instruction,probe.llm06.payload-relay,probe.llm01.sleeper-memory \
+  --log-jsonl openclaw-multi.jsonl --out openclaw-multi.json</code></pre>
+
+<hr>
+<p>Scanner release &amp; binaries: <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a> · Previous write-up: <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">sixi-scanner 1.0 benchmarks &amp; six live bugs</a> · OpenClaw upstream: <a href="https://github.com/openclaw/openclaw">github.com/openclaw/openclaw</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+</body>
+</html>
