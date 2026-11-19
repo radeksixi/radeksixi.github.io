@@ -28,6 +28,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">19 November 2026 <span class="post-tag">AI Security · Release</span></span>
+      <a href="/sixi-scanner-0-10-mcp-a2a-tool-policy-and-structural-oracles/">sixi-scanner 0.10: MCP &amp; A2A, deterministic tool policies, structural oracles, and honest diffs</a>
+      <p>45 techniques (7 structural oracles, 4 multi-turn), native MCP &amp; A2A transports, passive tool-poisoning inspection (<code>surface</code>), deterministic wire policy checks without an LLM judge, targeted reproduction, redaction, HTML reports, and scan-to-scan diff — still zero dependencies.</p>
+    </li>
+    <li>
       <span class="date">17 November 2026 <span class="post-tag">Inference · Release</span></span>
       <a href="/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">Sixi-ASI Engine 1.0.0-rc3: what two days under a talking agent found, and the engine's sources</a>
       <p>A sampling defect fixed (45 of 45 against 20), an agent's role calls 2.5 to 4 times faster, a spoken Polish "nie" that is no longer heard as "Yeah." (201 of 300 one-word clips right against 80), and the engine's sources in the repository again.</p>
@@ -122,9 +127,9 @@
     </div>
 
     <div class="card">
-      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · v0.9.1</p>
+      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · v0.10.0</p>
       <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>Static Go red-team scanner for LLM agents: 27 single- and multi-turn techniques, zero dependencies, no LLM inside by default. <strong>1st on precision (0.821) and recall (0.571)</strong>, <strong>1.000 multi-turn precision</strong>, SARIF 2.1.0 output, and exit code <code>3</code> on partial coverage (<a href="/sixi-scanner-no-findings-is-not-a-pass/">write-up</a>).</p>
+      <p>Static Go red-team scanner for LLM agents: <strong>45 techniques</strong> (7 structural oracles, 4 multi-turn), native <code>mcp</code>/<code>a2a</code> transports, passive tool-poisoning inspection (<code>surface</code>), deterministic tool-call policy enforcement, honest <code>diff</code>, SARIF 2.1.0 &amp; HTML output, zero dependencies (<a href="/sixi-scanner-0-10-mcp-a2a-tool-policy-and-structural-oracles/">0.10 write-up</a>, <a href="/sixi-scanner-no-findings-is-not-a-pass/">0.9 write-up</a>).</p>
     </div>
 
     <div class="card">
