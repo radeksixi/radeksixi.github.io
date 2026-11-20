@@ -28,6 +28,11 @@
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
     <li>
+      <span class="date">20 November 2026 <span class="post-tag">Inference · Release</span></span>
+      <a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor, and a way to check it</a>
+      <p>1.0.0 is out: Qwen3.8-27B at 55 tok/s on one stream, a prompt that four requests share loaded once (8 s instead of 31), states kept where a client marks them, and a request field that turns drafts off so anyone can compare the two answers (9 of 12 identical, 3.3 times faster with drafts).</p>
+    </li>
+    <li>
       <span class="date">19 November 2026 <span class="post-tag">AI Security · OpenClaw Benchmark</span></span>
       <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</a>
       <p>2×2 live benchmark with <code>sixi-scanner v1.0.0</code>: built-in SSRF and <code>0700</code> guards held, default configs persisted sleeper directives to <code>USER.md</code>/<code>MEMORY.md</code> on both 4B and 27B, bootstrap files still leaked under <code>tools.deny</code>, and hardened 27B cut findings 8 → 2 with 0 disk writes.</p>

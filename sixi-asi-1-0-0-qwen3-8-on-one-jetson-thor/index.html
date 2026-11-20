@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor, and a way to check it</title>
+<meta name="description" content="Sixi-ASI Engine 1.0.0 for the NVIDIA Jetson AGX Thor: Qwen3.8-27B at 55.0 tok/s on one stream with speculative decoding, prompts that several requests share load once, states kept where a client marks them, and a request field that turns drafts off so anyone can compare the two answers.">
+<meta name="author" content="Radek (Sixi)">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor">
+<meta property="og:description" content="Qwen3.8-27B at 55.0 tok/s on one stream, a prompt that four requests share loaded once, states kept where a client marks them, and drafts you can turn off per request to check the answer. As one download.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/sixi-1-0-0-prompts-light.png">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-20">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek (Sixi)</a>
+  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor, and a way to check it</h1>
+<p class="meta">Radek (Sixi) · 20 November 2026 · <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0">download, measured results and check scripts</a></p>
+
+<p class="lede">1.0.0 is out. One archive runs Qwen3.8-27B on an NVIDIA Jetson AGX Thor behind an OpenAI-compatible API: speculative decoding that leaves the answers as they are, up to 32 requests at once, structured answers, images, speech. Three release candidates ran under two agents, one that talks and listens and one that asks for many samples of every answer. This is what they changed, measured on the archive that went out.</p>
+
+<pre><code>tar xzf sixi-asi-1.0.0-jetson-thor-aarch64.tar.gz
+cd sixi-asi-1.0.0-jetson-thor-aarch64
+./sixi setup      # checks that this machine can run the release
+./sixi pull       # Qwen3.8-27B, its drafter and image projector, 19.8 GB
+./sixi chat       # talk to it in the terminal</code></pre>
+
+<table>
+  <thead><tr><th>NVIDIA Jetson AGX Thor, Qwen3.8-27B</th><th>1.0.0</th><th>before</th></tr></thead>
+  <tbody>
+    <tr><td>One stream over 60 prompts (math, code, everyday questions)</td><td><strong>55.0 tok/s</strong></td><td>12 tok/s without drafts</td></tr>
+    <tr><td>Four requests for one 4,100-token prompt, sent together: all answered after</td><td><strong>8.0 s</strong></td><td>31.2 s (rc3)</td></tr>
+    <tr><td>A second question about a 3,000-token document, after ten other prompts</td><td><strong>0.5 s</strong> with the document marked</td><td>4 to 5 s</td></tr>
+    <tr><td>A request that is alone on a server set up for eight</td><td><strong>55 tok/s</strong></td><td>48.5 tok/s (rc3)</td></tr>
+    <tr><td>An agent's role call with a 1,500-token system prompt: alone / 5 sessions at once</td><td>1.3 s / 4.6 s</td><td>3.4 / 15.7 s (rc2)</td></tr>
+    <tr><td>32 requests at once, in total</td><td>180 tok/s</td><td>172 tok/s (rc2)</td></tr>
+    <tr><td>Qwen3.8-Flash-Next: loading an 18,500-token prompt</td><td><strong>31 s</strong></td><td>56 s (rc3)</td></tr>
+    <tr><td>Quality gate</td><td colspan="2">GSM8K 28/30, HumanEval 19/20, tool calls and needle pass; JSON with a schema 120 of 120</td></tr>
+  </tbody>
+</table>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-1-0-0-prompts-dark.svg">
+  <img src="/assets/sixi-1-0-0-prompts-light.svg" alt="Seconds, 1.0.0-rc3 against 1.0.0, on an NVIDIA Jetson AGX Thor. Four requests for one 4,100-token prompt sent together: 31.2 and 8.0. A second question about a 3,000-token document after ten other prompts: 5.2 and 0.5. Qwen3.8-Flash-Next, loading an 18,500-token prompt: 56.4 and 31.1." width="100%">
+</picture>
+<p class="meta">Rows: four requests for one 4,100-token prompt sent together, until all are answered; a second question about a marked 3,000-token document after ten other prompts; Qwen3.8-Flash-Next loading an 18,500-token prompt.</p>
+
+<h2>A prompt that several requests share is loaded once</h2>
+<p>The second agent asks the same long question several times and keeps the best answer. It has to stream, so it cannot use <code>n</code>; it sends separate requests. Each of them looked for a kept state of the prompt before the first had loaded anything, found none, and loaded all 4,100 tokens itself, one after another: 31.2 seconds for four answers. Now a request that finds its prompt being loaded waits for that load and starts from its state. Four answers arrive after 8.0 seconds, and three of the four requests load nothing.</p>
+<p>The other half is saying where a state is worth keeping. The engine already keeps the end of a long system prompt, so that every call of an agent's role starts there. A document or a list of tools inside a user message had no such place. A content part can now carry <code>"cache_control": {"type": "ephemeral"}</code>, the field several APIs use for this, and the state at the end of that part is kept the same way. A second question about a 3,000-token document, asked after ten unrelated prompts, loads 20 tokens instead of 3,000: half a second instead of four to five.</p>
+
+<h2>Drafts do not change the answer, and you can check</h2>
+<p>The speed comes from a small drafter that proposes up to fifteen tokens and the model that checks them in one pass. A drafted token the model would not have written is thrown away, so the answer is the model's. That is a claim, and a claim about speed tricks deserves a check that does not need my word: <code>"draft": false</code> in a request decodes it without drafts, on the same server, and <code>scripts/exact_check.py</code> asks twelve prompts both ways.</p>
+<p>On this build 9 of the 12 answers are identical to the character, and the drafted ones are written 3.3 times faster. The others part ways after a few hundred characters at a word where two candidates were nearly tied: a pass that checks sixteen rows runs other kernels than a pass with one row, and they round differently. The quality gates give the same scores either way. I would rather print that number than say "identical" and mean "almost always". Making it all twelve is on the list; an engine that computes every row the same way whatever shares its pass can do it, and one such engine was the reason I added the field.</p>
+
+<h2>Where the time of a short call goes</h2>
+<p>An agent with three roles makes calls of 1,700 tokens in and 20 out. With the system prompt kept, 243 tokens are new. Alone such a call takes 1.3 s: half of it loads those 243 tokens, half writes the 20, and everything else is a hundredth of a second. With five sessions at once a call takes four seconds, and the reason is not what I expected. A prompt load holds the device for its 0.65 s, loads do not overlap, and every stream that is writing waits behind each of them.</p>
+<p>I tried the obvious fix, loading the prompts of requests that arrive together in one pass. It gives a fifth for a burst sent at the same moment, and nothing for sessions whose calls follow each other, because then a load is rarely waiting when the next one starts. It is in the release as <code>--merge-loads</code>, off by default, with that sentence in the manual. What does help today costs memory: a second copy of the large weight matrices for wide passes (<code>--wide-copy-gb 36</code>) brings the call from 4.4 to 3.7 s.</p>
+
+<h2>Three things that were measured and not kept</h2>
+<ul>
+  <li><strong>A full page cache does not slow the model down.</strong> Another engine's notes trace a driver message to failed requests for large pages and measure 7% less speed without them. The Thor had logged that message, and had been 10% slower after three days up. I filled 82 GiB of page cache until no large free block was left and loaded the model: 55.4 and 55.2 tok/s, against 55.2 and 55.8 on the freshly started machine. Not the cause.</li>
+  <li><strong>Sampling does not lose drafts.</strong> At temperature 0.7 the model accepts as many drafted tokens a step as when it is greedy (6.25 against 6.27). What sampling costs is 8% of host time for copying rows of logits. A tree of drafts would have had nothing to win.</li>
+  <li><strong>The slow path was mine.</strong> A rule I wrote for dense matrices (send wide passes to the tensor cores) also caught the expert layers of Qwen3.8-Flash-Next, where a wide pass is forty rows per expert, and sent them down a path that multiplies one expert at a time. One condition: an 18,500-token prompt loads in 31 s instead of 56.</li>
+</ul>
+
+<h2>How the numbers were taken</h2>
+<ul>
+  <li>On the released archive, unpacked fresh, with nothing else on the machine, which had been restarted that morning.</li>
+  <li>The test with many requests at once used to send the same five prompts from every stream. The new one, <code>scripts/streams_bench.py</code>, gives every request a prompt of its own and reports two figures, what the streams write while they write and the whole run with prompt loading in it: with 32 different requests at once the engine writes 152 tok/s, and 134 tok/s over the whole run. The "32 requests" row above is the old test, kept because every earlier release was measured with it.</li>
+  <li>Five starts of the same build that day gave 55.0 to 55.8 tok/s on one stream. A difference under one and a half percent between two runs is not a result.</li>
+</ul>
+
+<p class="takeaway">1.0.0 is the release candidates with their rough edges found by use: a prompt is loaded once however many requests want it, a client can say what to keep, and the claim that drafts leave the answer alone comes with a script. Full tables: <a href="https://github.com/radeksixi/sixi-asi/blob/main/docs/RESULTS.md">docs/RESULTS.md</a>; the API: <a href="https://github.com/radeksixi/sixi-asi/blob/main/docs/API.md">docs/API.md</a>.</p>
+
+<hr>
+<p>Download and sources: <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0">github.com/radeksixi/sixi-asi, release v1.0.0</a>. Previous write-up: <a href="/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">Sixi-ASI Engine 1.0.0-rc3</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+</body>
+</html>
