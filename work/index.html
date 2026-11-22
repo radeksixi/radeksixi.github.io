@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work with me · Radek Brus · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Locarno, Switzerland): local C++20/CUDA Hybrid MoE inference (sixi-asi v1.0.0), calibrated AI evaluation (laya-as-judge v0.4.0), AI agent governance &amp; red-teaming (Sixi Assure, sixi-scanner v1.0.0), and off-grid LoRa mesh systems (Rifugio).">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Locarno, Switzerland): local C++20/CUDA Hybrid MoE inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; Governance API (laya-as-judge v1.0.0), AI agent governance &amp; red-teaming (Sixi Assure, sixi-scanner v1.0.0), and off-grid LoRa mesh systems (Rifugio).">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/work/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Work with me · Radek Brus · Sixi Lab R&amp;D">
-<meta property="og:description" content="Local C++/CUDA inference (sixi-asi v1.0.0), calibrated AI evaluation (laya-as-judge v0.4.0), AI agent governance &amp; CI red-teaming (Sixi Assure, sixi-scanner v1.0.0), and off-grid LoRa mesh systems.">
+<meta property="og:description" content="Local C++/CUDA inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; Governance API (laya-as-judge v1.0.0), AI agent governance &amp; CI red-teaming (Sixi Assure, sixi-scanner v1.0.0), and off-grid LoRa mesh systems.">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/work/">
 </head>
@@ -22,7 +22,7 @@
 <h1>Work with me</h1>
 <p class="lede">Through <a href="https://sixi.ai">Sixi Lab R&amp;D</a> in Locarno, Switzerland, I help teams run open-weight AI models faster on local hardware, govern and test AI agent systems before handover, and engineer off-grid edge and radio systems — <strong>open to Senior/Principal roles &amp; B2B contracts</strong>, fixed-scope reviews, or builds to order across <strong>Switzerland (remote/hybrid), Europe &amp; Canada (remote)</strong> (<a href="https://sixi.ai/en/work/">full engagement guide on sixi.ai</a>).</p>
 
-<a href="/"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Evaluate (laya-as-judge v0.4.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai."></a>
+<a href="/"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.0.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai."></a>
 
 <h2>1. Local LLM &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark</h2>
 <ul>
@@ -31,12 +31,12 @@
 </ul>
 <p><em>Proof:</em> on Jetson AGX Thor with Qwen3.8-27B, <a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">Sixi-ASI 1.0.0 reaches 55.0 tok/s single-stream</a> (46.0 tok/s vs TensorRT Edge-LLM NVFP4 45.4 and llama.cpp MTP 29.3), four shared requests finish in 8.0 s instead of 31.2 s, marked 3k documents answer in 0.5 s, and 32 concurrent streams run at 180 tok/s in 27 GB — with Apache-2.0 engine sources.</p>
 
-<h2>2. Calibrated AI evaluation &amp; AI agent governance (<a href="https://sixi.ai/en/assure/">Sixi Assure</a>)</h2>
+<h2>2. Calibrated AI decisions, evaluation &amp; agent governance (<a href="https://sixi.ai/en/assure/">Sixi Assure</a>)</h2>
 <ul>
-  <li>Hybrid local + cloud evaluation (<a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge v0.4.0</a>): 7–14 ms local GPU encoders at $0.00 + selective cloud escalation and simplex probability calibration</li>
+  <li>Three-mode Decision, Judge &amp; ActionGate API (<a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge v1.0.0</a>): zero-output-token local GPU cascades ($0 on 6 GB edge to 16 GB RTX), deterministic anti-spoofing policy gates (<code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>), probability calibration, and optional multimodal cloud escalation (<code>Laya-Omega</code>)</li>
   <li>Design-time AI agent governance (<a href="https://sixi.ai/en/assure/">Sixi Assure</a>) and enterprise architecture on Microsoft Foundry or Google ADK: typed system models, Entra agent identities, scoped MCP/A2A tools, agent passports, and signed handover packs for EU AI Act / DORA / GDPR</li>
 </ul>
-<p><em>Proof:</em> <a href="/laya-as-judge-omega-11-of-11-benchmarks/">laya-as-judge v0.4.0</a> wins 11/11 benchmarks over Gemini Decision 1 across 2,250 questions (Top-1 ECE 0.0234, $0.77 total); 14 years across defence, pharma, and building-automation platforms.</p>
+<p><em>Proof:</em> <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">laya-as-judge v1.0.0</a> hits 78.7% locally on 1×16 GB RTX at $0 (<a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">5 live GPU experiments</a>: 12/12 red-team caught, 0% false blocks, 0.0287 Q4 OOF ECE, 3.3× faster long logs) and <a href="/laya-as-judge-omega-11-of-11-benchmarks/">Laya-Omega</a> wins 11/11 benchmarks over Gemini Decision 1 (ECE 0.0234, $0.77 total); 14 years across defence, pharma, and building-automation platforms.</p>
 
 <h2>3. AI agent security assessment &amp; CI red-teaming</h2>
 <ul>
