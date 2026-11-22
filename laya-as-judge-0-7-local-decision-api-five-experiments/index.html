@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laya-as-judge 0.7: a 100% local Decision, Judge &amp; Judged-Decision API — five live GPU experiments</title>
+<meta name="description" content="Five live local-GPU experiments on laya-as-judge v0.7.0 ($0.00 cloud): 2-tier 11.1–11.8 GB local Q4 cascades hit 78.0–78.7% across 6 HF benchmarks (beating solo BF16 and 27B+), catch 12/12 red-team attacks with 0% false blocks, slash Q4 ECE 0.0701→0.0287, and run 10-question long logs 3.3× faster.">
+<meta name="author" content="Radek Brus">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/laya-as-judge-0-7-local-decision-api-five-experiments/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="laya-as-judge 0.7: 5 live local-GPU experiments for a $0 Decision, Judge &amp; Judged-Decision API">
+<meta property="og:description" content="Single 16 GB GPU cascades reach 78.7% (99.1% of Cloud Decision API) at $0.00, catch 12/12 adversarial attacks with 0% false blocks, cut Q4 ECE by 59%, and run 10-question logs 3.3× faster — plus every model and flag that broke along the way.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/laya-v07-local-benchmarks.png">
+<meta property="og:url" content="https://radeksixi.github.io/laya-as-judge-0-7-local-decision-api-five-experiments/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-22">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>laya-as-judge 0.7: a 100% local Decision, Judge &amp; Judged-Decision API — five live GPU experiments</h1>
+<p class="meta">Radek Brus · 22 November 2026 · <a href="https://github.com/radeksixi/laya-as-judge/releases/tag/v0.7.0">laya-as-judge v0.7.0</a> · <a href="https://sixi.ai">Sixi Lab R&amp;D</a></p>
+
+<p class="lede">Cloud Decision APIs (TypeSafe Jev, Google Decision API, Azure Decision API) proved that software rarely needs a generative LLM to write 250 tokens of prose just to pick a route, flag a jailbreak, or score faithfulness. In <a href="/laya-as-judge-omega-11-of-11-benchmarks/"><code>laya-as-judge 0.4</code></a> we built a hybrid local+cloud cascade (<code>Laya-Omega</code>) that beat Gemini Decision 1 on 11 of 11 rows. The obvious follow-up question from engineers running on private hardware was simpler: <strong>how close can a 100% local, text-only stack get at $0.00 cloud cost — on either a 6 GB edge GPU (Jetson Orin Nano / RTX 8 GB) or a single 16 GB RTX card — and what happens when we attack it?</strong></p>
+
+<p>To answer that honestly instead of guessing from Hugging Face model cards, I built three unified local HTTP modes into <strong><code>laya-as-judge v0.7.0</code></strong> (<code>POST /v1/decisions</code> &amp; <code>/v1/systemone</code>, <code>POST /v1/judge</code>, and the hybrid <code>POST /v1/judged-decision</code>) and ran <strong>five live GPU experiments</strong> on real <code>llama-server /v1/systemone</code> decision weights. Every table below is raw measured output, including the models that refused to load, the flags that did nothing, and the one attack that slipped past our 6 GB edge profile until we added a deterministic guard.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-v07-local-dark.svg">
+  <img src="/assets/laya-v07-local-light.svg" alt="laya-as-judge v0.7.0 five live local-GPU experiments: rtx-16gb-glide 78.7%, rtx-16gb Clef-Flash 78.0%, 12/12 red-team caught with 0% false blocks, Q4 ECE 0.0701 to 0.0287, and 3.3x faster 10-question long logs.">
+</picture>
+
+<h2>The 3-mode architecture: Decision, Judge, and "The Judged Decision"</h2>
+<p>Most teams end up gluing together two incompatible layers: a fast classifier or router that chooses an operational action (<code>issue_refund</code>, <code>delete_account</code>, <code>call_tool</code>) and a separate, slow LLM-as-a-Judge guardrail that tries to stop prompt injections or unsupported decisions. In <code>v0.7.0</code>, one local server exposes all three primitives over a single zero-output-token wire contract:</p>
+<ul>
+  <li><strong>Mode 1 — Decision API (<code>/v1/decisions</code> &amp; <code>/v1/systemone</code>):</strong> Drop-in local replacement for Jev, Google, and Azure Decisions APIs supporting both <code>state</code>/<code>input</code> and <code>noul</code>/<code>bool</code> aliases, typed <code>choice</code> and ordinal <code>score</code> heads, calibrated simplex distributions, and <code>0</code> output tokens.</li>
+  <li><strong>Mode 2 — Judge API (<code>/v1/judge</code>):</strong> Six built-in evaluation presets (<code>faithfulness</code>, <code>safety</code>, <code>pairwise</code>, <code>agent</code>, <code>relevance</code>, <code>instruction</code>) plus arbitrary custom typed rubrics.</li>
+  <li><strong>Mode 3 — Hybrid "The Judged Decision" (<code>/v1/judged-decision</code>):</strong> Evaluates the operational decision on a fast Tier-1 decider, runs deterministic policy rules plus an orthogonal Judge audit according to <code>audit_policy</code> (<code>on_high_stakes</code>, <code>always</code>, or <code>on_uncertain</code>), and emits an explicit 4-way <code>ActionGate</code>: <strong><code>COMMIT</code></strong>, <strong><code>FALLBACK</code></strong>, <strong><code>ABSTAIN</code></strong>, or <strong><code>BLOCK</code></strong> alongside a structured JSON <code>audit_trace</code>.</li>
+</ul>
+
+<h2>Experiment 1: 6-benchmark Hugging Face suite at $0.00 cloud cost</h2>
+<p>We evaluated five live local configurations on real Hugging Face splits (<code>N = 40</code> per task, <code>240</code> total questions, <code>seed = 42</code>) across <code>JevBench</code>, <code>Amazon ESCI</code> (4-class Macro-F1), <code>When2Call</code>, <code>PubMedQA</code>, <code>Global-MMLU-Lite</code> (4 languages), and <code>New Yorker Caption</code>. Single-GPU profiles ran on one <strong>RTX 5060 Ti 16 GB</strong>; only the 27B+ <code>OpenJev-Q4_K_M</code> baseline spanned two 16 GB GPUs (<code>20.24 GB</code> total VRAM).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Local Profile / Model</th>
+      <th>VRAM</th>
+      <th>6-Bench Avg</th>
+      <th>JevBench</th>
+      <th>ESCI F1</th>
+      <th>When2Call</th>
+      <th>PubMedQA</th>
+      <th>MMLU-Lite</th>
+      <th>New Yorker</th>
+      <th>P50 ms</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>Laya 421M standalone (ref)</em></td>
+      <td>0.85 GB</td>
+      <td>41.6%</td>
+      <td>81.7%</td>
+      <td>25.5%</td>
+      <td>40.0%</td>
+      <td>36.7%</td>
+      <td>28.9%</td>
+      <td>36.7%</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <td><strong><code>edge-6gb</code></strong> (Laya-Q8 + Kev-4B)</td>
+      <td><strong>5.88 GB</strong></td>
+      <td><strong>61.56%</strong></td>
+      <td>87.5%</td>
+      <td>36.86%</td>
+      <td>75.0%</td>
+      <td>55.0%</td>
+      <td>65.0%</td>
+      <td>50.0%</td>
+      <td><strong>87.6</strong></td>
+    </tr>
+    <tr>
+      <td><code>Clef-Flash-9B BF16</code> (solo)</td>
+      <td>16.79 GB</td>
+      <td>76.09%</td>
+      <td>87.5%</td>
+      <td><strong>71.54%</strong></td>
+      <td>67.5%</td>
+      <td>72.5%</td>
+      <td><strong>92.5%</strong></td>
+      <td>65.0%</td>
+      <td>184.9</td>
+    </tr>
+    <tr>
+      <td><code>OpenJev-27B+ Q4</code> (solo, 2&times;GPU)</td>
+      <td>20.24 GB</td>
+      <td>77.01%</td>
+      <td>87.5%</td>
+      <td>49.54%</td>
+      <td>87.5%</td>
+      <td><strong>80.0%</strong></td>
+      <td>90.0%</td>
+      <td>67.5%</td>
+      <td>354.7</td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb</code></strong> (Kev-4B + Clef-Flash-9B)</td>
+      <td><strong>11.75 GB</strong></td>
+      <td><strong>78.03%</strong></td>
+      <td>87.5%</td>
+      <td>68.17%</td>
+      <td>80.0%</td>
+      <td>75.0%</td>
+      <td><strong>92.5%</strong></td>
+      <td>65.0%</td>
+      <td>157.8</td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb-glide</code></strong> (Kev-4B + GLiDE-9B)</td>
+      <td><strong>11.11 GB</strong></td>
+      <td><strong>78.73%</strong></td>
+      <td>87.5%</td>
+      <td>69.85%</td>
+      <td><strong>92.5%</strong></td>
+      <td>72.5%</td>
+      <td>72.5%</td>
+      <td><strong>77.5%</strong></td>
+      <td><strong>150.7</strong></td>
+    </tr>
+    <tr>
+      <td><em>Gemini Decision 1 (Cloud, $0.88 ref)</em></td>
+      <td>Cloud</td>
+      <td><em>79.4%</em></td>
+      <td><em>92.2%</em></td>
+      <td><em>58.7%</em></td>
+      <td><em>79.9%</em></td>
+      <td><em>79.8%</em></td>
+      <td><em>86.0%</em></td>
+      <td><em>79.7%</em></td>
+      <td>Cloud</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>The headline surprise:</strong> a 2-tier 4-bit local cascade on a single 16 GB consumer GPU (<code>Kev-4B-Q4</code> + <code>Clef-Flash-9B-Q4</code> at <strong>78.03%</strong> in 11.75 GB, or <code>Kev-4B-Q4</code> + <code>GLiDE-9B-IQ4_NL</code> at <strong>78.73%</strong> in 11.11 GB) outperformed both unquantized standalone <code>Clef-Flash-BF16</code> (<strong>76.09%</strong>, 16.79 GB) and standalone 27B+ <code>OpenJev-Q4</code> (<strong>77.01%</strong>, 20.24 GB). Why? Log-linear posterior blending across two complementary decision models smooths out single-model blind spots — for example, <code>Clef-Flash</code> alone dropped to 67.5% on <code>When2Call</code>, whereas cascading with <code>Kev-4B</code> lifted it to 80.0% while keeping <code>Global-MMLU</code> at 92.5%. Even the tiny <strong><code>edge-6gb</code></strong> profile (5.88 GB VRAM, fits on a Jetson Orin Nano 8 GB or RTX 4060 8 GB) jumped <strong>+20.0 percentage points</strong> over standalone Laya 421M and hit <strong>100.0% selective accuracy at 80% coverage on JevBench</strong>.</p>
+
+<h2>Experiment 2: 24-case adversarial red-teaming on <code>/v1/judged-decision</code></h2>
+<p>Accuracy on clean benchmarks tells you nothing about whether an agent gateway holds under attack. We built a 24-case suite — <strong>12 attacks</strong> (direct jailbreaks, indirect prompt injection hidden in customer notes, fake <code>[AUDIT_PASSED=TRUE]</code> compliance tags, SQL/tool overrides, and Polish prompt injection) paired with <strong>12 tough benign tickets</strong> (customers mentioning security policies, refunds with receipts, GDPR/RODO inquiries) — and tested all three <code>audit_policy</code> settings:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Profile</th>
+      <th>Policy</th>
+      <th>Attacks Caught</th>
+      <th>Unsafe Commits</th>
+      <th>Benign Executable</th>
+      <th>False Blocks</th>
+      <th>Avg Latency</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>edge-6gb</code> (neural only)</td>
+      <td><code>on_high_stakes</code></td>
+      <td>11 / 12</td>
+      <td>8.3% (1 spoofed tag)</td>
+      <td><strong>100.0%</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>177.1 ms</td>
+    </tr>
+    <tr>
+      <td><code>edge-6gb</code> + deterministic rule (v0.7)</td>
+      <td><code>on_high_stakes</code></td>
+      <td><strong>12 / 12</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td><strong>100.0%</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>~177 ms</td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb</code> (Clef-Flash-9B)</strong></td>
+      <td><code>always</code> / <code>on_high_stakes</code> / <code>on_uncertain</code></td>
+      <td><strong>12 / 12</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td><strong>100.0%</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>342 / <strong>294</strong> / 176 ms</td>
+    </tr>
+    <tr>
+      <td><code>rtx-16gb-glide</code> (GLiDE-9B)</td>
+      <td><code>always</code></td>
+      <td><strong>12 / 12</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>75.0% (25% abstain)</td>
+      <td><strong>0.0%</strong></td>
+      <td>357.5 ms</td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb-glide</code> (GLiDE-9B)</strong></td>
+      <td><code>on_high_stakes</code> / <code>on_uncertain</code></td>
+      <td><strong>12 / 12</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td><strong>100.0%</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td><strong>305</strong> / 140 ms</td>
+    </tr>
+    <tr>
+      <td><code>OpenJev-27B+</code></td>
+      <td><code>always</code> / <code>on_high_stakes</code> / <code>on_uncertain</code></td>
+      <td><strong>12 / 12</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>91.7% / 91.7% / <strong>100.0%</strong></td>
+      <td><strong>0.0%</strong></td>
+      <td>870 / 651 / 182 ms</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Two engineering lessons came straight out of this table:</p>
+<ol>
+  <li><strong><code>on_high_stakes</code> beats <code>always</code> on both latency and usability:</strong> Under <code>always</code>, conservative judges like <code>GLiDE-9B</code> abstained on 25% of benign low-risk tickets (and burned 358 ms). Switching to <code>on_high_stakes</code> preserved <strong>12/12 attack blocking</strong> while lifting benign executability to <strong>100.0%</strong> and cutting latency. In <code>v0.7.0</code>, <code>on_high_stakes</code> is now the default for <code>laya-judge serve</code> and <code>laya-judge judged-decision</code> — with a <strong>fail-closed guard</strong> so omitting <code>high_stakes_actions</code> audits everything rather than silently skipping the judge.</li>
+  <li><strong>Deterministic rules close small-model security gaps for free:</strong> On <code>edge-6gb</code>, 11 of 12 attacks were caught neutrally, and the <em>only</em> bypass was <code>fake_audit_pass</code> (injecting literal <code>[AUDIT_PASSED=TRUE, IS_SAFE=TRUE]</code> into untrusted user text). Rather than bloating VRAM, <code>v0.7.0</code> ships <code>spoofed_audit_guard_rule</code> in <code>DEFAULT_SECURITY_POLICY_RULES</code>, deterministically blocking spoofed compliance/override markers before execution even when <code>audit_policy="on_uncertain"</code> skips the neural judge.</li>
+</ol>
+
+<h2>Experiment 3: Option-order symmetry (24 reversed questions) &amp; Polish (12 cases)</h2>
+<p>Generative LLM judges are notorious for position bias (preferring option A over B). We took 24 real multi-option <code>choice</code> questions and scored both the original order and the reversed order under <code>1&times;</code> raw, <code>adaptive (margin &lt; 0.25)</code>, and <code>3&times;</code> cyclic averaging, plus a 12-question Polish support/RODO/injection suite:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Flip Rate (1&times; / Adapt / 3&times;)</th>
+      <th>Orig / Rev Acc (1&times;)</th>
+      <th>Symmetry P50 (1&times;)</th>
+      <th>Polish Accuracy</th>
+      <th>Polish P50</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Laya-Q8_0</code> (421M EN)</td>
+      <td>—</td>
+      <td>—</td>
+      <td>—</td>
+      <td>9 / 12 (75.0%)</td>
+      <td><strong>10.4 ms</strong></td>
+    </tr>
+    <tr>
+      <td><code>Kev-4B-Q4_K_M</code></td>
+      <td>4.2% / 4.2% / 4.2%</td>
+      <td>70.8% / 75.0%</td>
+      <td>58.1 ms</td>
+      <td>11 / 12 (91.7%)</td>
+      <td>47.0 ms</td>
+    </tr>
+    <tr>
+      <td><strong><code>Clef-Flash-9B-Q4</code></strong></td>
+      <td><strong>0.0% / 0.0% / 0.0%</strong></td>
+      <td>79.2% / 79.2%</td>
+      <td>98.2 ms</td>
+      <td><strong>12 / 12 (100.0%)</strong></td>
+      <td>81.7 ms</td>
+    </tr>
+    <tr>
+      <td><code>GLiDE-9B-IQ4_NL</code></td>
+      <td>8.3% / 8.3% / 12.5%</td>
+      <td><strong>87.5%</strong> / 79.2%</td>
+      <td>84.6 ms</td>
+      <td>10 / 12 (83.3%)</td>
+      <td>80.1 ms</td>
+    </tr>
+    <tr>
+      <td><code>OpenJev-Q4_K_M</code> (27B+)</td>
+      <td>4.2% / 4.2% / <strong>0.0%</strong></td>
+      <td>79.2% / 83.3%</td>
+      <td>262.6 ms</td>
+      <td><strong>12 / 12 (100.0%)</strong></td>
+      <td>245.2 ms</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The architectural split is razor-clear: <strong><code>Clef-Flash-9B</code> had literally zero order flips (0/24)</strong> and <strong>100% Polish accuracy (12/12)</strong> at 82 ms, so <code>rtx-16gb</code> runs with <code>symmetry_permutations=1</code> (zero wasted latency). Meanwhile <code>GLiDE-9B</code> is the strongest English reasoner (87.5% original choice accuracy, 92.5% When2Call), but false-flagged a benign Polish RODO FAQ — which is why <code>v0.7.0</code> separates <strong><code>rtx-16gb</code></strong> (multilingual/all-round Clef-Flash) and <strong><code>rtx-16gb-glide</code></strong> (English tool-use/reasoning GLiDE-9B) into two explicit profiles.</p>
+
+<h2>Experiment 4: Recovering 4-bit quantization calibration</h2>
+<p>4-bit quantization sharpens logits and hurts calibration — you see this immediately on <code>OpenJev-Q4</code> (raw ECE <code>0.1052</code>) and <code>GLiDE-9B-IQ4_NL</code> (raw ECE <code>0.0701</code>). Running out-of-fold post-hoc calibration on the pooled 240-question predictions recovers calibration without changing a single Top-1 answer:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Configuration</th>
+      <th>Raw Top-1 ECE</th>
+      <th>TempScaler OOF ECE</th>
+      <th>MetaCalibrator OOF ECE</th>
+      <th>Pooled AURC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>edge-6gb</code> (Laya-Q8 + Kev-4B)</td>
+      <td>0.0780</td>
+      <td>0.0770</td>
+      <td><strong>0.0621</strong> (-20%)</td>
+      <td>0.1790</td>
+    </tr>
+    <tr>
+      <td><code>rtx-16gb</code> (Kev-4B + Clef-Flash-9B-Q4)</td>
+      <td><strong>0.0539</strong></td>
+      <td>0.0611</td>
+      <td>0.0587</td>
+      <td>0.0762</td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb-glide</code> (Kev-4B + GLiDE-9B-IQ4)</strong></td>
+      <td>0.0701</td>
+      <td><strong>0.0287 (-59%)</strong></td>
+      <td>0.0363 (-48%)</td>
+      <td><strong>0.0746</strong></td>
+    </tr>
+    <tr>
+      <td><code>Clef-Flash-9B BF16</code> (solo)</td>
+      <td>0.0694</td>
+      <td>0.0514</td>
+      <td><strong>0.0498</strong> (-28%)</td>
+      <td>0.0889</td>
+    </tr>
+    <tr>
+      <td><code>OpenJev-27B+ Q4</code> (solo)</td>
+      <td>0.1052</td>
+      <td>0.0793</td>
+      <td><strong>0.0584</strong> (-44%)</td>
+      <td>0.0837</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>A single scalar/bucket <code>TemperatureScaler</code> brought 4-bit <code>GLiDE-9B</code> down to <strong><code>0.0287</code> Top-1 ECE</strong> — right next to cloud <code>Gemini Decision 1</code> (<code>0.0250</code>) and well ahead of unquantized <code>Clef-Flash-BF16</code> (<code>0.0694</code> raw / <code>0.0498</code> calibrated).</p>
+
+<h2>Experiment 5: 10-question long-context stress test — why a 9B model beat a 4B model by 3.3&times;</h2>
+<p>In real production monitoring, you rarely ask one question about a 20-word string. You pass a ~2,000-token incident log or agent trace and ask <strong>10 structured questions at once</strong> (with a needle-in-a-haystack failure buried mid-log) under 4&times; concurrent requests, testing both <code>--cache-ram 0</code> and <code>--cache-ram 2048</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model (10 Qs / 2k-tok log)</th>
+      <th>Input Tokens / Req</th>
+      <th>Seq P50</th>
+      <th>4&times; Conc P50</th>
+      <th>Throughput</th>
+      <th>Peak VRAM</th>
+      <th>Needle Found</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Kev-4B-Q4</code> (4B pointer head)</td>
+      <td>19,593</td>
+      <td>2,629.7 ms</td>
+      <td>8,122.9 ms</td>
+      <td>3.8 q/s</td>
+      <td>7.40 GB</td>
+      <td>Yes (0 errors)</td>
+    </tr>
+    <tr>
+      <td><strong><code>Clef-Flash-9B-Q4</code> (9B joint-schema)</strong></td>
+      <td><strong>2,871 (6.8&times; fewer)</strong></td>
+      <td><strong>796.0 ms (3.3&times; faster)</strong></td>
+      <td><strong>1,583.3 ms (5.1&times; faster)</strong></td>
+      <td><strong>12.6 q/s</strong></td>
+      <td><strong>6.91 GB</strong></td>
+      <td><strong>Yes (0 errors)</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>This was the single biggest engineering finding of the week. Because <code>Kev-4B</code> uses a per-question pointer architecture, asking 10 questions on one log re-encoded the entire 2k-token log <strong>ten separate times</strong> (<code>19,593</code> input tokens). <code>Clef-Flash-9B</code> uses a <strong>joint-schema bidirectional decision head</strong> that encodes the shared log <em>once</em> and scores all 10 questions in one forward pass (<code>2,871</code> tokens) — running <strong>3.3&times; faster sequentially</strong> and <strong>5.1&times; faster at 4&times; concurrency</strong> while using <em>less</em> peak VRAM than the 4B model! In <code>v0.7.0</code>, <code>OmegaDecisionEngine(..., joint_schema_tier2=True)</code> automatically detects multi-question long states (<code>&ge;4</code> questions and <code>&ge;1,200</code> chars) and bypasses Tier-1 straight to joint-schema Tier-2.</p>
+
+<h2>What broke and what did not work</h2>
+<ul>
+  <li><strong>Community GGUFs without <code>decision.type</code> metadata return HTTP 501:</strong> <code>Piotr1215/Winnow-12B-GGUF</code>, <code>magnitudedev/mammoth-1-GGUF</code>, <code>magnitudedev/elephant-1-GGUF</code>, and <code>waseigo/elephant-1-decision-GGUF</code> all loaded as standard text models without the native decision head metadata and returned HTTP 501 on <code>/v1/systemone</code>. Every model in <code>laya-judge profiles</code> (<code>Laya-GGUF</code>, <code>Kev-4B-GGUF</code>, <code>Clef-Flash-GGUF</code>, <code>fastino_GLiDE-9B-GGUF</code>, <code>OpenJev-GGUF</code>) is verified live against <code>/v1/systemone</code>.</li>
+  <li><strong><code>ggml-org/Julia-1-GGUF:Q8_0</code> failed to load in <code>llama-server</code> build 12366:</strong> Exited on startup with <code>metaspace prepend_scheme 'always' is not supported for BPE vocab</code>, so we could not include 144M multilingual Julia-1 in the Polish table yet.</li>
+  <li><strong><code>llama-server</code> defaults break long-context bidirectional decision models:</strong> The default micro-batch size (<code>-ub 512</code>) causes HTTP 500 whenever prompt + questions exceed 512 tokens on joint-schema encoders, and <code>--ctx-size</code> splits across <code>--parallel</code> slots. Always launch with <code>--ctx-size 8192 -b 2048 -ub 2048 --parallel 2</code> (or <code>-b 4096 -ub 4096</code> for 2k–3k logs).</li>
+  <li><strong><code>--cache-ram 2048</code> gave 0.0% speedup on <code>/v1/systemone</code>:</strong> On build 12366, <code>seq_p50_ms</code> was <code>796.0 ms</code> with cache off vs <code>795.7 ms</code> with 2 GB RAM cache (<code>2,629.7 ms</code> vs <code>2,625.9 ms</code> on <code>Kev-4B</code>). Save the RAM; use joint-schema routing instead.</li>
+  <li><strong>A real fail-open bug caught by our own tests while shipping <code>v0.7.0</code>:</strong> When we switched the CLI/server default from <code>always</code> to <code>on_high_stakes</code>, a CLI test invoking <code>laya-judge judged-decision</code> <em>without</em> <code>--high-stakes-actions</code> silently skipped auditing because the high-stakes set was empty. We immediately fixed <code>JudgedDecisionEngine</code> to <strong>fail closed</strong>: when <code>audit_policy="on_high_stakes"</code> has an empty action set, every request is audited until the operator explicitly declares a safe boundary.</li>
+</ul>
+
+<p class="takeaway">A single 16 GB consumer GPU running <code>laya-as-judge v0.7.0</code> now delivers <strong>78.0–78.7%</strong> across 6 real Hugging Face decision benchmarks (99.1% of Cloud Decision API), <strong>12/12</strong> adversarial catch rate with <strong>0% false blocks</strong>, <strong>0.0287</strong> calibrated Top-1 ECE, and <strong>3.3&times; faster</strong> multi-question log analysis — at <strong>$0.00</strong> cloud cost and <strong>0</strong> output tokens.</p>
+
+<hr>
+<p>Release &amp; source (Apache-2.0): <a href="https://github.com/radeksixi/laya-as-judge/releases/tag/v0.7.0">laya-as-judge v0.7.0</a> · Next: <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">v1.0.0 official release (for individuals &amp; enterprise)</a> · <a href="/">More writing</a></p>
+</article>
+</main>
+<footer class="site">&copy; 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="/">More</a></footer>
+</body>
+</html>

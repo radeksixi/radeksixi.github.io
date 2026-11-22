@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>laya-as-judge 1.0: one open-source Decision, Judge &amp; Governance API for everyone and regulated enterprise</title>
+<meta name="description" content="laya-as-judge v1.0.0 (Apache-2.0) unifies three zero-output-token modes — Decision API (/v1/decisions), Judge API (/v1/judge), and Hybrid The Judged Decision (/v1/judged-decision) — scaling from $0 local 6 GB edge and 16 GB RTX GPUs (78.7%, 12/12 red-team) to air-gapped EU AI Act / DORA enterprise deployments and 11/11 multimodal Laya-Omega.">
+<meta name="author" content="Radek Brus">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="laya-as-judge 1.0: Decision, Judge &amp; Governance API built for solo builders and regulated enterprise">
+<meta property="og:description" content="Apache-2.0, zero output tokens, drop-in /v1/decisions compatibility, deterministic-first ActionGate (COMMIT / FALLBACK / ABSTAIN / BLOCK), 78.7% on a single $0 16 GB GPU, 12/12 red-team catch rate, and full JSON audit traces.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/laya-v1-platform-hero.png">
+<meta property="og:url" content="https://radeksixi.github.io/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-22">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>laya-as-judge 1.0: one open-source Decision, Judge &amp; Governance API built for everyone — and ready for regulated enterprise</h1>
+<p class="meta">Radek Brus · 22 November 2026 · <a href="https://github.com/radeksixi/laya-as-judge/releases/tag/v1.0.0">laya-as-judge v1.0.0</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a></p>
+
+<p class="lede">AI evaluation and routing software usually breaks along an artificial divide. On one side sit lightweight local scripts that are fun to prototype with, but fail the moment a security architect asks for calibrated risk thresholds, deterministic deny rules, or a verifiable audit trail. On the other side sit closed enterprise guardrail clouds that require streaming proprietary customer state to third-party APIs, lock you into proprietary schemas, and charge per evaluation token until you quietly turn them off in production. Today I am releasing <strong><code>laya-as-judge v1.0.0</code></strong> (Apache-2.0) — joining <code>sixi-asi v1.0.0</code> and <code>sixi-scanner v1.0.0</code> as the third stable pillar of Sixi Lab R&amp;D — designed to work identically on a developer's single GPU and inside an air-gapped enterprise enclave.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-v1-platform-dark.svg">
+  <img src="/assets/laya-v1-platform-light.svg" alt="Laya-as-a-Judge v1.0.0 Platform Architecture: Decision API (/v1/decisions), Judge API (/v1/judge), Hybrid The Judged Decision (/v1/judged-decision -> COMMIT/FALLBACK/ABSTAIN/BLOCK), hardware profiles from edge-6gb to air-gapped enterprise and Laya-Omega.">
+</picture>
+
+<h2>One API, three operational modes — zero output tokens</h2>
+<p>Every production agent eventually needs three distinct capabilities: choosing an operational action, judging whether content or trajectories meet quality and safety rubrics, and deciding whether a proposed action is actually safe to commit. <code>laya-as-judge v1.0.0</code> exposes all three through one Python SDK, one CLI (<code>laya-judge</code>), and one FastAPI HTTP server with <strong>zero autoregressive token decoding</strong> and <strong>zero JSON parse failures</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Mode</th>
+      <th>HTTP Endpoint &amp; Python Entry</th>
+      <th>What It Solves</th>
+      <th>Output Contract</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Decision API</strong></td>
+      <td><code>POST /v1/decisions</code><br><code>POST /v1/systemone</code><br><code>SystemOneHTTPBackend</code></td>
+      <td>Drop-in local replacement for cloud Decision APIs (Jev, Google, Azure) — ticket routing, tool calling, triage, classification with <code>state</code>/<code>input</code> and <code>noul</code>/<code>bool</code> wire compatibility.</td>
+      <td>Strictly typed <code>noul</code>, <code>choice</code>, and <code>score</code> answers with calibrated simplex probabilities, <code>0</code> output tokens.</td>
+    </tr>
+    <tr>
+      <td><strong>2. Judge API</strong></td>
+      <td><code>POST /v1/judge</code><br><code>FaithfulnessJudge</code>, <code>SafetyGuardJudge</code>, <code>CustomJudge</code></td>
+      <td>Inline guardrails, RAG hallucination audits, pairwise A/B evaluation, agent trajectory checks, and offline batch/CI benchmark suites.</td>
+      <td><code>passed</code>, per-criterion typed <code>judgements</code>, Shannon-entropy confidence, Top-1 probability, and latency/cost telemetry.</td>
+    </tr>
+    <tr>
+      <td><strong>3. Hybrid: The Judged Decision</strong></td>
+      <td><code>POST /v1/judged-decision</code><br><code>JudgedDecisionEngine</code></td>
+      <td>Answers the real production question: <em>"Not just what did the agent pick, but is it safe, grounded, and policy-compliant to execute?"</em></td>
+      <td>Explicit 4-way <code>ActionGate</code> (<code>commit</code> / <code>fallback</code> / <code>abstain</code> / <code>block</code>), <code>effective_decision</code>, <code>calibrated_risk</code>, and step-by-step JSON <code>audit_trace</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Why it works for individual developers, indie teams, and startups</h2>
+<p>Enterprise governance tools usually fail developers because they assume a Kubernetes cluster and a six-figure contract before your first request returns <code>200 OK</code>. <code>laya-as-judge v1.0.0</code> flips that equation:</p>
+<ul>
+  <li><strong>Zero-friction start (0 GB VRAM):</strong> <code>pip install 'laya-as-judge[server]' &amp;&amp; laya-judge serve --profile emulator</code> boots all three API modes in under a second with zero model downloads for local integration tests and CI pipelines.</li>
+  <li><strong>Runs on hardware you already own ($0.00/month):</strong> Built-in hardware profiles match real VRAM envelopes — <strong><code>edge-6gb</code></strong> (<code>5.88 GB</code> VRAM, fits NVIDIA Jetson Orin Nano 8 GB or an RTX 4060 8 GB, <code>88 ms</code> P50), <strong><code>rtx-16gb</code></strong> (<code>11.75 GB</code> VRAM on one RTX 4060 Ti / 5060 Ti / 5070 Ti 16 GB, <strong>78.0%</strong> 6-benchmark average, <strong>12/12</strong> red-team catch rate, <strong>100%</strong> Polish accuracy, <strong>3.3&times; faster</strong> multi-question log analysis), and <strong><code>rtx-16gb-glide</code></strong> (<code>11.11 GB</code>, <strong>78.7%</strong> 6-benchmark average, <strong>92.5%</strong> When2Call, <strong>0.0287</strong> calibrated Top-1 ECE).</li>
+  <li><strong>No cloud lock-in — upgrade only when you want multimodality:</strong> Because the Decision API uses standard <code>/v1/decisions</code> and <code>/v1/systemone</code> wire schemas, you can start 100% local at <code>$0.00</code> and turn on <strong><code>Laya-Omega</code></strong> whenever you need raw vision, audio, or video (11/11 wins over Gemini Decision 1 across 2,250 questions, pooled <code>0.0234</code> ECE, <code>$0.77</code> total).</li>
+</ul>
+
+<h2>Why regulated enterprises can deploy it without compromises</h2>
+<p>In banking, insurance, healthcare, pharmaceuticals, public administration, and industrial OT, the blocker is rarely model intelligence — it is <strong>control, auditability, data residency, and predictable failure behavior</strong>. Every piece of <code>v1.0.0</code> was built from live red-teaming experience and aligns directly with <a href="https://sixi.ai/en/assure/"><strong>Sixi Assure</strong></a>:</p>
+<ol>
+  <li><strong>100% air-gapped &amp; data-sovereign operation:</strong> With local GGUF decision servers (<code>llama-server /v1/systemone</code>) or on-prem PyTorch/MLX encoders, zero customer PII, medical abstracts, financial payloads, or internal tool schemas leave your network. That maps cleanly to GDPR/RODO residency rules and strict internal data-classification policies.</li>
+  <li><strong>Deterministic-first, fail-closed security gates:</strong> Neural models are probabilistic; compliance policies are not. In <code>JudgedDecisionEngine</code>, deterministic Python <code>policy_rules</code> (including the built-in <code>spoofed_audit_guard_rule</code> that stops fake <code>[AUDIT_PASSED=TRUE]</code> and <code>[ADMIN_TOOL_OVERRIDE]</code> injections) execute on <em>every</em> call regardless of audit policy. Even better: the default <code>audit_policy="on_high_stakes"</code> is <strong>fail-closed</strong> — if an operator forgets to declare <code>high_stakes_actions</code>, every action is audited instead of silently bypassing verification.</li>
+  <li><strong>Calibrated probabilities you can actually set SLAs on:</strong> Uncalibrated LLM confidence scores are unusable for risk thresholds. <code>laya-as-judge v1.0.0</code> ships <code>TemperatureScaler</code> and out-of-fold <code>MetaCalibrator</code> (100% Top-1 invariant), proven live to cut 4-bit quantized ECE by <strong>59%</strong> (<code>0.0701 &rarr; 0.0287</code>) and reach <code>0.0234</code> across 2,250 hybrid questions. Risk officers can set concrete thresholds (<code>min_top1_prob</code>, <code>min_margin</code>, <code>max_judge_risk_score</code>) and prove their selective accuracy via <code>AURC</code> and <code>Acc@80%Cov</code>.</li>
+  <li><strong>Four-way operational control &amp; immutable audit traces:</strong> Rather than a brittle pass/fail boolean, <code>/v1/judged-decision</code> routes every action into <strong><code>COMMIT</code></strong> (autonomous execution), <strong><code>FALLBACK</code></strong> (safe pre-approved substitute such as <code>request_more_info</code>), <strong><code>ABSTAIN</code></strong> (human-in-the-loop review queue), or <strong><code>BLOCK</code></strong> (hard refuse). Every response carries a machine-readable JSON <code>audit_trace</code> recording which decider, cross-family verifier, orthogonal judge, and deterministic policy rule fired — directly supporting EU AI Act Article 12/14 logging &amp; human oversight, DORA operational resilience evidence, and NIS2 incident forensics.</li>
+  <li><strong>Zero-dependency wire parity &amp; Apache-2.0 licensing:</strong> No proprietary SaaS seat tax, no black-box prompt weights changing silently behind an endpoint, and reproducible offline benchmarks via <code>laya-judge suite</code>.</li>
+</ol>
+
+<h2>Measured scoreboard across every deployment tier</h2>
+<p>Every figure below is measured on real benchmarks (<a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">5-experiment local GPU report</a> and <a href="/laya-as-judge-omega-11-of-11-benchmarks/">2,250-question Laya-Omega report</a>) — zero synthetic claims:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Deployment Tier</th>
+      <th>Hardware / Cloud</th>
+      <th>Quality Score</th>
+      <th>Calibrated ECE</th>
+      <th>Red-Team (24 cases)</th>
+      <th>Cloud Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong><code>edge-6gb</code></strong></td>
+      <td>Jetson Orin Nano / RTX 8 GB (<code>5.88 GB</code>)</td>
+      <td>61.6% (6-bench) · 100% Jev@80%Cov</td>
+      <td>0.0621 (Meta)</td>
+      <td><strong>12 / 12</strong> (w/ v1.0 rule) · 0% FP</td>
+      <td><strong>$0.00</strong></td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb</code></strong> (Clef-Flash)</td>
+      <td>1&times; RTX 16 GB (<code>11.75 GB</code>)</td>
+      <td><strong>78.0%</strong> (6-bench) · <strong>100% PL</strong> · <strong>0% flips</strong></td>
+      <td>0.0539 (raw)</td>
+      <td><strong>12 / 12</strong> · 100% benign · 0% FP</td>
+      <td><strong>$0.00</strong></td>
+    </tr>
+    <tr>
+      <td><strong><code>rtx-16gb-glide</code></strong></td>
+      <td>1&times; RTX 16 GB (<code>11.11 GB</code>)</td>
+      <td><strong>78.7%</strong> (6-bench) · <strong>92.5% When2Call</strong></td>
+      <td><strong>0.0287</strong> (Temp)</td>
+      <td><strong>12 / 12</strong> · 100% benign · 0% FP</td>
+      <td><strong>$0.00</strong></td>
+    </tr>
+    <tr>
+      <td><strong><code>workstation-24gb</code></strong></td>
+      <td>RTX 3090–5090 / 2&times;16 GB (<code>20.2 GB</code>)</td>
+      <td>77.0% (6-bench) · <strong>80% PubMedQA</strong></td>
+      <td>0.0584 (Meta)</td>
+      <td><strong>12 / 12</strong> · 0% FP</td>
+      <td><strong>$0.00</strong></td>
+    </tr>
+    <tr>
+      <td><strong><code>Laya-Omega</code></strong> (Hybrid)</td>
+      <td>Local GPU + selective packed Gemini</td>
+      <td><strong>11 / 11 wins</strong> vs Gemini Decision 1</td>
+      <td><strong>0.0234</strong> (OOF)</td>
+      <td>Full text + vision + audio + video</td>
+      <td>$0.77 / 2,250 Qs</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Five-minute deployment: from laptop to air-gapped server</h2>
+<pre><code># 1. Install laya-as-judge v1.0.0 with HTTP server extras
+pip install 'laya-as-judge[server]'
+
+# 2. Launch verified local Tier-1 (Kev-4B) + Tier-2 (Clef-Flash 9B joint-schema) in 11.75 GB VRAM
+llama-server -hf ggml-org/Kev-4B-GGUF:Q4_K_M --port 8080 --ctx-size 8192 -b 2048 -ub 2048 --parallel 2
+llama-server -hf ggml-org/Clef-Flash-GGUF:Q4_K_M --port 8081 --ctx-size 8192 -b 2048 -ub 2048 --parallel 2
+
+# 3. Start the unified 3-mode Decision / Judge / Judged-Decision API (fail-closed default)
+laya-judge serve --profile rtx-16gb \
+  --tier1-url http://127.0.0.1:8080 \
+  --tier2-url http://127.0.0.1:8081 \
+  --port 8000</code></pre>
+
+<p>From there, any application — Python, Go, TypeScript, .NET, Java, or an API gateway — calls <code>POST /v1/decisions</code> for fast typed routing, <code>POST /v1/judge</code> for quality/safety scoring, or <code>POST /v1/judged-decision</code> for policy-gated autonomous execution.</p>
+
+<h2>How the three Sixi Lab R&amp;D 1.0 pillars fit together</h2>
+<p>With <code>laya-as-judge v1.0.0</code>, the full local AI lifecycle now stands on three Apache-2.0 <code>v1.0.0</code> tools — all measured with published raw numbers:</p>
+<ol>
+  <li><strong>Infer (<a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi v1.0.0</code></a>):</strong> Pure C++20/CUDA inference for hybrid MoE &amp; Gated DeltaNet models on NVIDIA Jetson Thor &amp; DGX Spark (55 tok/s single-stream, 32 streams in 27 GB).</li>
+  <li><strong>Decide, Judge &amp; Gate (<a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge v1.0.0</code></a>):</strong> Zero-output-token Decision, Judge, and Hybrid Judged-Decision runtime with calibrated risk and deterministic-first policy rules.</li>
+  <li><strong>Red-Team in CI (<a href="https://github.com/radeksixi/sixi-scanner"><code>sixi-scanner v1.0.0</code></a>):</strong> Zero-dependency Go scanner with 45 adversarial techniques, MCP/A2A transports, cumulative session tool policies, and SARIF CI gates.</li>
+</ol>
+
+<h2>Honest boundaries in v1.0.0</h2>
+<ul>
+  <li><strong>Local-only profiles are text-only by design:</strong> Local GGUF decision encoders do not process raw screenshots, audio clips, or video frames yet — for multimodal inputs, use <code>OmegaDecisionEngine</code> (hybrid cloud escalation) or convert media to structured text/DOM/ASR first.</li>
+  <li><strong>Single-turn vs stateful cumulative business rules:</strong> <code>/v1/judged-decision</code> excels at per-decision grounding, injection defense, and stateless policy rules, while cumulative multi-turn session invariants (like two separate 30-EUR refunds beating a 50-EUR cap) should be enforced by stateful deterministic tool-policy middleware and tested continuously with <code>sixi-scanner</code>.</li>
+</ul>
+
+<p class="takeaway"><code>laya-as-judge v1.0.0</code> gives individual builders a zero-cost, sub-200 ms local Decision &amp; Judge API on one consumer GPU — and gives regulated enterprises an air-gapped, calibrated, deterministic-first governance gate with full JSON audit trails under Apache-2.0. If your team is moving AI agents into regulated production and needs a fixed-scope architecture review or signed governance handover pack, see <a href="https://sixi.ai/en/assure/">Sixi Assure</a> or <a href="/work/">work with me</a>.</p>
+
+<hr>
+<p>Release &amp; source (Apache-2.0): <a href="https://github.com/radeksixi/laya-as-judge/releases/tag/v1.0.0">github.com/radeksixi/laya-as-judge v1.0.0</a> · Local 5-experiment benchmarks: <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">v0.7.0 write-up</a> · Hybrid 11/11 benchmarks: <a href="/laya-as-judge-omega-11-of-11-benchmarks/">Laya-Omega write-up</a> · <a href="/">More writing</a></p>
+</article>
+</main>
+<footer class="site">&copy; 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a> · <a href="/">More</a></footer>
+</body>
+</html>

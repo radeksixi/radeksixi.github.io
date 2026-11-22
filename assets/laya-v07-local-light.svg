@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" width="960" height="660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'DejaVu Sans', Helvetica, Arial, sans-serif" role="img" aria-label="laya-as-judge v0.7.0 five live local-GPU experiments">
+<title>laya-as-judge v0.7.0 — 5 Live Local-GPU Experiments ($0.00 Cloud Cost)</title>
+<rect width="960" height="660" rx="12" fill="#ffffff"/>
+
+<!-- Header -->
+<text x="28" y="38" fill="#1f2328" font-size="20" font-weight="700">laya-as-judge v0.7.0 <tspan fill="#d95b00">·</tspan> 5 Live Local-GPU Experiments ($0.00 Cloud)</text>
+<text x="28" y="60" fill="#57606a" font-size="12.2">6 HF Text Benchmarks (240 real Qs, seed=42) · 24-Case Red-Team · Symmetry &amp; Polish · 10-Q Long-Context Stress · RTX 5060 Ti 16 GB</text>
+
+<!-- Left panel title -->
+<text x="28" y="92" fill="#1f2328" font-size="13.5" font-weight="700">Exp 1 · 6-Benchmark Mean Score (240 real HF Qs)</text>
+<line x1="214.0" y1="130" x2="214.0" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="214.0" y="496" fill="#57606a" font-size="11" text-anchor="middle">0%</text><line x1="278.8" y1="130" x2="278.8" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="278.8" y="496" fill="#57606a" font-size="11" text-anchor="middle">20%</text><line x1="343.6" y1="130" x2="343.6" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="343.6" y="496" fill="#57606a" font-size="11" text-anchor="middle">40%</text><line x1="408.4" y1="130" x2="408.4" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="408.4" y="496" fill="#57606a" font-size="11" text-anchor="middle">60%</text><line x1="473.2" y1="130" x2="473.2" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="473.2" y="496" fill="#57606a" font-size="11" text-anchor="middle">80%</text><line x1="538.0" y1="130" x2="538.0" y2="478" stroke="#e6ebf1" stroke-width="1"/><text x="538.0" y="496" fill="#57606a" font-size="11" text-anchor="middle">100%</text><line x1="471.3" y1="126" x2="471.3" y2="480" stroke="#d95b00" stroke-width="2" stroke-dasharray="5 4"/><rect x="389.3" y="102" width="164" height="22" rx="5" fill="#fff8f0" stroke="#e36209" stroke-width="1.2"/><text x="471.3" y="117" fill="#d95b00" font-size="10.5" font-weight="700" text-anchor="middle">Gemini Dec 1: 79.4% (Cloud)</text><text x="202.0" y="154" fill="#1f2328" font-size="12.2" font-weight="600" text-anchor="end">Laya 421M solo</text><text x="202.0" y="168" fill="#57606a" font-size="10" text-anchor="end">0.85 GB · 10 ms · $0</text><rect x="214.0" y="147" width="134.8" height="23" rx="5" fill="#8c959f" opacity="0.88"/><text x="356.8" y="163.0" fill="#1f2328" font-size="12" font-weight="700">41.6%</text><text x="202.0" y="209" fill="#1f2328" font-size="12.2" font-weight="600" text-anchor="end">edge-6gb</text><text x="202.0" y="223" fill="#57606a" font-size="10" text-anchor="end">Laya-Q8 + Kev-4B · 5.88 GB · 88 ms</text><rect x="214.0" y="202" width="199.5" height="23" rx="5" fill="#9a6700" opacity="0.88"/><text x="421.5" y="218.0" fill="#1f2328" font-size="12" font-weight="700">61.6%</text><text x="202.0" y="264" fill="#1f2328" font-size="12.2" font-weight="600" text-anchor="end">Clef-Flash BF16 solo</text><text x="202.0" y="278" fill="#57606a" font-size="10" text-anchor="end">16.79 GB · 185 ms · $0</text><rect x="214.0" y="257" width="246.5" height="23" rx="5" fill="#0969da" opacity="0.88"/><text x="451.5" y="273.0" fill="#ffffff" font-size="12" font-weight="700" text-anchor="end">76.1%</text><text x="202.0" y="319" fill="#1f2328" font-size="12.2" font-weight="600" text-anchor="end">OpenJev-27B+ Q4 solo</text><text x="202.0" y="333" fill="#57606a" font-size="10" text-anchor="end">20.24 GB · 355 ms · $0</text><rect x="214.0" y="312" width="249.5" height="23" rx="5" fill="#8250df" opacity="0.88"/><text x="454.5" y="328.0" fill="#ffffff" font-size="12" font-weight="700" text-anchor="end">77.0%</text><text x="202.0" y="374" fill="#1f2328" font-size="12.2" font-weight="700" text-anchor="end">rtx-16gb (Clef-Flash)</text><text x="202.0" y="388" fill="#57606a" font-size="10" text-anchor="end">Kev-4B + Clef-9B · 11.75 GB · 158 ms</text><rect x="214.0" y="365" width="252.8" height="26" rx="5" fill="#0284c7" opacity="0.98"/><text x="457.8" y="382.5" fill="#ffffff" font-size="12" font-weight="700" text-anchor="end">78.0%</text><text x="202.0" y="429" fill="#1f2328" font-size="12.2" font-weight="700" text-anchor="end">rtx-16gb-glide</text><text x="202.0" y="443" fill="#57606a" font-size="10" text-anchor="end">Kev-4B + GLiDE-9B · 11.11 GB · 151 ms</text><rect x="214.0" y="420" width="255.1" height="26" rx="5" fill="#1a7f37" opacity="0.98"/><text x="460.1" y="437.5" fill="#ffffff" font-size="12" font-weight="700" text-anchor="end">78.7%</text>
+
+<!-- Left panel footnote -->
+<text x="28" y="528" fill="#57606a" font-size="11">2-tier local Q4 cascades beat solo BF16 (76.1%) &amp; solo 27B+ (77.0%) at 5–9 GB less VRAM — reaching 99.1% of Cloud Decision API.</text>
+
+<!-- Right panel: 4 Experiment Finding Cards -->
+<g>
+  <!-- Card 1: Red-Teaming -->
+  <rect x="590" y="88" width="342" height="96" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-width="1.5"/>
+  <text x="606" y="110" fill="#1a7f37" font-size="10.8" font-weight="700" letter-spacing="0.06em">EXP 2 · 24-CASE ADVERSARIAL RED-TEAM</text>
+  <text x="606" y="138" fill="#1f2328" font-size="21" font-weight="700">12 / 12 <tspan font-size="12.5" font-weight="600" fill="#1a7f37">caught · 0% false blocks</tspan></text>
+  <text x="606" y="158" fill="#57606a" font-size="11">rtx-16gb: 100% benign exec (on_high_stakes 294 ms)</text>
+  <text x="606" y="174" fill="#57606a" font-size="11">edge-6gb 11/12 gap closed by spoofed_audit_guard_rule</text>
+
+  <!-- Card 2: Calibration -->
+  <rect x="590" y="196" width="342" height="96" rx="10" fill="#f6f8fa" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="606" y="218" fill="#0284c7" font-size="10.8" font-weight="700" letter-spacing="0.06em">EXP 4 · Q4 QUANTIZATION CALIBRATION</text>
+  <text x="606" y="246" fill="#1f2328" font-size="21" font-weight="700">0.0701 -&gt; 0.0287 <tspan font-size="12.5" font-weight="600" fill="#0284c7">ECE (-59%)</tspan></text>
+  <text x="606" y="266" fill="#57606a" font-size="11">TempScaler on GLiDE-9B IQ4_NL (100% top-1 safe)</text>
+  <text x="606" y="282" fill="#57606a" font-size="11">AURC 0.0746 · When2Call 92.5% · New Yorker 77.5%</text>
+
+  <!-- Card 3: Long-context Joint Schema -->
+  <rect x="590" y="304" width="342" height="96" rx="10" fill="#f6f8fa" stroke="#e36209" stroke-width="1.5"/>
+  <text x="606" y="326" fill="#d95b00" font-size="10.8" font-weight="700" letter-spacing="0.06em">EXP 5 · 10-QUESTION LONG-LOG STRESS (2K TOK)</text>
+  <text x="606" y="354" fill="#1f2328" font-size="21" font-weight="700">3.3&#215; faster <tspan font-size="12.5" font-weight="600" fill="#d95b00">· 6.8&#215; fewer tokens</tspan></text>
+  <text x="606" y="374" fill="#57606a" font-size="11">Clef-Flash 9B joint-schema: 796 ms (2,871 tok, 12.6 q/s)</text>
+  <text x="606" y="390" fill="#57606a" font-size="11">vs Kev-4B pointer head: 2,630 ms (19,593 tok, 3.8 q/s)</text>
+
+  <!-- Card 4: Symmetry & Polish -->
+  <rect x="590" y="412" width="342" height="96" rx="10" fill="#f6f8fa" stroke="#8250df" stroke-width="1.5"/>
+  <text x="606" y="434" fill="#8250df" font-size="10.8" font-weight="700" letter-spacing="0.06em">EXP 3 · SYMMETRY (24 QS) &amp; POLISH (12 QS)</text>
+  <text x="606" y="462" fill="#1f2328" font-size="21" font-weight="700">0.0% flips <tspan font-size="12.5" font-weight="600" fill="#8250df">· 12/12 Polish (100%)</tspan></text>
+  <text x="606" y="482" fill="#57606a" font-size="11">Clef-Flash-9B: 0/24 order flips (98 ms) &amp; 12/12 PL (82 ms)</text>
+  <text x="606" y="498" fill="#57606a" font-size="11">Kev-4B: 4.2% flips, 11/12 PL · Laya EN: 9/12 PL (10 ms)</text>
+</g>
+
+<!-- Bottom 3 KPI boxes -->
+<rect x="28" y="548" width="292" height="88" rx="9" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="44" y="570" fill="#57606a" font-size="10.5" font-weight="700" letter-spacing="0.06em">BEST ALL-ROUND LOCAL STACK</text>
+<text x="44" y="596" fill="#0284c7" font-size="17.5" font-weight="700">rtx-16gb · 11.75 GB</text>
+<text x="44" y="618" fill="#57606a" font-size="11">78.0% avg · 12/12 red-team · 100% PL · 3.3&#215; logs</text>
+
+<rect x="334" y="548" width="292" height="88" rx="9" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="350" y="570" fill="#57606a" font-size="10.5" font-weight="700" letter-spacing="0.06em">BEST ENGLISH + CALIBRATION STACK</text>
+<text x="350" y="596" fill="#1a7f37" font-size="17.5" font-weight="700">rtx-16gb-glide · 11.11 GB</text>
+<text x="350" y="618" fill="#57606a" font-size="11">78.7% avg · When2Call 92.5% · 0.0287 OOF ECE</text>
+
+<rect x="640" y="548" width="292" height="88" rx="9" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="656" y="570" fill="#57606a" font-size="10.5" font-weight="700" letter-spacing="0.06em">BEST EDGE / SMALL-GPU STACK</text>
+<text x="656" y="596" fill="#9a6700" font-size="17.5" font-weight="700">edge-6gb · 5.88 GB</text>
+<text x="656" y="618" fill="#57606a" font-size="11">61.6% (+20 pp vs Laya) · 88 ms · Jetson / RTX 8GB</text>
+</svg>

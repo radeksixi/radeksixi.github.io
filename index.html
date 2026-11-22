@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated AI evaluation (laya-as-judge v0.4.0), agent red-teaming tools (sixi-scanner v1.0.0), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; Governance APIs (laya-as-judge v1.0.0), agent red-teaming tools (sixi-scanner v1.0.0), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D">
-<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v0.4.0 (calibrated evaluation) · 3. sixi-scanner v1.0.0 (agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
+<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.0.0 (Decision, Judge &amp; Governance API) · 3. sixi-scanner v1.0.0 (agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/">
 </head>
@@ -22,11 +22,21 @@
   <h1>Local C++/CUDA inference, calibrated AI evaluation, agent red-teaming, and off-grid field systems.</h1>
   <p class="lede">Senior Software Engineer &amp; AI Architect in Locarno, Switzerland — 14 years shipping software where failure is expensive. Open-source AI tools, <a href="https://sixi.ai/en/assure/">Sixi Assure</a>, and Swiss off-grid radio (<a href="https://sixi.ai/en/rifugio/">Rifugio</a>) at <a href="https://sixi.ai">Sixi Lab R&amp;D (sixi.ai)</a>; see my <a href="https://radeksixi.web.app/">portfolio</a> or <a href="/work/">work with me</a>.</p>
 
-  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Evaluate (laya-as-judge v0.4.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
+  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.0.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
+    <li>
+      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Release v1.0.0</span></span>
+      <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">laya-as-judge 1.0: one open-source Decision, Judge &amp; Governance API built for everyone — and ready for regulated enterprise</a>
+      <p>Official <code>v1.0.0</code> release (Apache-2.0): three zero-output-token API modes (<code>/v1/decisions</code>, <code>/v1/judge</code>, <code>/v1/judged-decision</code> &rarr; <code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>), scaling from $0 local 6 GB edge and 16 GB RTX GPUs (78.7%, 12/12 red-team) to air-gapped EU AI Act / DORA enterprise enclaves and 11/11 multimodal <code>Laya-Omega</code>.</p>
+    </li>
+    <li>
+      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Local GPU Benchmarks</span></span>
+      <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">laya-as-judge 0.7: a 100% local Decision, Judge &amp; Judged-Decision API — five live GPU experiments</a>
+      <p>240 real HF questions at $0 cloud cost: 2-tier 11.1–11.8 GB local Q4 cascades hit 78.0–78.7% (beating solo BF16 and 27B+), catch 12/12 red-team attacks with 0% false blocks, cut Q4 ECE 0.0701&rarr;0.0287, run 10-question long logs 3.3&times; faster on joint-schema 9B, plus every model and flag that broke.</p>
+    </li>
     <li>
       <span class="date">20 November 2026 <span class="post-tag">Inference · Release</span></span>
       <a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor, and a way to check it</a>
@@ -136,23 +146,24 @@
     </div>
   </div>
 
-  <p class="eyebrow">2 · Evaluation &amp; 3 · Red-Teaming</p>
-  <h2>laya-as-judge &amp; sixi-scanner — Calibrated evaluation and agent security</h2>
-  <a href="/laya-as-judge-omega-11-of-11-benchmarks/">
+  <p class="eyebrow">2 · Decide &amp; Judge &amp; 3 · Red-Teaming</p>
+  <h2>laya-as-judge &amp; sixi-scanner — Calibrated decision governance and agent security</h2>
+  <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-omega-dark.svg">
-      <img src="/assets/laya-omega-light.svg" alt="laya-as-judge v0.4.0 (Laya-Omega) vs Gemini Decision 1 across 2,250 real Hugging Face questions: 11/11 wins, pooled Top-1 ECE 0.0234, $0.77 total cost.">
+      <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-v1-platform-dark.svg">
+      <img src="/assets/laya-v1-platform-light.svg" alt="Laya-as-a-Judge v1.0.0 Platform Architecture: Decision API (/v1/decisions), Judge API (/v1/judge), Hybrid The Judged Decision (/v1/judged-decision), edge-6gb to air-gapped enterprise &amp; Laya-Omega.">
     </picture>
   </a>
   <div class="grid">
     <div class="card card-full">
-      <p class="tag-line">2 · Evaluate &amp; Route · Python · CUDA / MLX · v0.4.0</p>
+      <p class="tag-line">2 · Decide, Judge &amp; Govern · Python · CUDA / MLX / llama.cpp · v1.0.0 · Apache-2.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Calibrated typed-decision evaluation engine (<code>Laya-Omega</code>): local GPU encoders (<code>Laya</code> + <code>Vega-U 0.8B</code> Test-Time Training at $0.00 / 7–14 ms) handle clear cases and escalate uncertain or multimodal cases to a packed Gemini cascade with 10-fold simplex meta-calibration (<a href="/laya-as-judge-omega-11-of-11-benchmarks/">write-up</a>).</p>
+      <p>Three-mode, zero-output-token <strong>Decision</strong> (<code>/v1/decisions</code>, <code>/v1/systemone</code>), <strong>Judge</strong> (<code>/v1/judge</code>), and hybrid <strong>The Judged Decision</strong> (<code>/v1/judged-decision</code> &rarr; <code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>) platform. Runs 100% locally at $0 from 6 GB edge to 16 GB RTX GPUs (or hybrid multimodal <code>Laya-Omega</code>) with deterministic-first anti-spoofing rules and full JSON audit trails (<a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">v1.0.0 write-up</a>, <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">5 local GPU experiments</a>, <a href="/laya-as-judge-omega-11-of-11-benchmarks/">11/11 Omega</a>).</p>
       <ul class="pills">
-        <li>11/11 wins over Gemini Decision 1</li>
-        <li>Top-1 ECE 0.0234 across 2,250 questions</li>
-        <li>$0.77 total run cost · 7–14 ms local GPU</li>
+        <li>78.7% local 1&times;16 GB ($0) · 11/11 Omega</li>
+        <li>12/12 red-team caught · 0.0% false blocks</li>
+        <li>0.0287 Q4 OOF ECE · 0.0234 Omega ECE</li>
+        <li>3.3&times; faster 10-Q logs · EU AI Act / DORA ready</li>
       </ul>
     </div>
   </div>
