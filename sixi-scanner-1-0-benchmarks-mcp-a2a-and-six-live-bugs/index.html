@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sixi-scanner 1.0: six real bugs caught on live agents, MCP &amp; A2A, and zero-LLM precision jumping from 0.667 to 0.763</title>
 <meta name="description" content="Before tagging sixi-scanner v1.0.0 we replayed 1,480 Microsoft Foundry turns and ran live multi-protocol benchmarks (chat, tool traces, MCP, A2A) against Atlas on local Qwen3.8-27B and Gemma4-4B. Six real bugs surfaced and were fixed.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://sixi.ai">Sixi Lab</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>sixi-scanner 1.0: six real bugs caught on live agents, MCP &amp; A2A, and zero-LLM precision jumping from 0.667 to 0.763</h1>
-<p class="meta">Radek (Sixi) · 19 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a></p>
+<p class="meta">Radek Brus · 19 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a></p>
 
 <p class="lede">Unit tests pass even when your transport drops session IDs on a real server, or when a single comma inside an LLM refusal splits the denial away from the phrase it refused. Before tagging <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0"><code>sixi-scanner v1.0.0</code></a>, we put structured JSONL observability on both the scanner and a real multi-protocol Google ADK target (<a href="https://github.com/radeksixi/adk-demo-target">adk-demo-target</a>), replayed 1,480 recorded Microsoft Foundry turns, and ran live chat, tool-policy, MCP and A2A benchmarks. Six genuine bugs surfaced — every one of them invisible to unit tests alone — and fixing them pushed zero-LLM marker precision from <code>0.667</code> to <code>0.763</code> (-38% false positives) with zero recall loss.</p>
 
@@ -144,6 +144,6 @@ sixi-scanner diff baseline.json hardened.json</code></pre>
 <p>Code, stability contract &amp; binaries: <a href="https://github.com/radeksixi/sixi-scanner">github.com/radeksixi/sixi-scanner</a> · Reproducible multi-protocol target: <a href="https://github.com/radeksixi/adk-demo-target">github.com/radeksixi/adk-demo-target</a> · Previous write-up: <a href="/sixi-scanner-0-10-mcp-a2a-tool-policy-and-structural-oracles/">sixi-scanner 0.10</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

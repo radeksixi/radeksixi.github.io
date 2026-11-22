@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</title>
 <meta name="description" content="What a full code review of Faro (sixi-tdeck-plus) found across flash persistence, multi-byte MeshCore repeater paths, SoftAP Wi-Fi provisioning, desktop companion framing, keypad focus, and ESP32-S3 idle power — and what shipped in v0.12.1.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/faro-0-12-1-flash-safety-wifi-and-five-boards/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</h1>
-<p class="meta">Radek (Sixi) · 12 November 2026 · <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest">sixi-tdeck-plus (Faro) v0.12.1</a></p>
+<p class="meta">Radek Brus · 12 November 2026 · <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest">sixi-tdeck-plus (Faro) v0.12.1</a></p>
 
 <p class="lede">After shipping the initial <a href="/faro-and-sixi-observer-lora-mesh-stack/">Faro handheld UI and desktop console</a> for <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> LoRa radios and expanding it to five ESP32-S3 targets, I ran the same kind of <a href="/sixi-scanner-no-findings-is-not-a-pass/">line-by-line correctness review</a> over Faro's firmware, desktop companion client, and build pipeline. <a href="https://github.com/radeksixi/sixi-tdeck-plus/releases/latest"><code>v0.12.1</code></a> is the result.</p>
 
@@ -115,6 +115,6 @@ esptool --chip esp32s3 --port /dev/ttyACM0 --baud 921600 write-flash 0x10000 far
 <p>Faro is Apache-2.0 at <a href="https://github.com/radeksixi/sixi-tdeck-plus">github.com/radeksixi/sixi-tdeck-plus</a>; the browser flasher and Mesh America catalog are at <a href="https://radeksixi.github.io/sixi-tdeck-plus/">radeksixi.github.io/sixi-tdeck-plus</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

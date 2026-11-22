@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</title>
 <meta name="description" content="Open-sourcing sixi-asi, a C++20 speculative-decoding server for Qwen3.8-class hybrid recurrent + attention models on NVIDIA unified memory: O(1) state rollback, lossless sampled speculation, prefix cache, and a same-token benchmark against llama-server and ollama (21.9 vs 21.1 vs 20.4 vs 11.0 tok/s).">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/sixi-asi-speculative-decoding-hybrid-llms/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>sixi-asi 0.8: lossless speculative decoding for hybrid Gated-DeltaNet LLMs, measured against llama.cpp and ollama on the same tokens</h1>
-<p class="meta">Radek (Sixi) · 8 November 2026 · <a href="https://github.com/radeksixi/sixi-asi">source, benchmark scripts and raw results</a></p>
+<p class="meta">Radek Brus · 8 November 2026 · <a href="https://github.com/radeksixi/sixi-asi">source, benchmark scripts and raw results</a></p>
 
 <p class="lede">Hybrid models such as Qwen3.8 mix Gated DeltaNet layers, whose state is a fixed-size recurrence, with a few full-attention layers. That is great for long contexts and awkward for speculative decoding: a recurrent state cannot be truncated like a KV cache, so a rejected draft means either re-running the prefix or copying the whole state. sixi-asi is the server I built to make speculation on these models fast and provably lossless on a single NVIDIA unified-memory box. Today I am publishing it as a fork of my private research branch.</p>
 
@@ -80,6 +80,6 @@
 <p>Source, Apache-2.0: <a href="https://github.com/radeksixi/sixi-asi">github.com/radeksixi/sixi-asi</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

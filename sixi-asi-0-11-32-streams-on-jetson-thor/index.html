@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sixi-asi 0.11: 32 concurrent streams on one Jetson Thor at 170 tok/s, in 27 GB instead of 70</title>
 <meta name="description" content="sixi-asi 0.11 serves 32 concurrent Qwen3.8-27B streams on one NVIDIA Jetson AGX Thor at 170 tok/s (129 in 0.10) with 27 GB of context memory instead of 70, by replaying a log of recurrent-layer inputs instead of keeping a state snapshot per row. Sixteen agents with 17.8k-token prompts wait under 3 s for a follow-up instead of up to 442 s.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/sixi-asi-0-11-32-streams-on-jetson-thor/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>sixi-asi 0.11: 32 concurrent streams on one Jetson Thor at 170 tok/s, in 27 GB instead of 70</h1>
-<p class="meta">Radek (Sixi) · 12 November 2026 · <a href="https://github.com/radeksixi/sixi-asi">source, patches, benchmark scripts and raw results</a></p>
+<p class="meta">Radek Brus · 12 November 2026 · <a href="https://github.com/radeksixi/sixi-asi">source, patches, benchmark scripts and raw results</a></p>
 
 <p class="lede">sixi-asi 0.10 served four requests at once on an NVIDIA Jetson AGX Thor and stopped scaling at sixteen: 129 tokens per second in total, whether sixteen or thirty-two clients were connected. Version 0.11 reaches 154 with sixteen and 170 with thirty-two, uses 27 GB of context memory for those thirty-two streams instead of 70, and no longer makes an agent wait minutes behind other agents' long prompts. The model is the same Qwen3.8-27B; the default weights are a better file.</p>
 
@@ -92,6 +92,6 @@
 <p>Source, Apache-2.0: <a href="https://github.com/radeksixi/sixi-asi">github.com/radeksixi/sixi-asi</a>. Previous write-up: <a href="/sixi-asi-0-9-thor-kernels-long-context/">sixi-asi 0.9</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

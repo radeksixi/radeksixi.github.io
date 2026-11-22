@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE, and total cost</title>
 <meta name="description" content="laya-as-judge v0.4.0 (Laya-Omega), used alongside sixi.ai, beats Gemini Decision 1 on all 11 rows of the typed-decision benchmark table across 2,250 real questions (N=250/task): higher accuracy and Macro-F1 on every text, vision, audio, and video benchmark, pooled OOF Top-1 ECE 0.0234 vs 0.0250, and $0.77 total cost vs $0.88.">
-<meta name="author" content="radeksixi">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/laya-as-judge-omega-11-of-11-benchmarks/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">radeksixi</a>
-  <nav><a href="https://sixi.ai">sixi.ai</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE (0.0234), and total cost ($0.77)</h1>
-<p class="meta">radeksixi · 13 November 2026 · Used in production with <a href="https://sixi.ai">sixi.ai</a> · <a href="https://github.com/radeksixi/laya-as-judge">source, calibration math &amp; benchmark suite</a></p>
+<p class="meta">Radek Brus · 13 November 2026 · Used in production with <a href="https://sixi.ai">sixi.ai</a> · <a href="https://github.com/radeksixi/laya-as-judge">source, calibration math &amp; benchmark suite</a></p>
 
 <p class="lede">Autoregressive "LLM-as-a-Judge" pipelines burn dollars generating paragraphs of JSON when software actually needs a calibrated distribution over typed outcomes (<code>noul</code> boolean, <code>choice</code>, or ordinal <code>score</code>). Standalone local encoders (<a href="https://huggingface.co/convaiinnovations/laya">Laya</a> 421M/322M) fix latency and output tokens, but hit an obvious ceiling on raw screenshots, audio clips, video streams, and multi-hop domain reasoning. <strong>laya-as-judge 0.4 (<code>Laya-Omega</code>)</strong>—the open-source evaluation engine built and used alongside <a href="https://sixi.ai">sixi.ai</a>—combines local CUDA encoders and disjoint Test-Time Training with a selective two-stage Gemini Interactions API cascade and out-of-fold simplex meta-calibration. Across <strong>2,250 real Hugging Face questions</strong> (<code>N = 250</code> per benchmark, <code>seed = 42</code>, zero test leakage), it beats the published <strong>Gemini Decision 1</strong> scoreboard on all 11 rows: every single quality benchmark, pooled Top-1 ECE, and total dollar cost.</p>
 
@@ -90,6 +90,6 @@
 <p>Source, Apache-2.0: <a href="https://github.com/radeksixi/laya-as-judge">github.com/radeksixi/laya-as-judge</a> · Ecosystem: <a href="https://sixi.ai">sixi.ai</a> · <a href="/">More writing</a></p>
 </article>
 </main>
-<footer class="site">&copy; 2026 radeksixi · <a href="https://sixi.ai">sixi.ai</a> · <a href="/">More</a></footer>
+<footer class="site">&copy; 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="/">More</a></footer>
 </body>
 </html>

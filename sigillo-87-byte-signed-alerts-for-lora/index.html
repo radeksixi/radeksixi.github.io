@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</title>
 <meta name="description" content="How Sigillo packs a 7-byte header, the 16-byte EU Common Alert Message Format (Galileo CAMF) block, and a 64-byte Ed25519 signature into an 87-byte offline-verifiable frame — and why standard Ed25519 libraries disagree without strict verification rules.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/sigillo-87-byte-signed-alerts-for-lora/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>Sigillo: fitting an Ed25519-signed EU CAMF public alert into 87 bytes for LoRa packet radio</h1>
-<p class="meta">Radek (Sixi) · 26 October 2026 · <a href="https://github.com/radeksixi/sigillo">spec, conformance vectors and libraries</a></p>
+<p class="meta">Radek Brus · 26 October 2026 · <a href="https://github.com/radeksixi/sigillo">spec, conformance vectors and libraries</a></p>
 
 <p class="lede">When power and mobile networks go down in an Alpine valley, low-power LoRa mesh radios keep working for days on a small battery. What they cannot carry is a 2 KB JSON alert wrapped in an X.509 certificate chain — and what a receiver should never trust is an unsigned text broadcast on a shared channel.</p>
 
@@ -151,6 +151,6 @@ cd libs/sigillo-ts &amp;&amp; npm run conformance -- ../../vectors/v1.json</code
 <p>The full specification, conformance vectors, and C99 / Python / TypeScript implementations are available at <a href="https://github.com/radeksixi/sigillo">github.com/radeksixi/sigillo</a>. To see how Sigillo pairs with handheld LoRa hardware and SDR telemetry, read <a href="/faro-and-sixi-observer-lora-mesh-stack/">the companion write-up on Faro (sixi-tdeck-plus) and sixi-observer</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

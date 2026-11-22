@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</title>
 <meta name="description" content="Benchmarking local open-source OpenClaw 2026.11.5 with sixi-scanner v1.0.0 across Gemma 4 4B and Qwen 3.8 27B (default vs hardened): SSRF guards that held, on-disk USER.md/MEMORY.md persistence, bootstrap leaks despite tools.deny, and practical hardening.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://sixi.ai">Sixi Lab</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</h1>
-<p class="meta">Radek (Sixi) · 19 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a> · <code>ghcr.io/openclaw/openclaw:latest</code> (2026.11.5)</p>
+<p class="meta">Radek Brus · 19 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a> · <code>ghcr.io/openclaw/openclaw:latest</code> (2026.11.5)</p>
 
 <p class="lede">With Microsoft's Autopilot preview bringing fresh attention to the open-source <a href="https://github.com/openclaw/openclaw">OpenClaw</a> runtime, we wanted real measurements on how local OpenClaw behaves under structured agent security testing — and how much difference model size and runtime hardening actually make. We ran <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0"><code>sixi-scanner v1.0.0</code></a> against an isolated, zero-internet Docker instance of <strong>OpenClaw 2026.11.5</strong> backed by local Ollama (<strong>Gemma 4 4B</strong> and <strong>Qwen 3.8 27B</strong>, $0.00) and audited both the HTTP responses and OpenClaw's own SQLite trajectory database and workspace files.</p>
 
@@ -123,6 +123,6 @@ sixi-scanner scan --target json \
 <p>Scanner release &amp; binaries: <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.0.0">sixi-scanner v1.0.0</a> · Previous write-up: <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">sixi-scanner 1.0 benchmarks &amp; six live bugs</a> · OpenClaw upstream: <a href="https://github.com/openclaw/openclaw">github.com/openclaw/openclaw</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>

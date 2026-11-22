@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</title>
 <meta name="description" content="Why per-request guardrails fail across a conversation, how an Azure agent relayed prompt injection by e-mail seven times while an LLM judge called it compliant, and how sixi-scanner v0.8.4 reached 0.821 precision.">
-<meta name="author" content="Radek (Sixi)">
+<meta name="author" content="Radek Brus">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/multi-turn-probes-and-taint-relay/">
 <link rel="stylesheet" href="/assets/style.css">
@@ -19,13 +19,13 @@
 </head>
 <body>
 <header class="site">
-  <a class="name" href="/">Radek (Sixi)</a>
-  <nav><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://radeksixi.web.app/">Portfolio</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="mailto:contact@sixi.ai">contact@sixi.ai</a><a href="https://x.com/radeksixi">X</a></nav>
 </header>
 <main>
 <article>
 <h1>What single-turn AI scanners miss: split caps, multi-turn taint relays, and reaching 0.821 precision by subtraction</h1>
-<p class="meta">Radek (Sixi) · 16 October 2026 · <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v0.8.4</a> · <a href="https://github.com/radeksixi/agent-redteam-benchmark">benchmark data</a></p>
+<p class="meta">Radek Brus · 16 October 2026 · <a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v0.8.4</a> · <a href="https://github.com/radeksixi/agent-redteam-benchmark">benchmark data</a></p>
 
 <p class="lede">When I published the <a href="/agent-redteam-benchmark-findings/">7-tool AI red-teaming benchmark</a> earlier this month, every scanner on the board was tested in stateless single-turn mode: one prompt in, one reply out. That is how most automated red-teaming tools operate — and it leaves an entire class of real agent failures invisible.</p>
 
@@ -109,6 +109,6 @@ sixi-scanner scan \
 <p>Every run log, false-positive audit, and negative result is published in <a href="https://github.com/radeksixi/agent-redteam-benchmark">github.com/radeksixi/agent-redteam-benchmark</a>.</p>
 </article>
 </main>
-<footer class="site">© 2026 Radek (Sixi) · <a href="/">More</a></footer>
+<footer class="site">© 2026 Radek Brus · <a href="/">More</a></footer>
 </body>
 </html>
