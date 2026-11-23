@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 248" width="960" height="248" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <title>Sixi Lab R&amp;D — 1. sixi-asi v1.0.0 (Inference) → 2. laya-as-judge v1.0.0 (Decision &amp; Judge API) → 3. sixi-scanner v1.0.0 (Red-Teaming) · Sixi Assure &amp; Rifugio (sixi.ai)</title>
+  <title>Sixi Lab R&amp;D — 1. sixi-asi v1.0.0 (Inference) → 2. laya-as-judge v1.1.0 (Decision, Judge &amp; ActionGate API) → 3. sixi-scanner v1.0.0 (Red-Teaming) · Sixi Assure &amp; Rifugio (sixi.ai)</title>
   <style>
     .bg { fill: #ffffff; }
     .core { fill: #fff8f0; stroke: #e36209; stroke-width: 1.8; }
@@ -58,10 +58,10 @@
     <rect class="core" x="254" y="78" width="212" height="148" rx="10"/>
     <text class="step" x="270" y="103">2 · DECIDE &amp; JUDGE</text>
     <text class="name" x="270" y="128">laya-as-judge</text>
-    <text class="tag" x="270" y="148">3-Mode Local &amp; Omega · v1.0.0</text>
-    <text class="stat" x="270" y="176">78.7% local $0 · 11/11 Omega</text>
-    <text class="note" x="270" y="196">12/12 red-team · 0.0287 ECE</text>
-    <text class="note" x="270" y="213">Decision · Judge · ActionGate</text>
+    <text class="tag" x="270" y="148">PyPI · Local &amp; Omega · v1.1.0</text>
+    <text class="stat" x="270" y="176">78.7% local $0 · 95.0% RAIL F1</text>
+    <text class="note" x="270" y="196">94.6% tool guard · 11/11 Omega</text>
+    <text class="note" x="270" y="213">Drop-Ins · FastMCP · LangGraph</text>
   </g>
   <path class="arrow" d="M468,152 L481,152" marker-end="url(#arr)"/>
 

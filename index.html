@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; Governance APIs (laya-as-judge v1.0.0), agent red-teaming tools (sixi-scanner v1.0.0), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate APIs (laya-as-judge v1.1.0 on PyPI), agent red-teaming tools (sixi-scanner v1.0.0), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D">
-<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.0.0 (Decision, Judge &amp; Governance API) · 3. sixi-scanner v1.0.0 (agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
+<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.1.0 (PyPI · Decision, Judge &amp; ActionGate API) · 3. sixi-scanner v1.0.0 (agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/">
 </head>
@@ -22,7 +22,7 @@
   <h1>Local C++/CUDA inference, calibrated AI evaluation, agent red-teaming, and off-grid field systems.</h1>
   <p class="lede">Senior Software Engineer &amp; AI Architect in Locarno, Switzerland — 14 years shipping software where failure is expensive. <strong>Open to Senior/Principal roles &amp; B2B contracts</strong> across Switzerland (remote/hybrid), EU &amp; Canada (remote). Open-source AI tools, <a href="https://sixi.ai/en/assure/">Sixi Assure</a>, and Swiss off-grid radio (<a href="https://sixi.ai/en/rifugio/">Rifugio</a>) at <a href="https://sixi.ai">Sixi Lab R&amp;D (sixi.ai)</a>; see my <a href="https://sixi.ai/en/radek/">profile</a>, <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a>, or <a href="/work/">work with me</a>.</p>
 
-  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.0.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
+  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.1.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
@@ -153,22 +153,22 @@
 
   <p class="eyebrow">2 · Decide &amp; Judge &amp; 3 · Red-Teaming</p>
   <h2>laya-as-judge &amp; sixi-scanner — Calibrated decision governance and agent security</h2>
-  <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">
+  <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-v1-platform-dark.svg">
-      <img src="/assets/laya-v1-platform-light.svg" alt="Laya-as-a-Judge v1.0.0 Platform Architecture: Decision API (/v1/decisions), Judge API (/v1/judge), Hybrid The Judged Decision (/v1/judged-decision), edge-6gb to air-gapped enterprise &amp; Laya-Omega.">
+      <source media="(prefers-color-scheme: dark)" srcset="/assets/laya-v11-railguard-dark.svg">
+      <img src="/assets/laya-v11-railguard-light.svg" alt="laya-as-judge v1.1.0 RAIL Guard local GPU benchmark ($0 cloud): Pool A 95.0% F1 with 0.0% benign FPR and full Pool B 392/392 tool-calls at 94.6% unsafe intercept.">
     </picture>
   </a>
   <div class="grid">
     <div class="card card-full">
-      <p class="tag-line">2 · Decide, Judge &amp; Govern · Python · CUDA / MLX / llama.cpp · v1.0.0 · Apache-2.0</p>
+      <p class="tag-line">2 · Decide, Judge &amp; Govern · Python · PyPI · CUDA / MLX / llama.cpp · v1.1.0 · Apache-2.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Three-mode, zero-output-token <strong>Decision</strong> (<code>/v1/decisions</code>, <code>/v1/systemone</code>), <strong>Judge</strong> (<code>/v1/judge</code>), and hybrid <strong>The Judged Decision</strong> (<code>/v1/judged-decision</code> &rarr; <code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>) platform. Runs 100% locally at $0 from 6 GB edge to 16 GB RTX GPUs (or hybrid multimodal <code>Laya-Omega</code>) with deterministic-first anti-spoofing rules and full JSON audit trails (<a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">v1.0.0 write-up</a>, <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">5 local GPU experiments</a>, <a href="/laya-as-judge-omega-11-of-11-benchmarks/">11/11 Omega</a>).</p>
+      <p>Zero-output-token <strong>Decision</strong>, <strong>Judge</strong>, <strong>Drop-In APIs</strong> (<code>/v1/decisions/batch</code>, <code>/v1/moderations</code>, <code>/v1/rerank</code>, <code>/v1/rank</code>, <code>/metrics</code>) &amp; <strong>ActionGate</strong> (<code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>) platform on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a> (<code>pip install laya-as-judge</code>) with <strong>FastMCP &amp; LangGraph</strong> middleware, native <strong>DecisionBench</strong> &amp; <strong>RAIL Guard</strong> runners, deterministic anti-spoofing rules, and JSON audit trails (<a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">v1.1.0 PyPI &amp; RAIL Guard</a>, <a href="https://huggingface.co/spaces/rbai86/laya-as-judge-demo">HF Space</a>, <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">v1.0.0 architecture</a>, <a href="/laya-as-judge-omega-11-of-11-benchmarks/">11/11 Omega</a>).</p>
       <ul class="pills">
-        <li>78.7% local 1&times;16 GB ($0) · 11/11 Omega</li>
-        <li>12/12 red-team caught · 0.0% false blocks</li>
-        <li>0.0287 Q4 OOF ECE · 0.0234 Omega ECE</li>
-        <li>3.3&times; faster 10-Q logs · EU AI Act / DORA ready</li>
+        <li>PyPI (pip install) · FastMCP &amp; LangGraph</li>
+        <li>RAIL Guard: 95.0% F1 · 94.6% tool intercept</li>
+        <li>78.7% local $0 · 12/12 red-team · 11/11 Omega</li>
+        <li>0.0287 Q4 OOF ECE · EU AI Act / DORA ready</li>
       </ul>
     </div>
   </div>
