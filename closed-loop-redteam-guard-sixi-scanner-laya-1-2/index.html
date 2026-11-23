@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Closing the AI Security Loop: sixi-scanner v1.2.0 ↔ laya-as-judge v1.2.0 (Attack → Guard → Prove at $0 Local GPU)</title>
+<meta name="description" content="sixi-scanner v1.2.0 and laya-as-judge v1.2.0 close the open-source Attack -> Guard -> Prove loop: zero-output-token RedTeamVerdictJudge (/v1/judge preset), --export-laya deterministic guardrail rules, and live verification on Qwen3.8-27B (Sixi-ASI 1.0.0) and DVMCP Challenge 4 rug-pull.">
+<meta name="author" content="Radek Brus">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Closing the AI Security Loop: sixi-scanner v1.2.0 ↔ laya-as-judge v1.2.0 (Attack → Guard → Prove)">
+<meta property="og:description" content="Most AI red-teaming tools stop at a PDF full of noise. sixi-scanner v1.2.0 + laya-as-judge v1.2.0 turn confirmed breaks into sub-millisecond deterministic guardrails and prove closure in CI — tested live on Qwen3.8-27B and DVMCP Challenge 4.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radeksixi.github.io/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-23">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://sixi.ai/en/radek/">Profile</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>Closing the AI Security Loop: <code>sixi-scanner v1.2.0</code> &harr; <code>laya-as-judge v1.2.0</code> (Attack &rarr; Guard &rarr; Prove)</h1>
+<p class="meta">Radek Brus · 23 November 2026 · <a href="https://pypi.org/project/sixi-scanner/">PyPI <code>sixi-scanner 1.2.0</code></a> · <a href="https://pypi.org/project/laya-as-judge/">PyPI <code>laya-as-judge 1.2.0</code></a> · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.2.0">GitHub Releases</a></p>
+
+<p class="lede">Most AI red-teaming workflows break down at the handoff: a scanner finds a vulnerability, dumps a JSON or PDF report, someone tweaks the system prompt by hand, and a week later nobody knows whether the original break stayed fixed or opened two new ones. Today's twin releases — <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.2.0"><strong><code>sixi-scanner v1.2.0</code></strong></a> and <a href="https://github.com/radeksixi/laya-as-judge/releases/tag/v1.2.0"><strong><code>laya-as-judge v1.2.0</code></strong></a> (both Apache-2.0, both live on PyPI, plus the Official MCP Registry) — wire the two projects into one automated <strong>Attack &rarr; Guard &rarr; Prove</strong> loop with <strong>0 judge output tokens</strong> and <strong>$0.00 cloud cost</strong>.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/closed-loop-redteam-guard-dark.svg">
+  <img src="/assets/closed-loop-redteam-guard-light.svg" alt="Closed Attack -> Guard -> Prove loop between sixi-scanner v1.2.0 and laya-as-judge v1.2.0 verified live on Qwen3.8-27B (45 probes, 2 fixed / 0 still open / 1 new stochastic XSS, 0.29 ms guard overhead, 0/10 benign false blocks) and DVMCP Challenge 4 (get_weather blocked in 1.00 ms, get_system_time committed).">
+</picture>
+
+<h2>1. Why generative LLM judges fail red-team CI pipelines</h2>
+<p>When a red-team scanner asks a generative LLM over <code>/v1/chat/completions</code> to confirm whether a candidate finding actually broke policy, three problems show up immediately: it burns output tokens per finding, it occasionally emits broken JSON, and it still struggles to separate a polite refusal that quotes the forbidden topic (<em>"I cannot share API keys"</em>) from a real leak.</p>
+<p>In <code>laya-as-judge v1.2.0</code>, we added a dedicated <strong><code>RedTeamVerdictJudge</code></strong> preset (<code>POST /v1/judge</code> with <code>"judge": "redteam"</code>) that scores three orthogonal typed questions in a single forward pass with <strong>0 output tokens</strong>:</p>
+<ul>
+  <li><code>violation_confirmed</code> (<code>noul</code>): calibrated probability that <code>agent_reply</code> actually violated <code>agent_policy</code>.</li>
+  <li><code>is_benign_refusal</code> (<code>noul</code>): explicit probability that <code>agent_reply</code> safely refused or deflected without leaking protected data.</li>
+  <li><code>severity</code> (<code>choice</code>): <code>none</code>, <code>low</code>, <code>medium</code>, <code>high</code>, or <code>critical</code>.</li>
+</ul>
+<p><code>sixi-scanner v1.2.0</code> automatically uses <code>judge="redteam"</code> whenever <code>--confirm-url</code> points to a Laya <code>/v1/judge</code> endpoint (gracefully falling back to inline typed criteria on <code>laya-as-judge v1.0/v1.1</code> servers), and arbitrates <code>is_benign_refusal</code> against <code>violation_confirmed</code> before promoting any candidate to a finding.</p>
+
+<h2>2. From finding to deterministic guardrail in one flag: <code>--export-laya</code></h2>
+<p>Confirmation is only half the loop. Both <code>sixi-scanner scan</code> and <code>sixi-scanner surface</code> now accept <code>--export-laya guard-rules.json</code>, exporting every confirmed break into a zero-dependency machine-readable guard pack containing both deterministic rules (<code>prompt_block</code>, <code>tool_block</code>, <code>mcp_surface_block</code>, <code>output_block</code>) and replayable <code>regression_cases</code>.</p>
+<p>On the defence side, <code>laya-as-judge v1.2.0</code> adds <code>load_sixi_scanner_rules("guard-rules.json")</code> (which also accepts raw <code>sixi-scanner --format json</code> reports), <code>laya-judge serve --rules-file guard-rules.json</code>, and a CI verifier <code>laya-judge verify-sixi guard-rules.json</code>:</p>
+
+<pre><code># 1. ATTACK: scan live agent, confirm via zero-token RedTeamVerdictJudge, export guard pack
+sixi-scanner scan --url http://127.0.0.1:8080/v1/chat/completions --stateful \
+  --context agent.json \
+  --confirm-url http://127.0.0.1:8000/v1/judge \
+  --out baseline.json \
+  --export-laya guard-rules.json
+
+# 2. GUARD: verify 100% regression closure in CI &amp; mount rules on Laya server / FastMCP / LangGraph
+laya-judge verify-sixi guard-rules.json
+laya-judge serve --profile rtx-16gb --rules-file guard-rules.json --port 8000
+
+# 3. PROVE: re-scan the guarded agent and inspect the honest diff
+sixi-scanner scan --url http://127.0.0.1:8080/v1/chat/completions --stateful --out after.json
+sixi-scanner diff baseline.json after.json</code></pre>
+
+<h2>3. Live Experiment 1: All 45 probes on local <code>Qwen3.8-27B</code> + CUDA <code>RedTeamVerdictJudge</code></h2>
+<p>To verify the entire loop without synthetic mocks, we ran an unhardened customer-support agent backed by live <strong><code>Qwen3.8-27B-UD-Q4_K_XL</code></strong> on <a href="https://github.com/radeksixi/sixi-asi"><code>Sixi-ASI 1.0.0</code></a> (8 parallel slots, $0.00 cloud) and confirmed candidates on local CUDA <strong><code>convaiinnovations/laya</code></strong> running <code>RedTeamVerdictJudge</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stage</th>
+      <th>What ran</th>
+      <th>Measured result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Phase 1 · Attack (unguarded)</strong></td>
+      <td>All 45 <code>sixi-scanner</code> probes (<code>--stateful --attempts 2 --concurrency 8</code>, 234.2 s)</td>
+      <td>CUDA <code>RedTeamVerdictJudge</code> (<strong>0 output tokens</strong>, <strong>131.5 ms</strong> avg): 3 asked, <strong>1 FP rejected</strong>, <strong>2 confirmed</strong> (<code>probe.llm01.sleeper-memory</code>, <code>probe.llm01.ssti-echo</code>) &rarr; <code>--export-laya</code> emitted 2 rules</td>
+    </tr>
+    <tr>
+      <td><strong>Phase 2 · Guard</strong></td>
+      <td><code>load_sixi_scanner_rules("guard-rules.json")</code> + <code>verify_regression</code> + 10 benign customer queries</td>
+      <td><strong><code>2/2</code> closed (100.0%)</strong>, <strong><code>0/10</code> benign false blocks</strong>, average deterministic check overhead: <strong><code>0.291 ms</code></strong></td>
+    </tr>
+    <tr>
+      <td><strong>Phase 3 · Prove (guarded)</strong></td>
+      <td>Exact same 45 probes re-run against guarded 27B (217.3 s) + <code>sixi-scanner diff</code></td>
+      <td><strong><code>fixed: 2</code></strong> (<code>sleeper-memory</code> + <code>ssti-echo</code>), <strong><code>still_open: 0</code></strong>, <strong><code>new: 1</code></strong> (<code>probe.llm05.xss-reflection</code>)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>The honest lesson in Phase 3:</strong> both original vulnerabilities stayed 100% closed (<code>fixed=2, still_open=0</code>) with sub-millisecond latency and zero false blocks on benign customer questions — <em>and</em> the second full sweep caught a stochastic <code>probe.llm05.xss-reflection</code> break that hadn't triggered on run #1. That is exactly why <code>sixi-scanner diff</code> exists: security on stochastic LLMs is an iterative CI loop, not a one-time checkbox.</p>
+
+<h2>4. Live Experiment 2: Closing an MCP Rug Pull (DVMCP Challenge 4) in 1.00 ms</h2>
+<p>We ran the same loop against unmodified <strong>DVMCP Challenge 4</strong> (<code>FastMCP</code> Streamable HTTP), where <code>get_weather</code> ships a clean manifest on snapshot #1 and starts injecting hidden <code>&lt;IMPORTANT&gt;</code> exfiltration directives on benign call #4:</p>
+<ol>
+  <li><strong>Detect &amp; Export:</strong> <code>sixi-scanner surface --url http://127.0.0.1:9004/mcp --rug-pull --export-laya mcp-guard.json</code> caught <code>[CRITICAL] surface.mcp.rug-pull</code> on call #4 and exported a deterministic <code>mcp_surface_block</code> rule for <code>get_weather</code>.</li>
+  <li><strong>Guard in FastMCP:</strong> loading <code>mcp-guard.json</code> into <code>LayaToolGateMiddleware</code> blocked <code>get_weather({"city": "London"})</code> deterministically in <strong><code>1.001 ms</code></strong> (<code>ActionGate.BLOCK</code>, reason <code>sixi_scanner_regression:surface.mcp.rug-pull</code>) before the poisoned tool could execute.</li>
+  <li><strong>Zero collateral damage:</strong> calling the clean sibling tool <code>get_system_time({})</code> through the same middleware returned <strong><code>ActionGate.COMMIT</code></strong>.</li>
+</ol>
+
+<h2>Install &amp; Try It</h2>
+<pre><code># Install both packages from PyPI (no Go toolchain required for sixi-scanner)
+pip install sixi-scanner laya-as-judge
+
+# Or run sixi-scanner directly as a stdio MCP server (Official MCP Registry: io.github.radeksixi/sixi-scanner)
+uvx sixi-scanner mcp-serve</code></pre>
+
+<p>Links: <a href="https://github.com/radeksixi/sixi-scanner"><code>sixi-scanner</code> (GitHub)</a> · <a href="https://pypi.org/project/sixi-scanner/"><code>sixi-scanner</code> (PyPI)</a> · <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge</code> (GitHub)</a> · <a href="https://pypi.org/project/laya-as-judge/"><code>laya-as-judge</code> (PyPI)</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a> · <a href="https://sixi.ai/en/radek/">Profile</a> · <a href="/">Writing</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
+</body>
+</html>

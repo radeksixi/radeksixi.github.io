@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work with me · Radek Brus · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Locarno, Switzerland): local C++20/CUDA Hybrid MoE inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate API (laya-as-judge v1.1.0 on PyPI), AI agent governance &amp; red-teaming (Sixi Assure, sixi-scanner v1.1.0 on PyPI &amp; MCP Registry), and off-grid LoRa mesh systems (Rifugio).">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Locarno, Switzerland): local C++20/CUDA Hybrid MoE inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate API (laya-as-judge v1.2.0 on PyPI), AI agent governance &amp; red-teaming (Sixi Assure, sixi-scanner v1.2.0 on PyPI &amp; MCP Registry), and off-grid LoRa mesh systems (Rifugio).">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/work/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Work with me · Radek Brus · Sixi Lab R&amp;D">
-<meta property="og:description" content="Local C++/CUDA inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate API (laya-as-judge v1.1.0 on PyPI), AI agent governance &amp; CI red-teaming (Sixi Assure, sixi-scanner v1.1.0 on PyPI &amp; MCP Registry), and off-grid LoRa mesh systems.">
+<meta property="og:description" content="Local C++/CUDA inference (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate API (laya-as-judge v1.2.0 on PyPI), AI agent governance &amp; CI red-teaming (Sixi Assure, sixi-scanner v1.2.0 on PyPI &amp; MCP Registry), and off-grid LoRa mesh systems.">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/work/">
 </head>
@@ -22,7 +22,7 @@
 <h1>Work with me</h1>
 <p class="lede">Through <a href="https://sixi.ai">Sixi Lab R&amp;D</a> in Locarno, Switzerland, I help teams run open-weight AI models faster on local hardware, govern and test AI agent systems before handover, and engineer off-grid edge and radio systems — <strong>open to Senior/Principal roles &amp; B2B contracts</strong>, fixed-scope reviews, or builds to order across <strong>Switzerland (remote/hybrid), Europe &amp; Canada (remote)</strong> (<a href="https://sixi.ai/en/work/">full engagement guide on sixi.ai</a>).</p>
 
-<a href="/"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.1.0) → 3 Red-Team (sixi-scanner v1.1.0) · Sixi Assure &amp; Rifugio at sixi.ai."></a>
+<a href="/"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.2.0) → 3 Red-Team (sixi-scanner v1.2.0) · Sixi Assure &amp; Rifugio at sixi.ai."></a>
 
 <h2>1. Local LLM &amp; Hybrid MoE inference on NVIDIA Jetson and DGX Spark</h2>
 <ul>
@@ -33,17 +33,17 @@
 
 <h2>2. Calibrated AI decisions, evaluation &amp; agent governance (<a href="https://sixi.ai/en/assure/">Sixi Assure</a>)</h2>
 <ul>
-  <li>Zero-output-token Decision, Judge, Drop-In &amp; ActionGate API (<a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge v1.1.0</a> on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a>): local GPU cascades ($0 on 6 GB edge to 16 GB RTX), FastMCP &amp; LangGraph tool-gate middleware, deterministic anti-spoofing gates (<code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>), probability calibration, and optional multimodal cloud escalation (<code>Laya-Omega</code>)</li>
+  <li>Zero-output-token Decision, Judge (<code>RedTeamVerdictJudge</code>), Drop-In &amp; ActionGate API (<a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge v1.2.0</a> on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a>): local GPU cascades ($0 on 6 GB edge to 16 GB RTX), FastMCP &amp; LangGraph tool-gate middleware, native <code>sixi-scanner</code> guardrail loader (<code>verify-sixi</code>, <code>--rules-file</code>), deterministic anti-spoofing gates (<code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>), probability calibration, and optional multimodal cloud escalation (<code>Laya-Omega</code>)</li>
   <li>Design-time AI agent governance (<a href="https://sixi.ai/en/assure/">Sixi Assure</a>) and enterprise architecture on Microsoft Foundry or Google ADK: typed system models, Entra agent identities, scoped MCP/A2A tools, agent passports, and signed handover packs for EU AI Act / DORA / GDPR</li>
 </ul>
-<p><em>Proof:</em> <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">laya-as-judge v1.1.0</a> reaches 95.0% F1 on RAIL Guard Pool A (0.0% benign FPR) and 94.6% unsafe intercept across all 392 Pool B tool-calls at $0 cloud (<a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">v1.0.0</a>: 78.7% locally on 1×16 GB RTX, 12/12 red-team caught with 0% false blocks, 0.0287 Q4 OOF ECE) and <a href="/laya-as-judge-omega-11-of-11-benchmarks/">Laya-Omega</a> wins 11/11 benchmarks over Gemini Decision 1 (ECE 0.0234, $0.77 total); 14 years across defence, pharma, and building-automation platforms.</p>
+<p><em>Proof:</em> <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Attack → Guard → Prove Loop</a> (0-output-token <code>RedTeamVerdictJudge</code> + <code>0.29 ms</code> guard closure on live Qwen3.8-27B &amp; <code>1.00 ms</code> DVMCP rug-pull block), <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">RAIL Guard</a> (95.0% F1 Pool A, 94.6% unsafe intercept across all 392 Pool B tool-calls at $0 cloud), and <a href="/laya-as-judge-omega-11-of-11-benchmarks/">Laya-Omega</a> (11/11 benchmarks over Gemini Decision 1, ECE 0.0234, $0.77 total).</p>
 
 <h2>3. AI agent security assessment &amp; CI red-teaming</h2>
 <ul>
-  <li>Wire-level red-teaming over REST, cloud LLM APIs (OpenAI, Responses/Foundry, Azure, Gemini, Anthropic), MCP Streamable HTTP (<code>2025-03-26</code>), and A2A — including passive tool-poisoning inspection (<code>surface</code>), deterministic rug-pull detection (<code>--rug-pull</code>), multi-turn sleeper/state abuse (<code>--stateful</code>), and cumulative tool-call policies</li>
-  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v1.1.0</a> on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>) &amp; Official MCP Registry (<code>mcp-serve</code>): 45 probes, 11 zero-dep connectors, native <code>laya-as-judge</code> confirmation, GitHub Action, SARIF 2.1.0, HTML reports, <code>--log-jsonl</code> telemetry, and honest scan-to-scan <code>diff</code></li>
+  <li>Wire-level red-teaming over REST, cloud LLM APIs (OpenAI, Responses/Foundry, Azure, Gemini, Anthropic), MCP Streamable HTTP (<code>2025-03-26</code>), and A2A — including passive tool-poisoning inspection (<code>surface</code>), deterministic rug-pull detection (<code>--rug-pull</code>), multi-turn sleeper/state abuse (<code>--stateful</code>), and closed-loop <code>--export-laya</code> guardrail generation</li>
+  <li><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner v1.2.0</a> on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>) &amp; Official MCP Registry (<code>mcp-serve</code>): 45 probes, 11 zero-dep connectors, native <code>laya-as-judge</code> confirmation &amp; export, GitHub Action, SARIF 2.1.0, HTML reports, <code>--log-jsonl</code> telemetry, and honest scan-to-scan <code>diff</code></li>
 </ul>
-<p><em>Proof:</em> <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">v1.1.0 third-party benchmarks</a> (MCPTox 80.64% recall / 99.36% precision across 1,348 poisoned tools, 43/45 clean servers 0 FP; DVMCP 15/15 Streamable HTTP + live C04 rug-pull detection; 91.33% JailbreakBench accuracy on local Sixi-ASI at $0), <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">v1.0.0 Foundry &amp; ADK benchmarks</a>, <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw 2026.11.5 sandbox hardening</a>, and <a href="/agent-redteam-benchmark-findings/">7-tool benchmark</a> (0.821 precision, 1st of 7; 1.000 multi-turn precision).</p>
+<p><em>Proof:</em> <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Loop</a>, <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">v1.1.0 third-party benchmarks</a> (MCPTox 80.64% recall / 99.36% precision across 1,348 poisoned tools, 43/45 clean servers 0 FP; DVMCP 15/15 Streamable HTTP + live C04 rug-pull detection; 91.33% JailbreakBench accuracy on local Sixi-ASI at $0), <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw 2026.11.5</a>, and <a href="/agent-redteam-benchmark-findings/">7-tool benchmark</a> (0.821 precision, 1st of 7; 1.000 multi-turn precision).</p>
 
 <h2>4. Off-grid LoRa mesh &amp; embedded field systems</h2>
 <ul>
