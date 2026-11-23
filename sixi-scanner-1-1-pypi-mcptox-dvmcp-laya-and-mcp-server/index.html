@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: MCPTox (38% to 80.6% recall), DVMCP 15/15 + rug-pull detection, cloud connectors, and native laya-as-judge confirmation</title>
+<meta name="description" content="sixi-scanner v1.1.0 is live on PyPI (uvx sixi-scanner / pip install sixi-scanner), GitHub Actions, and the Official MCP Registry (io.github.radeksixi/sixi-scanner). Driven by four independent third-party benchmarks: MCPTox (80.64% recall / 99.36% precision), DVMCP (15/15 Streamable HTTP + live C04 rug-pull detection), DVAA, and JailbreakBench (91.33% accuracy on local Sixi-ASI at $0).">
+<meta name="author" content="Radek Brus">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: MCPTox 80.6% recall, DVMCP 15/15, rug-pull detection, and laya-as-judge">
+<meta property="og:description" content="Four independent third-party benchmarks exposed three real gaps in v1.0.0 — and shaped v1.1.0: MCP Streamable HTTP (15/15 DVMCP), 80.64% MCPTox recall at 99.36% precision, deterministic --rug-pull detection, 11 zero-dep connectors, native laya-as-judge confirmation, and stdio mcp-serve.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
+<meta property="og:url" content="https://radeksixi.github.io/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-23">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://sixi.ai/en/radek/">Profile</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: four third-party benchmarks, 80.6% MCPTox recall, live rug-pull detection, and native <code>laya-as-judge</code></h1>
+<p class="meta">Radek Brus · 23 November 2026 · <a href="https://pypi.org/project/sixi-scanner/">PyPI v1.1.0</a> · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.1.0">GitHub Release</a> · <a href="https://github.com/radeksixi/sixi-scanner/blob/main/server.json">MCP Registry (<code>io.github.radeksixi/sixi-scanner</code>)</a></p>
+
+<p class="lede"><strong><code>sixi-scanner v1.1.0</code></strong> (Apache-2.0, still <strong>Go standard library only — 0 external dependencies</strong>) is now live on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code> / <code>pip install sixi-scanner</code> across Linux, macOS &amp; Windows), the <strong>Official MCP Registry</strong> (<code>io.github.radeksixi/sixi-scanner</code> via <code>sixi-scanner mcp-serve</code>), and GitHub Actions (<code>action.yml</code>). Before shipping a single line of new code, I ran <code>v1.0.0</code> against four independent third-party benchmarks — <strong>MCPTox</strong> (AAAI 2026), <strong>DVMCP</strong>, <strong>DVAA</strong>, and <strong>JailbreakBench</strong> — to see where it actually broke outside my own test harnesses.</p>
+
+<h2>1. Three real failures that third-party benchmarks exposed in <code>v1.0.0</code></h2>
+<p>Testing a scanner only against your own demo agents gives you comfortable numbers and blind spots. Running <code>v1.0.0</code> unmodified against four external suites immediately surfaced three concrete gaps:</p>
+<ol>
+  <li><strong>Modern FastMCP Streamable HTTP (<code>2025-03-26</code>) returned HTTP 406 on all 15/15 DVMCP challenges.</strong> <code>v1.0.0</code> sent <code>Accept: application/json</code> without <code>text/event-stream</code>, did not persist <code>Mcp-Session-Id</code>, and did not send <code>notifications/initialized</code> or unwrap SSE <code>data:</code> frames.</li>
+  <li><strong>Natural-language tool poisoning missed 62% of MCPTox (AAAI 2026).</strong> Against 1,348 real poisoned MCP tools, <code>v1.0.0</code> caught only <code>38.06%</code> (513/1,348) — and just <code>3.71%</code> on the stealth <code>pure_tool.json</code> subset that avoids XML tags like <code>&lt;IMPORTANT&gt;</code> and instead uses phrases like <em>"ignore the previous instructions"</em>, <em>"do not inform the user"</em>, or mandatory prerequisite hijacks.</li>
+  <li><strong>Diagnostic tool-error echoes caused false positives on strict agents.</strong> When an MCP tool or agent returned a validation error quoting our probe text (e.g. <code>Error: unexpected value "..."</code>), the substring marker scorer could match markers reflected from our own input — producing 22 false positives on DVMCP Challenge 2 and 22 on DVAA <code>ToolBot</code>.</li>
+</ol>
+
+<h2>2. Before vs. after across all four third-party benchmarks</h2>
+<p>Fixing those three root causes — without weakening refusal handling or adding external dependencies — produced clean, measurable gains across every external dataset:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Third-Party Benchmark</th>
+      <th>Metric</th>
+      <th><code>v1.0.0</code></th>
+      <th><code>v1.1.0</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>MCPTox</strong> (AAAI 2026 · 1,348 poisoned + 362 clean tools across 45 real MCP servers)</td>
+      <td>Recall / Precision / F1 / Clean FPR</td>
+      <td><code>38.06%</code> / <code>98.65%</code> / <code>0.549</code> / <code>1.93%</code></td>
+      <td><strong><code>80.64%</code></strong> (1,087/1,348) / <strong><code>99.36%</code></strong> / <strong><code>0.8903</code></strong> / <strong><code>1.93%</code></strong> (43/45 servers 0 FP)</td>
+    </tr>
+    <tr>
+      <td><strong>MCPTox stealth subset</strong> (<code>pure_tool.json</code>, N=485)</td>
+      <td>Recall on natural-language poisoning without XML tags</td>
+      <td><code>3.71%</code></td>
+      <td><strong><code>41.03%</code></strong> (<strong>11.1&times;</strong>)</td>
+    </tr>
+    <tr>
+      <td><strong>DVMCP</strong> (15 FastMCP 1.30.0 vulnerable MCP servers)</td>
+      <td>Native Streamable HTTP reachability &amp; passive surface detection</td>
+      <td><code>0/15</code> (HTTP 406)</td>
+      <td><strong><code>15/15</code> native</strong> · <code>4/4</code> static poisoning caught (0 FP on other 11) · <code>--rug-pull</code> catches delayed <strong>C04</strong></td>
+    </tr>
+    <tr>
+      <td><strong>DVMCP &amp; DVAA</strong> (21 agents)</td>
+      <td>Diagnostic input-echo FPs &amp; scan speed</td>
+      <td>C02: <code>22</code>, ToolBot: <code>22</code></td>
+      <td><strong>C02: <code>0</code></strong>, <strong>ToolBot: <code>0</code></strong>, <strong>SecureBot: <code>0</code> FP</strong> (<code>&lt;1.5 s/agent</code>)</td>
+    </tr>
+    <tr>
+      <td><strong>JailbreakBench</strong> (N=300, 3-human majority)</td>
+      <td>Confirmation judge on local <a href="https://github.com/radeksixi/sixi-asi">Sixi-ASI 1.0.0</a> (<code>Qwen3.8-27B</code>, $0.00)</td>
+      <td>—</td>
+      <td><strong><code>91.33%</code> acc / <code>0.8898</code> F1</strong> (<code>95.45%</code> recall, <code>4.55%</code> FNR)</td>
+    </tr>
+    <tr>
+      <td><strong>KV prefix-cache scaling</strong> (41 live probes, <code>--concurrency 8</code>)</td>
+      <td>Split <code>system</code> + <code>user</code> confirm prompts on Sixi-ASI</td>
+      <td><code>58.88 s</code> (<code>c=1</code>)</td>
+      <td><strong><code>23.83 s</code></strong> (<strong>2.47&times;</strong> speedup, <code>92.38%</code> prefix-cache hit)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Detecting both manifest and delayed-output MCP Rug Pulls (<code>--rug-pull</code>)</h2>
+<p>Single-shot MCP inspection misses <strong>rug-pull servers</strong> that behave cleanly during initial discovery and turn hostile after a trust-building period. In real MCP benchmarks there are two distinct patterns: a server that mutates its <code>tools/list</code> schema mid-session, and a server like <strong>DVMCP Challenge 4</strong> whose <code>tools/list</code> never changes — instead, <code>get_weather</code> returns clean data on calls 1–3 and starts appending hidden <code>&lt;IMPORTANT&gt;</code> exfiltration instructions on call #4.</p>
+<p><code>sixi-scanner surface --rug-pull</code> handles both deterministically: it SHA-256 hashes every tool's <code>(name, description, inputSchema)</code> across repeated snapshots <em>and</em> sends benign read-only calls to safe non-mutating tools between snapshots, scanning each tool output against baseline round #1. Verified live against unmodified DVMCP Challenge 4:</p>
+<pre><code>$ sixi-scanner surface --url http://127.0.0.1:9004/mcp
+# exit 0 — 0 findings (clean initial manifest)
+
+$ sixi-scanner surface --url http://127.0.0.1:9004/mcp --rug-pull
+# exit 1 — [CRITICAL] surface.mcp.rug-pull:
+# MCP tool output mutated to inject instructions after 4 benign calls (rug pull): get_weather</code></pre>
+
+<h2>4. Eleven zero-dependency connectors + native <code>laya-as-judge</code> confirmation</h2>
+<p>Rather than adding vendor SDKs, <code>v1.1.0</code> speaks every major cloud and local AI protocol over Go's <code>net/http</code>:</p>
+<ul>
+  <li><strong>11 connectors:</strong> <code>openai</code> (OpenAI, NVIDIA NIM, NeMo Guardrails, Sixi-ASI, vLLM, Ollama), <code>responses</code> (OpenAI Responses API &amp; Microsoft AI Foundry <code>/v1/responses</code> with native <code>previous_response_id</code>), <code>azure</code> (Azure OpenAI / Foundry <code>api-key</code> + <code>api-version</code>), <code>gemini</code> (Google Gemini <code>generateContent</code> / Vertex AI + <code>functionCall</code>), <code>anthropic</code> (Anthropic Messages <code>/v1/messages</code> + <code>tool_use</code>), <code>mcp</code> (JSON-RPC 2.0 + Streamable HTTP <code>2025-03-26</code>), <code>a2a</code>, <code>json</code>, <code>chat</code>, <code>webform</code>, and <code>echo</code>.</li>
+  <li><strong><code>--stateful</code> multi-turn on cloud APIs:</strong> maintains isolated client-side conversation history per session so multi-turn probes (<code>sleeper-memory</code>, <code>refund-cap-split</code>, <code>payload-relay</code>) run cleanly on <code>openai</code>, <code>azure</code>, <code>gemini</code>, and <code>anthropic</code>.</li>
+  <li><strong>Native <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge</code></a> confirmation:</strong> pointing <code>--confirm-url</code> at <code>/v1/judge</code>, <code>/v1/judged-decision</code>, <code>/v1/decisions</code>, or <code>/v1/systemone</code> automatically sends typed <code>noul</code> + <code>choice</code> criteria and honours orthogonal <code>ActionGate</code> <code>block</code> verdicts without needing <code>--confirm-model</code>.</li>
+  <li><strong>Prefix-cache-friendly LLM judges:</strong> OpenAI-compatible confirmation calls now place the invariant auditor contract and agent policy in <code>role: "system"</code> and only the candidate exchange in <code>role: "user"</code>, raising KV prefix-cache hit rate to <code>92.38%</code> on local Sixi-ASI / vLLM servers.</li>
+</ul>
+
+<h2>5. One command via PyPI, GitHub Actions, or your AI IDE (MCP Server)</h2>
+<p>Because Python wheels wrap the pre-compiled static Go binary for all five platforms, teams no longer need a Go toolchain to run <code>sixi-scanner</code> or attach it to Claude Desktop / Cursor / Windsurf:</p>
+<pre><code># Run instantly via uvx or pip (Linux x86_64/arm64, macOS x86_64/arm64, Windows x86_64)
+uvx sixi-scanner surface --url https://your-agent.example --rug-pull
+pip install sixi-scanner
+
+# Or wire directly into an MCP-capable IDE (Official MCP Registry: io.github.radeksixi/sixi-scanner)
+{
+  "mcpServers": {
+    "sixi-scanner": {
+      "command": "uvx",
+      "args": ["sixi-scanner", "mcp-serve"]
+    }
+  }
+}</code></pre>
+<p>In CI, the composite <a href="https://github.com/radeksixi/sixi-scanner/blob/main/action.yml"><code>action.yml</code></a> downloads the SHA-256-verified static binary for your runner and exports SARIF 2.1.0 straight to GitHub Code Scanning.</p>
+
+<p>Source, binaries, wheels, and full stability policy: <a href="https://github.com/radeksixi/sixi-scanner">github.com/radeksixi/sixi-scanner</a> · <a href="https://pypi.org/project/sixi-scanner/">pypi.org/project/sixi-scanner</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a> · <a href="https://sixi.ai/en/radek/">Profile</a> · <a href="/">Writing</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
+</body>
+</html>

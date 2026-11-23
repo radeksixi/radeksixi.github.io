@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate APIs (laya-as-judge v1.1.0 on PyPI), agent red-teaming tools (sixi-scanner v1.0.0), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate APIs (laya-as-judge v1.1.0 on PyPI), agent red-teaming tools (sixi-scanner v1.1.0 on PyPI &amp; MCP Registry), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D">
-<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.1.0 (PyPI · Decision, Judge &amp; ActionGate API) · 3. sixi-scanner v1.0.0 (agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
+<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.1.0 (PyPI · Decision, Judge &amp; ActionGate API) · 3. sixi-scanner v1.1.0 (PyPI &amp; MCP Registry · agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/">
 </head>
@@ -22,11 +22,16 @@
   <h1>Local C++/CUDA inference, calibrated AI evaluation, agent red-teaming, and off-grid field systems.</h1>
   <p class="lede">Senior Software Engineer &amp; AI Architect in Locarno, Switzerland — 14 years shipping software where failure is expensive. <strong>Open to Senior/Principal roles &amp; B2B contracts</strong> across Switzerland (remote/hybrid), EU &amp; Canada (remote). Open-source AI tools, <a href="https://sixi.ai/en/assure/">Sixi Assure</a>, and Swiss off-grid radio (<a href="https://sixi.ai/en/rifugio/">Rifugio</a>) at <a href="https://sixi.ai">Sixi Lab R&amp;D (sixi.ai)</a>; see my <a href="https://sixi.ai/en/radek/">profile</a>, <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a>, or <a href="/work/">work with me</a>.</p>
 
-  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.1.0) → 3 Red-Team (sixi-scanner v1.0.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
+  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.1.0) → 3 Red-Team (sixi-scanner v1.1.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
+    <li>
+      <span class="date">23 November 2026 <span class="post-tag">AI Security · PyPI v1.1.0 &amp; MCP Registry</span></span>
+      <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: MCPTox (38% &rarr; 80.6% recall), DVMCP 15/15 + live rug-pull detection, cloud connectors, and native laya-as-judge</a>
+      <p>Live on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>) and Official MCP Registry (<code>io.github.radeksixi/sixi-scanner</code>) with 0 Go dependencies: <strong>80.64%</strong> recall / <strong>99.36%</strong> precision on 1,348 MCPTox tools (43/45 clean servers 0 FP), <strong>15/15</strong> DVMCP Streamable HTTP + live C04 rug-pull detection, 11 cloud/MCP/A2A targets, native <code>laya-as-judge</code> confirmation, and <strong>91.33%</strong> JailbreakBench accuracy on local Sixi-ASI ($0).</p>
+    </li>
     <li>
       <span class="date">23 November 2026 <span class="post-tag">AI Evaluation · PyPI v1.1.0 &amp; RAIL Guard</span></span>
       <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">laya-as-judge 1.1 on PyPI: 512 live RAIL Guard tests ($0 GPU), FastMCP &amp; LangGraph, and why prompt-only guardrails fail sysadmin tools</a>
@@ -181,9 +186,9 @@
   </a>
   <div class="grid">
     <div class="card">
-      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · v1.0.0</p>
+      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · PyPI &amp; MCP Registry · v1.1.0</p>
       <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>Static Go red-team scanner for LLM agents: <strong>45 techniques</strong> (7 structural oracles, 4 multi-turn), native <code>mcp</code>/<code>a2a</code> transports, passive tool-poisoning inspection (<code>surface</code>), deterministic per-call &amp; cumulative session tool policy enforcement, <code>--log-jsonl</code> observability, honest <code>diff</code>, SARIF 2.1.0 &amp; HTML output, zero dependencies (<a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw benchmark</a>, <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">1.0 benchmarks</a>).</p>
+      <p>Static Go CLI on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>), GitHub Actions &amp; Official MCP Registry (<code>mcp-serve</code>): <strong>45 probes</strong>, <strong>11 zero-dep connectors</strong> (OpenAI, Responses/Foundry, Azure, Gemini, Anthropic, MCP Streamable HTTP <code>2025-03-26</code>, A2A), <code>--stateful</code> multi-turn, deterministic <code>--rug-pull</code> &amp; wire tool policies, native <code>laya-as-judge</code> confirmation, SARIF 2.1.0 &amp; HTML (<a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">v1.1.0 MCPTox/DVMCP</a>, <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw</a>, <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">v1.0 benchmarks</a>).</p>
     </div>
 
     <div class="card">
