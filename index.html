@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D</title>
-<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate APIs (laya-as-judge v1.2.0 on PyPI), agent red-teaming tools (sixi-scanner v1.2.0 on PyPI &amp; MCP Registry), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
+<meta name="description" content="Radek Brus (Sixi Lab R&amp;D, Switzerland) builds C++20/CUDA hybrid MoE inference engines (sixi-asi v1.0.0), calibrated Decision, Judge &amp; ActionGate APIs (laya-as-judge v1.2.0 on PyPI), agent red-teaming tools (sixi-scanner v1.3.0 on PyPI &amp; MCP Registry), Sixi Assure, and Swiss off-grid LoRa mesh systems (Rifugio) at sixi.ai.">
 <meta name="color-scheme" content="light dark">
 <link rel="canonical" href="https://radeksixi.github.io/">
 <link rel="stylesheet" href="/assets/style.css">
 <meta property="og:title" content="Radek Brus — Senior Software Engineer &amp; AI Architect · Sixi Lab R&amp;D">
-<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.2.0 (PyPI · Decision, Judge &amp; ActionGate API) · 3. sixi-scanner v1.2.0 (PyPI &amp; MCP Registry · agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
+<meta property="og:description" content="1. sixi-asi v1.0.0 (C++20/CUDA inference) · 2. laya-as-judge v1.2.0 (PyPI · Decision, Judge &amp; ActionGate API) · 3. sixi-scanner v1.3.0 (PyPI &amp; MCP Registry · agent red-teaming) · Sixi Assure &amp; Rifugio at Sixi Lab R&amp;D (sixi.ai).">
 <meta property="og:image" content="https://radeksixi.github.io/assets/headline.png">
 <meta property="og:url" content="https://radeksixi.github.io/">
 </head>
@@ -22,11 +22,16 @@
   <h1>Local C++/CUDA inference, calibrated AI evaluation, agent red-teaming, and off-grid field systems.</h1>
   <p class="lede">Senior Software Engineer &amp; AI Architect in Locarno, Switzerland — 14 years shipping software where failure is expensive. Builder focused on <strong>sovereign, open-source AI</strong> and <strong>disciplined multi-agent software engineering</strong>: orchestrating multi-model coding agent swarms (Claude, Gemini, OpenCode) and building custom agent systems (LangGraph, DeepAgents, Google ADK, Foundry) to ship, test, and benchmark multiple production systems in parallel under deterministic gates. <strong>Open to Senior/Principal roles &amp; B2B contracts</strong> across Switzerland (remote/hybrid), EU &amp; Canada (remote) — see <a href="https://sixi.ai">Sixi Lab R&amp;D (sixi.ai)</a>, my <a href="https://sixi.ai/en/radek/">profile</a>, <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a>, or <a href="/work/">work with me</a>.</p>
 
-  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.2.0) → 3 Red-Team (sixi-scanner v1.2.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
+  <a href="https://sixi.ai"><img src="/assets/sixi-lab-overview.svg" alt="Sixi Lab R&amp;D overview: 1 Infer (sixi-asi v1.0.0) → 2 Decide &amp; Judge (laya-as-judge v1.2.0) → 3 Red-Team (sixi-scanner v1.3.0) · Sixi Assure &amp; Rifugio at sixi.ai (sigillo, Faro v0.12.1 for T-Deck / T-Deck MAX, sixi-observer)."></a>
 
   <p class="eyebrow">Writing</p>
   <h2>Field notes &amp; benchmarks</h2>
   <ul class="posts">
+    <li>
+      <span class="date">24 November 2026 <span class="post-tag">AI Security · 11 Guardrails &amp; v1.3.0</span></span>
+      <a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11 Guardrails, OpenClaw 2026.11.7 &amp; 3 Scanners Against One Enterprise AI Agent &mdash; and sixi-scanner v1.3.0</a>
+      <p>Local $0 benchmark on Jetson AGX Thor (<code>Qwen3.8-27B</code>, SQLite + 7 PDFs + 8 tools): 0/6 standalone guardrails stopped split caps or hidden SQL/PDF side effects; only Defense-in-Depth hit 0 breaks &amp; 0% FPR (39.7 ms). Head-to-head against Promptfoo &amp; Microsoft PyRIT uncovered raw Base64 <em>Execute-Then-Lie</em> &mdash; now caught deterministically by <code>sixi-scanner v1.3.0</code> (50 probes, SQL/BOLA wire policy, <code>7/7</code> <code>verify-sixi</code> closure).</p>
+    </li>
     <li>
       <span class="date">23 November 2026 <span class="post-tag">AI Security · Closed Loop v1.2.0</span></span>
       <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">Closing the AI Security Loop: sixi-scanner v1.2.0 &harr; laya-as-judge v1.2.0 (Attack &rarr; Guard &rarr; Prove at $0 Local GPU)</a>

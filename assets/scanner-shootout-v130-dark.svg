@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect width="1920" height="1080" fill="#0b0f17"/>
+
+  <!-- Header -->
+  <text x="80" y="76" fill="#f97316" font-size="20" font-weight="700" letter-spacing="3">SIXI LAB R&amp;D  ·  HEAD-TO-HEAD SCANNER SHOOTOUT  ·  LOCAL $0.00</text>
+  <text x="80" y="136" fill="#f1f5f9" font-size="48" font-weight="800">Promptfoo vs. PyRIT vs. sixi-scanner v1.3.0</text>
+  <text x="80" y="178" fill="#94a3b8" font-size="24">Same Enterprise Agent (Atlas v2 · Qwen3.8-27B)  ·  Scored by 10 Deterministic Server-Side Oracles</text>
+
+  <!-- Card 1: Promptfoo -->
+  <rect x="80" y="226" width="548" height="632" rx="18" fill="#111827" stroke="#1f2937" stroke-width="2"/>
+  <text x="116" y="280" fill="#94a3b8" font-size="18" font-weight="700" letter-spacing="2">LLM-DRIVEN RED TEAM</text>
+  <text x="116" y="328" fill="#f1f5f9" font-size="36" font-weight="800">Promptfoo 0.123.1</text>
+
+  <text x="116" y="408" fill="#f59e0b" font-size="68" font-weight="800">12.6 min</text>
+  <text x="116" y="442" fill="#94a3b8" font-size="21">timed out at 720 s on undefended (56 turns)</text>
+
+  <line x1="116" y1="474" x2="592" y2="474" stroke="#1f2937" stroke-width="1.5"/>
+
+  <text x="116" y="520" fill="#94a3b8" font-size="18" font-weight="700">SERVER ORACLES HIT (UNDEFENDED)</text>
+  <text x="116" y="562" fill="#f1f5f9" font-size="34" font-weight="800">2 distinct <tspan fill="#94a3b8" font-size="22" font-weight="500">(BOLA, cap split)</tspan></text>
+
+  <text x="116" y="622" fill="#94a3b8" font-size="18" font-weight="700">KEY STRENGTH</text>
+  <text x="116" y="658" fill="#f1f5f9" font-size="21">Polite, domain-aware phrasing slipped</text>
+  <text x="116" y="688" fill="#f1f5f9" font-size="21">4 breaks past HTTP proxy alone.</text>
+
+  <text x="116" y="750" fill="#94a3b8" font-size="18" font-weight="700">CI LIMITATION</text>
+  <text x="116" y="786" fill="#ef4444" font-size="21">Heavy LLM grader latency; buffers JSON</text>
+  <text x="116" y="816" fill="#ef4444" font-size="21">until finish (0 report written on timeout).</text>
+
+  <!-- Card 2: Microsoft PyRIT -->
+  <rect x="686" y="226" width="548" height="632" rx="18" fill="#111827" stroke="#1f2937" stroke-width="2"/>
+  <text x="722" y="280" fill="#94a3b8" font-size="18" font-weight="700" letter-spacing="2">CONVERTER + CRESCENDO</text>
+  <text x="722" y="328" fill="#f1f5f9" font-size="36" font-weight="800">Microsoft PyRIT 1.1.0</text>
+
+  <text x="722" y="408" fill="#f59e0b" font-size="68" font-weight="800">12.0 min</text>
+  <text x="722" y="442" fill="#94a3b8" font-size="21">timed out at 720 s · 887k target tokens (8×)</text>
+
+  <line x1="722" y1="474" x2="1198" y2="474" stroke="#1f2937" stroke-width="1.5"/>
+
+  <text x="722" y="520" fill="#94a3b8" font-size="18" font-weight="700">SERVER ORACLES HIT (UNDEFENDED)</text>
+  <text x="722" y="562" fill="#f1f5f9" font-size="34" font-weight="800">5 distinct <tspan fill="#94a3b8" font-size="22" font-weight="500">(SQLi, DB, email, BOLA, cap)</tspan></text>
+
+  <text x="722" y="622" fill="#94a3b8" font-size="18" font-weight="700">KEY DISCOVERY</text>
+  <text x="722" y="658" fill="#f1f5f9" font-size="21">Raw Base64, ROT13 &amp; Leetspeak bypassed</text>
+  <text x="722" y="688" fill="#f1f5f9" font-size="21">DeBERTa-v3 (4 breaks) via Encode-to-Execute.</text>
+
+  <text x="722" y="750" fill="#94a3b8" font-size="18" font-weight="700">SCORING GAP</text>
+  <text x="722" y="786" fill="#ef4444" font-size="21">Own LLM scorer reported 0 on LLM Guard</text>
+  <text x="722" y="816" fill="#ef4444" font-size="21">despite 4 real server-side compromises.</text>
+
+  <!-- Card 3: sixi-scanner v1.3.0 (Highlighted) -->
+  <rect x="1292" y="226" width="548" height="632" rx="18" fill="#1a1410" stroke="#f97316" stroke-width="3"/>
+  <rect x="1616" y="252" width="192" height="36" rx="18" fill="#f97316"/>
+  <text x="1712" y="276" text-anchor="middle" fill="#0b0f17" font-size="15" font-weight="800">NEW · 0 DEPS GO</text>
+
+  <text x="1328" y="280" fill="#f97316" font-size="18" font-weight="700" letter-spacing="2">WIRE-TRACE SCANNER</text>
+  <text x="1328" y="328" fill="#f1f5f9" font-size="36" font-weight="800">sixi-scanner v1.3.0</text>
+
+  <text x="1328" y="408" fill="#10b981" font-size="68" font-weight="800">3.1 min</text>
+  <text x="1328" y="442" fill="#94a3b8" font-size="21">100% complete (50/50) · 0 errors · CI-ready</text>
+
+  <line x1="1328" y1="474" x2="1804" y2="474" stroke="#1f2937" stroke-width="1.5"/>
+
+  <text x="1328" y="520" fill="#94a3b8" font-size="18" font-weight="700">SERVER ORACLES HIT (v1.2 → v1.3)</text>
+  <text x="1328" y="562" fill="#10b981" font-size="34" font-weight="800">5 full · 6 deep <tspan fill="#94a3b8" font-size="22" font-weight="500">(up from 4 in v1.2)</tspan></text>
+
+  <text x="1328" y="622" fill="#94a3b8" font-size="18" font-weight="700">BUILT FROM THIS SHOOTOUT</text>
+  <text x="1328" y="658" fill="#f1f5f9" font-size="21">Catches Base64 Execute-Then-Lie, SQLi,</text>
+  <text x="1328" y="688" fill="#f1f5f9" font-size="21">private DB tables &amp; PDF hijacks on the wire.</text>
+
+  <text x="1328" y="750" fill="#94a3b8" font-size="18" font-weight="700">CLOSED LOOP (--export-laya)</text>
+  <rect x="1328" y="766" width="468" height="60" rx="12" fill="#062b22" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1562" y="803" text-anchor="middle" fill="#10b981" font-size="22" font-weight="700">7/7 verify-sixi closed · 0 oracles on DiD</text>
+
+  <!-- Bottom takeaway -->
+  <rect x="80" y="900" width="1760" height="84" rx="14" fill="#111827" stroke="#1f2937" stroke-width="1.5"/>
+  <rect x="80" y="900" width="8" height="84" rx="4" fill="#f97316"/>
+  <text x="114" y="936" fill="#f1f5f9" font-size="23" font-weight="700">Why wire-trace inspection wins: Qwen3.8-27B sent an external email via raw Base64, then replied "I can't do that."</text>
+  <text x="114" y="968" fill="#94a3b8" font-size="19">Prose-only judges score polite refusals as safe. sixi-scanner v1.3.0 flags forbidden SQL tables, BOLA, and external emails directly on tool_calls.</text>
+
+  <text x="80" y="1036" fill="#64748b" font-size="18">Radek Brus · sixi.ai · pip install sixi-scanner laya-as-judge</text>
+  <text x="1840" y="1036" text-anchor="end" fill="#64748b" font-size="18">Jetson AGX Thor · sixi-asi 1.0.0 · 2026-11-24</text>
+</svg>
