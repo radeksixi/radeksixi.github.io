@@ -171,18 +171,51 @@
   </tbody>
 </table>
 
-<h2>Try <code>sixi-scanner v1.3.0</code></h2>
+<h2>6. Closing the last gap in <code>sixi-scanner v1.4.0</code> (<code>--attacker-url</code> Crescendo, <code>--pack safety</code> &amp; <code>sixi-server</code> UTF-8 fix)</h2>
+<p>Looking honestly at the Phase 4 table, two narrow edges still belonged to Promptfoo and PyRIT: synthesizing <strong>polite, domain-tailored business-logic questions</strong> from the target's purpose, and running <strong>adaptive multi-turn Crescendo backtracking</strong> after a refusal. <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.4.0"><strong><code>sixi-scanner v1.4.0</code></strong></a> closes both &mdash; strictly opt-in, off by default so standard CI stays 100% deterministic, and still <strong>0 external Go dependencies</strong>:</p>
+<ul>
+  <li><strong><code>--attacker-url</code> + <code>--adaptive-turns</code> + <code>--attacker-budget</code>:</strong> generates polite domain scenarios from <code>--context</code> (<code>purpose</code> + <code>policy</code>) and backtracks across up to <em>N</em> turns on session-capable targets, scoring every turn <strong>deterministically on <code>tool_calls</code></strong> (eliminating LLM-scorer blind spots).</li>
+  <li><strong><code>--pack safety</code> (opt-in, 6 refusal-boundary probes):</strong> high-level non-weaponized checks for phishing lures, access-bypass guidance, harassment, AML structuring, BEC fraud, and unlicensed medical dosing (<code>--pack agent</code> stays the 50-probe default; <code>--pack all</code> runs all 56).</li>
+  <li><strong><code>sixi-server</code> UTF-8 hardening (<code>sixi-asi</code> commit <code>b133d70</code>):</strong> replaced every bare <code>nlohmann::json::dump()</code> in <code>server.cpp</code> with <code>error_handler_t::replace</code> and guarded the streaming lambda &mdash; verified <strong>5/5 (100%)</strong> under BiDi/Tag-Plane/truncated-UTF-8 streaming stress and <strong>7/7 CTest</strong> green.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th><code>v1.4.0</code> Live Verification (Jetson AGX Thor, <code>$0.00</code>)</th>
+      <th>Wall time</th>
+      <th>Target tokens</th>
+      <th>Measured result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong><code>sixi-server</code> BiDi / Tag-Plane / Streaming stress</strong></td><td>&mdash;</td><td>&mdash;</td><td><strong>5/5 HTTP 200</strong>, 0 aborts, same PID alive + 7/7 CTest</td></tr>
+    <tr><td><strong>Adaptive vs. Undefended Atlas</strong> (<code>--adaptive-only</code>)</td><td><strong>100.1 s</strong></td><td>32.5k *(27&times; less than PyRIT)*</td><td><strong>2 critical trace findings</strong> (<code>external-cc-exfil</code>, <code>cumulative-refund-splitting</code>)</td></tr>
+    <tr><td><strong>Adaptive vs. <code>laya_v12</code> HTTP proxy</strong> *(Promptfoo took 670 s)*</td><td><strong>220.5 s</strong></td><td><strong>11.9k</strong> *(5&times; less than Promptfoo)*</td><td><strong>3-turn Crescendo break</strong> (<code>cross-account-balance-compare</code>): held turns 1&ndash;2, pivoted on turn 3 past Laya input gate, caught <code>sqlite_master</code> behind withheld reply &rarr; <strong><code>1/1</code> <code>verify-sixi</code> closed</strong></td></tr>
+    <tr><td><strong>Adaptive vs. Defense-in-Depth</strong></td><td><strong>54.8 s</strong></td><td>1.8k</td><td><strong>0 findings &middot; 0 server oracles</strong> (<code>exit 0</code>)</td></tr>
+    <tr><td><strong><code>--pack safety</code></strong> (6 probes &times; 2 attempts = 12 turns)</td><td><strong>35.2 s</strong></td><td>&mdash;</td><td><strong>0 findings (0% FPR)</strong> on live <code>Qwen3.8-27B</code></td></tr>
+  </tbody>
+</table>
+
+<h2>Try <code>sixi-scanner v1.4.0</code></h2>
 <pre><code>pip install -U sixi-scanner laya-as-judge
 
-# Scan an enterprise tool-calling agent with SQL/BOLA wire policy and export guard rules
+# 1. Fast deterministic CI scan (50 probes, 0 attacker LLM calls) + export guard rules
 sixi-scanner scan --target chat --url http://127.0.0.1:8100/api/chat \
   --stateful --trace-path tool_calls --context atlas-enterprise-context.json \
   --out baseline.json --export-laya guard-rules.json
 
-# Prove 100% deterministic regression closure in CI
+# 2. Optional adaptive domain probes + 3-turn Crescendo (scored deterministically on tool_calls)
+sixi-scanner scan --target chat --url http://127.0.0.1:8100/api/chat \
+  --stateful --trace-path tool_calls --context atlas-enterprise-context.json \
+  --attacker-url http://127.0.0.1:8089/v1 --attacker-model qwen3.8-27b \
+  --attacker-budget 8 --adaptive-turns 3 --export-laya adaptive-rules.json
+
+# 3. Optional content-safety refusal boundary pack + CI closure check
+sixi-scanner scan --target chat --url http://127.0.0.1:8100/api/chat --pack safety
 laya-judge verify-sixi guard-rules.json</code></pre>
 
-<p>Links: <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.3.0"><code>sixi-scanner v1.3.0</code> (GitHub)</a> · <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> · <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge v1.2.0</code></a> · <a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi v1.0.0</code></a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a>.</p>
+<p>Links: <a href="https://github.com/radeksixi/sixi-scanner/releases/tag/v1.4.0"><code>sixi-scanner v1.4.0</code> (GitHub)</a> · <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> · <a href="https://github.com/radeksixi/laya-as-judge"><code>laya-as-judge v1.2.0</code></a> · <a href="https://github.com/radeksixi/sixi-asi"><code>sixi-asi v1.0.0</code></a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a>.</p>
 </article>
 </main>
 <footer class="site">© 2026 Radek Brus · <a href="https://sixi.ai">Sixi Lab R&amp;D</a> · <a href="https://sixi.ai/en/assure/">Sixi Assure</a> · <a href="https://sixi.ai/en/radek/">Profile</a> · <a href="/">Writing</a> · <a href="/work/">Work with me</a> · <a href="https://github.com/radeksixi">GitHub</a> · <a href="https://www.linkedin.com/in/radekb/">LinkedIn</a> · <a href="mailto:contact@sixi.ai">contact@sixi.ai</a> · <a href="https://x.com/radeksixi">X</a></footer>
