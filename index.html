@@ -30,72 +30,72 @@
     <li>
       <span class="date">24 November 2026 <span class="post-tag">AI Security · 11 Guardrails &amp; v1.4.0</span></span>
       <a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11 Guardrails, OpenClaw 2026.11.7 &amp; 3 Scanners Against One Enterprise AI Agent &mdash; and sixi-scanner v1.3.0 &rarr; v1.4.0</a>
-      <p>Local $0 benchmark on Jetson AGX Thor (<code>Qwen3.8-27B</code>, SQLite + 7 PDFs + 8 tools): 0/6 standalone guardrails stopped split caps or hidden SQL/PDF side effects; only Defense-in-Depth hit 0 breaks &amp; 0% FPR (39.7 ms). Head-to-head against Promptfoo &amp; Microsoft PyRIT shipped SQL/BOLA wire policies + raw Base64 <em>Execute-Then-Lie</em> (<code>v1.3.0</code>) and opt-in adaptive <code>--attacker-url</code> Crescendo + <code>--pack safety</code> (<code>v1.4.0</code>, catching a 3-turn break past Laya proxy in 11.9k tokens with <code>100%</code> <code>verify-sixi</code> closure).</p>
+      <p>0/6 standalone guardrails stopped split caps or hidden SQL/PDF side effects on a local <code>Qwen3.8-27B</code> enterprise agent; only layered Defense-in-Depth hit 0 breaks &amp; 0% FPR (39.7 ms), while <code>v1.4.0</code> adaptive Crescendo + <code>verify-sixi</code> closed every break at $0 cloud.</p>
     </li>
     <li>
       <span class="date">23 November 2026 <span class="post-tag">AI Security · Closed Loop v1.2.0</span></span>
       <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">Closing the AI Security Loop: sixi-scanner v1.2.0 &harr; laya-as-judge v1.2.0 (Attack &rarr; Guard &rarr; Prove at $0 Local GPU)</a>
-      <p>Zero-output-token <code>RedTeamVerdictJudge</code> (<code>judge="redteam"</code>) + <code>--export-laya</code> deterministic guardrail rules + <code>laya-judge verify-sixi</code>. Verified live on <code>Qwen3.8-27B</code> (all 45 probes: <code>2/2</code> closed, <code>0.29 ms</code> guard overhead, <code>0/10</code> benign false blocks, plus 1 stochastic new XSS caught by <code>diff</code>) and DVMCP Challenge 4 rug-pull (blocked in <code>1.00 ms</code> via FastMCP).</p>
+      <p>Zero-output-token <code>RedTeamVerdictJudge</code> + <code>--export-laya</code> deterministic rules + <code>verify-sixi</code>: <code>2/2</code> live findings closed in <code>0.29 ms</code> on <code>Qwen3.8-27B</code> (<code>0/10</code> benign FPs) and DVMCP rug-pull blocked in <code>1.00 ms</code>.</p>
     </li>
     <li>
       <span class="date">23 November 2026 <span class="post-tag">AI Security · PyPI v1.1.0 &amp; MCP Registry</span></span>
-      <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: MCPTox (38% &rarr; 80.6% recall), DVMCP 15/15 + live rug-pull detection, cloud connectors, and native laya-as-judge</a>
-      <p>Live on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>) and Official MCP Registry (<code>io.github.radeksixi/sixi-scanner</code>) with 0 Go dependencies: <strong>80.64%</strong> recall / <strong>99.36%</strong> precision on 1,348 MCPTox tools (43/45 clean servers 0 FP), <strong>15/15</strong> DVMCP Streamable HTTP + live C04 rug-pull detection, 11 cloud/MCP/A2A targets, native <code>laya-as-judge</code> confirmation, and <strong>91.33%</strong> JailbreakBench accuracy on local Sixi-ASI ($0).</p>
+      <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">sixi-scanner 1.1 on PyPI &amp; Official MCP Registry: MCPTox (80.6% recall / 99.4% precision), DVMCP 15/15, and rug-pull detection</a>
+      <p>Zero-dep Go CLI on PyPI (<code>uvx sixi-scanner</code>) and Official MCP Registry: <strong>99.36%</strong> precision across 1,348 MCPTox tools, <strong>15/15</strong> DVMCP Streamable HTTP, and <strong>91.33%</strong> JailbreakBench accuracy at $0.</p>
     </li>
     <li>
       <span class="date">23 November 2026 <span class="post-tag">AI Evaluation · PyPI v1.1.0 &amp; RAIL Guard</span></span>
       <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">laya-as-judge 1.1 on PyPI: 512 live RAIL Guard tests ($0 GPU), FastMCP &amp; LangGraph, and why prompt-only guardrails fail sysadmin tools</a>
-      <p>Live on PyPI (<code>pip install laya-as-judge</code>) with a zero-cold-start Hugging Face Space, FastMCP &amp; LangGraph middleware, and native DecisionBench runner. 4B vs 9B local benchmarks at $0 cloud: Pool A 95.0% F1 (0.0% benign FPR), full Pool B 392/392 agent tool-calls 94.6% unsafe intercept — and why 77% of false blocks cluster in unauthenticated sysadmin &amp; healthcare prompts.</p>
-    </li>
-    <li>
-      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Release v1.0.0</span></span>
-      <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">laya-as-judge 1.0: one open-source Decision, Judge &amp; Governance API built for everyone — and ready for regulated enterprise</a>
-      <p>Official <code>v1.0.0</code> release (Apache-2.0): three zero-output-token API modes (<code>/v1/decisions</code>, <code>/v1/judge</code>, <code>/v1/judged-decision</code> &rarr; <code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>), scaling from $0 local 6 GB edge and 16 GB RTX GPUs (78.7%, 12/12 red-team) to air-gapped EU AI Act / DORA enterprise enclaves and 11/11 multimodal <code>Laya-Omega</code>.</p>
-    </li>
-    <li>
-      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Local GPU Benchmarks</span></span>
-      <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">laya-as-judge 0.7: a 100% local Decision, Judge &amp; Judged-Decision API — five live GPU experiments</a>
-      <p>240 real HF questions at $0 cloud cost: 2-tier 11.1–11.8 GB local Q4 cascades hit 78.0–78.7% (beating solo BF16 and 27B+), catch 12/12 red-team attacks with 0% false blocks, cut Q4 ECE 0.0701&rarr;0.0287, run 10-question long logs 3.3&times; faster on joint-schema 9B, plus every model and flag that broke.</p>
+      <p>Pool A <strong>95.0% F1</strong> (0.0% benign FPR) and full Pool B 392/392 tool-calls <strong>94.6%</strong> unsafe intercept — plus why 77% of false blocks cluster in unauthenticated sysadmin &amp; healthcare prompts.</p>
     </li>
     <li>
       <span class="date">20 November 2026 <span class="post-tag">Inference · Release</span></span>
       <a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">Sixi-ASI Engine 1.0.0: Qwen3.8 on one Jetson AGX Thor, and a way to check it</a>
-      <p>1.0.0 is out: Qwen3.8-27B at 55 tok/s on one stream, a prompt that four requests share loaded once (8 s instead of 31), states kept where a client marks them, and a request field that turns drafts off so anyone can compare the two answers (9 of 12 identical, 3.3 times faster with drafts).</p>
+      <p><code>Qwen3.8-27B</code> at <strong>55 tok/s</strong> single-stream (46.0 vs TensorRT 45.4), shared prompts loaded once (8 s vs 31 s), 32 concurrent streams in 27 GB, and Apache-2.0 engine sources.</p>
+    </li>
+  </ul>
+  <details style="margin:0.4rem 0 1.75rem">
+    <summary style="cursor:pointer;font-weight:600">Earlier write-ups (17 more, Oct–Nov 2026)</summary>
+    <ul class="posts" style="margin-top:0.75rem">
+    <li>
+      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Release v1.0.0</span></span>
+      <a href="/laya-as-judge-1-0-decision-judge-governance-for-everyone-and-enterprise/">laya-as-judge 1.0: one open-source Decision, Judge &amp; Governance API built for everyone — and ready for regulated enterprise</a>
+      <p>Official <code>v1.0.0</code> release (Apache-2.0): three zero-output-token API modes scaling from $0 local 6–16 GB GPUs (78.7%, 12/12 red-team) to EU AI Act / DORA enclaves and 11/11 <code>Laya-Omega</code>.</p>
+    </li>
+    <li>
+      <span class="date">22 November 2026 <span class="post-tag">AI Evaluation · Local GPU Benchmarks</span></span>
+      <a href="/laya-as-judge-0-7-local-decision-api-five-experiments/">laya-as-judge 0.7: a 100% local Decision, Judge &amp; Judged-Decision API — five live GPU experiments</a>
+      <p>240 real HF questions at $0 cloud cost: 2-tier 11.1–11.8 GB local Q4 cascades hit 78.0–78.7%, catch 12/12 red-team attacks (0% FP), and cut Q4 ECE 0.0701&rarr;0.0287.</p>
     </li>
     <li>
       <span class="date">19 November 2026 <span class="post-tag">AI Security · OpenClaw Benchmark</span></span>
       <a href="/openclaw-2026-11-5-sandbox-redteam-gemma4-vs-qwen38/">Hardening OpenClaw 2026.11.5 in a zero-internet sandbox: Gemma 4 4B vs Qwen 3.8 27B</a>
-      <p>2×2 live benchmark with <code>sixi-scanner v1.0.0</code>: built-in SSRF and <code>0700</code> guards held, default configs persisted sleeper directives to <code>USER.md</code>/<code>MEMORY.md</code> on both 4B and 27B, bootstrap files still leaked under <code>tools.deny</code>, and hardened 27B cut findings 8 → 2 with 0 disk writes.</p>
+      <p>2×2 live benchmark with <code>sixi-scanner v1.0.0</code>: hardened 27B cut findings 8 &rarr; 2 with 0 disk writes.</p>
     </li>
     <li>
       <span class="date">19 November 2026 <span class="post-tag">AI Security · Release &amp; Benchmark</span></span>
       <a href="/sixi-scanner-1-0-benchmarks-mcp-a2a-and-six-live-bugs/">sixi-scanner 1.0: six real bugs caught on live agents, MCP &amp; A2A, and zero-LLM precision jumping from 0.667 to 0.763</a>
-      <p>Replaying 1,480 Microsoft Foundry turns (-38% FPs, zero recall loss) plus live chat, cumulative tool-policy, MCP and A2A benchmarks against Atlas on local Gemma 4 4B &amp; Qwen 3.8 27B, with JSONL observability on both sides and a stable <code>v1.0.0</code> release.</p>
+      <p>Replaying 1,480 Microsoft Foundry turns (-38% FPs, zero recall loss) plus live ADK, MCP &amp; A2A benchmarks.</p>
     </li>
     <li>
       <span class="date">19 November 2026 <span class="post-tag">AI Security · Release</span></span>
       <a href="/sixi-scanner-0-10-mcp-a2a-tool-policy-and-structural-oracles/">sixi-scanner 0.10: MCP &amp; A2A, deterministic tool policies, structural oracles, and honest diffs</a>
-      <p>45 techniques (7 structural oracles, 4 multi-turn), native MCP &amp; A2A transports, passive tool-poisoning inspection (<code>surface</code>), deterministic wire policy checks without an LLM judge, targeted reproduction, redaction, HTML reports, and scan-to-scan diff — still zero dependencies.</p>
+      <p>Native MCP &amp; A2A transports, passive tool-poisoning inspection, deterministic wire policy checks, and scan-to-scan diff.</p>
     </li>
     <li>
       <span class="date">17 November 2026 <span class="post-tag">Inference · Release</span></span>
       <a href="/sixi-asi-1-0-rc3-talking-agent-fixes-and-engine-sources/">Sixi-ASI Engine 1.0.0-rc3: what two days under a talking agent found, and the engine's sources</a>
-      <p>A sampling defect fixed (45 of 45 against 20), an agent's role calls 2.5 to 4 times faster, a spoken Polish "nie" that is no longer heard as "Yeah." (201 of 300 one-word clips right against 80), and the engine's sources in the repository again.</p>
+      <p>Sampling fix (45/45 vs 20), 2.5–4&times; faster role calls, Polish ASR fix (201/300 vs 80), and open engine sources.</p>
     </li>
     <li>
       <span class="date">14 November 2026 <span class="post-tag">Inference · Release</span></span>
       <a href="/sixi-asi-1-0-rc1-download-and-run-on-jetson-thor/">Sixi-ASI Engine 1.0.0-rc1: download it, run Qwen3.8 on a Jetson Thor, serve 32 requests at once</a>
-      <p>One 50 MB archive and three commands: Qwen3.8-27B at 44 tok/s on one stream and 171 tok/s with 32 requests at once, JSON answers that always parse (120 of 120 against 103), and an OpenAI-compatible server that runs as a background service.</p>
+      <p>One 50 MB archive: Qwen3.8-27B at 44 tok/s single-stream, 171 tok/s across 32 streams, and 120/120 valid JSON.</p>
     </li>
     <li>
       <span class="date">13 November 2026 <span class="post-tag">AI Evaluation · Calibration &amp; Routing</span></span>
       <a href="/laya-as-judge-omega-11-of-11-benchmarks/">laya-as-judge 0.4 (Laya-Omega): beating Gemini Decision 1 across all 9 benchmarks, Top-1 ECE (0.0234), and total cost ($0.77)</a>
-      <p>Hybrid local CUDA encoders (Laya + Vega-U 0.8B TTT) + selective packed Gemini cascade and 10-fold simplex meta-calibration across 2,250 questions (JevBench 92.8%, Video-MME 78.4%, ECE 0.0234, $0.77 total).</p>
+      <p>Hybrid local CUDA encoders + selective packed Gemini cascade across 2,250 questions (ECE 0.0234, $0.77 total).</p>
     </li>
-  </ul>
-  <details style="margin:0.4rem 0 1.75rem">
-    <summary style="cursor:pointer;font-weight:600">Earlier write-ups (9 more, Oct–Nov 2026)</summary>
-    <ul class="posts" style="margin-top:0.75rem">
     <li>
       <span class="date">12 November 2026 <span class="post-tag">LoRa · Firmware &amp; Correctness</span></span>
       <a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">Faro 0.12.1: CRC-checked flash state, hardened phone Wi-Fi setup, Polish UI, and a correctness pass across five LoRa boards</a>
@@ -178,7 +178,7 @@
     <div class="card card-full">
       <p class="tag-line">2 · Decide, Judge &amp; Govern · Python · PyPI · CUDA / MLX / llama.cpp · v1.2.0 · Apache-2.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Zero-output-token <strong>Decision</strong>, <strong>Judge (<code>RedTeamVerdictJudge</code>)</strong>, <strong>6.7 ms Drop-In APIs</strong> (OpenAI <code>/v1/moderations</code>, Cohere/vLLM <code>/v1/rerank</code>, <code>/v1/decisions/batch</code> <code>7.97&times;</code>, Prometheus <code>/metrics</code>) &amp; <strong>ActionGate</strong> (<code>COMMIT</code>/<code>FALLBACK</code>/<code>ABSTAIN</code>/<code>BLOCK</code>) platform on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a> (<code>pip install laya-as-judge</code>) with <strong>FastMCP &amp; LangGraph</strong> middleware, native <strong><code>sixi-scanner</code> guardrail loader (<code>verify-sixi</code>, <code>--rules-file</code>)</strong>, and <strong>DecisionBench &amp; RAIL Guard</strong> runners (<a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Loop</a>, <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">RAIL Guard</a>, <a href="https://huggingface.co/spaces/rbai86/laya-as-judge-demo">HF Space</a>, <a href="/laya-as-judge-omega-11-of-11-benchmarks/">11/11 Omega</a>).</p>
+      <p>Air-gapped zero-output-token <strong>Decision</strong>, <strong>Judge</strong>, <strong>6.7 ms Drop-In APIs</strong> (<code>/v1/moderations</code>, <code>/v1/rerank</code>, <code>/metrics</code>) &amp; 4-way <strong>ActionGate</strong> on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a>, with <strong>FastMCP &amp; LangGraph</strong> middleware and native <code>sixi-scanner</code> regression guardrails (<a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Loop</a>, <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">RAIL Guard</a>, <a href="https://huggingface.co/spaces/rbai86/laya-as-judge-demo">HF Space</a>).</p>
       <ul class="pills">
         <li>6.7 ms drop-in (/moderations, /rerank, /metrics)</li>
         <li>Closed loop: 0.29 ms guard · 1.00 ms rug-pull block</li>
@@ -198,7 +198,7 @@
     <div class="card">
       <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · PyPI &amp; MCP Registry · v1.4.0</p>
       <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>Static Go CLI on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> (<code>uvx sixi-scanner</code>), GitHub Actions &amp; Official MCP Registry (<code>mcp-serve</code>): <strong>50 agentic probes</strong> (+6 opt-in <code>--pack safety</code>), opt-in adaptive <code>--attacker-url</code> domain probes &amp; multi-turn Crescendo, <strong>11 zero-dep connectors</strong>, deterministic <code>--rug-pull</code> &amp; SQL/table/BOLA wire policies, native <code>laya-as-judge</code> confirmation &amp; <code>--export-laya</code> closed CI loop (<a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11-guardrail &amp; v1.4.0 shootout</a>, <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Loop</a>, <a href="/sixi-scanner-1-1-pypi-mcptox-dvmcp-laya-and-mcp-server/">MCPTox/DVMCP</a>).</p>
+      <p>Zero-dep Go CLI on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> &amp; Official MCP Registry: <strong>50 agentic probes</strong> (+safety pack), adaptive multi-turn Crescendo, 11 connectors, deterministic MCP rug-pull &amp; SQL/BOLA wire policies, and closed-loop <code>laya-as-judge</code> guardrail export (<a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11-guardrail shootout</a>, <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">Closed Loop</a>).</p>
     </div>
 
     <div class="card">
