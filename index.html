@@ -149,106 +149,37 @@
     </ul>
   </details>
 
-  <p class="eyebrow">1 · Inference · C++20 / CUDA</p>
-  <h2>sixi-asi — Hybrid MoE &amp; Gated DeltaNet runtime</h2>
-  <a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/assets/sixi-1-0-0-prompts-dark.svg">
-      <img src="/assets/sixi-1-0-0-prompts-light.svg" alt="Sixi-ASI Engine 1.0.0 prompt loading on NVIDIA Jetson AGX Thor: four shared 4,100-token requests finish in 8.0 s instead of 31.2 s; a second question on a marked 3,000-token document takes 0.5 s instead of 5.2 s.">
-    </picture>
-  </a>
+  <p class="eyebrow">Core Open-Source &amp; Lab Systems</p>
+  <h2>What I build and benchmark</h2>
   <div class="grid">
-    <div class="card card-full">
-      <p class="tag-line">Inference Engine · C++20 · CUDA · OpenAI HTTP/SSE · v1.0.0 · Apache-2.0</p>
+    <div class="card">
+      <p class="tag-line">1 · Inference · C++20 / CUDA · v1.0.0 · Apache-2.0</p>
       <h3><a href="https://github.com/radeksixi/sixi-asi">sixi-asi</a></h3>
-      <p>Lossless speculative-decoding server for hybrid Attention + <code>Gated DeltaNet</code> + sparse MoE models on <strong>NVIDIA Jetson Thor</strong> and <strong>DGX Spark</strong> unified memory, with llama.cpp underneath and zero Python on the runtime path (<a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">1.0.0 write-up</a>, <a href="https://github.com/radeksixi/sixi-asi/releases/tag/v1.0.0">v1.0.0 download</a>, <a href="/sixi-asi-0-11-32-streams-on-jetson-thor/">32 streams</a>).</p>
-      <ul class="pills">
-        <li>55.0 tok/s single-stream · 46.0 vs TensorRT 45.4</li>
-        <li>32 streams: 180 tok/s in 27 GB (was 70 GB)</li>
-        <li>4 shared requests: 8.0 s vs 31.2 s · marked 3k doc: 0.5 s</li>
-        <li>&quot;draft&quot;: false exact check · Apache-2.0 engine sources</li>
-      </ul>
+      <p>Zero-Python speculative-decoding server for hybrid MoE / Gated DeltaNet models on <strong>NVIDIA Jetson Thor &amp; DGX Spark</strong>: <strong>55 tok/s</strong> single-stream (46.0 vs TensorRT 45.4) and <strong>32 streams @ 180 tok/s</strong> in 27 GB (<a href="/sixi-asi-1-0-0-qwen3-8-on-one-jetson-thor/">1.0.0 write-up</a>).</p>
     </div>
-  </div>
 
-  <p class="eyebrow">2 · Decide &amp; Judge &amp; 3 · Red-Teaming</p>
-  <h2>laya-as-judge &amp; sixi-scanner — Closed-loop decision governance and agent security</h2>
-  <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/assets/closed-loop-redteam-guard-dark.svg">
-      <img src="/assets/closed-loop-redteam-guard-light.svg" alt="Closed Attack → Guard → Prove Loop (sixi-scanner v1.2.0 ↔ laya-as-judge v1.2.0): scan with 45 probes &amp; --rug-pull, confirm with 0-token RedTeamVerdictJudge, export deterministic rules (--export-laya), block in 0.29–1.00 ms at $0 local GPU, and verify closure in CI.">
-    </picture>
-  </a>
-  <div class="grid">
-    <div class="card card-full">
-      <p class="tag-line">2 · Decide, Judge &amp; Govern · Python · PyPI · CUDA / MLX / llama.cpp · v1.2.0 · Apache-2.0</p>
+    <div class="card">
+      <p class="tag-line">2 · Decide &amp; Judge · Python / PyPI · v1.2.0 · Apache-2.0</p>
       <h3><a href="https://github.com/radeksixi/laya-as-judge">laya-as-judge</a></h3>
-      <p>Air-gapped zero-output-token <strong>Decision</strong>, <strong>Judge</strong>, <strong>6.7 ms Drop-In APIs</strong> (<code>/v1/moderations</code>, <code>/v1/rerank</code>, <code>/metrics</code>) &amp; 4-way <strong>ActionGate</strong> on <a href="https://pypi.org/project/laya-as-judge/">PyPI</a>, with <strong>FastMCP &amp; LangGraph</strong> middleware and native <code>sixi-scanner</code> regression guardrails (<a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">v1.2.0 Closed Loop</a>, <a href="/laya-as-judge-1-1-pypi-rail-guard-fastmcp-langgraph/">RAIL Guard</a>, <a href="https://huggingface.co/spaces/rbai86/laya-as-judge-demo">HF Space</a>).</p>
-      <ul class="pills">
-        <li>6.7 ms drop-in (/moderations, /rerank, /metrics)</li>
-        <li>Closed loop: 0.29 ms guard · 1.00 ms rug-pull block</li>
-        <li>RAIL Guard: 95.0% F1 · 94.6% tool intercept (392/392)</li>
-        <li>78.7% local $0 · 11/11 Omega · EU AI Act / DORA ready</li>
-      </ul>
+      <p>Air-gapped zero-output-token <strong>6.7 ms</strong> Decision, Judge &amp; 4-way <strong>ActionGate</strong> + FastMCP / LangGraph middleware: <strong>95.0% RAIL F1</strong>, <strong>94.6%</strong> tool intercept (392/392), <strong>0.29 ms</strong> CI guard, 11/11 Omega (<a href="https://huggingface.co/spaces/rbai86/laya-as-judge-demo">HF Space</a>, <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">Closed Loop</a>).</p>
     </div>
-  </div>
 
-  <a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/" style="display:block;margin-top:1.25rem">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/assets/enterprise-guardrail-shootout-11way-dark.svg">
-      <img src="/assets/enterprise-guardrail-shootout-11way-light.svg" alt="11-Guardrail, OpenClaw 2026.11.7 &amp; 3-Scanner Enterprise Shootout on Jetson AGX Thor: 0/6 standalone guardrails stopped split caps or hidden SQL/PDF side effects; only layered Defense-in-Depth hit 0 breaks and 0% FPR (39.7 ms).">
-    </picture>
-  </a>
-  <div class="grid">
     <div class="card">
-      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go · PyPI &amp; MCP Registry · v1.4.0</p>
+      <p class="tag-line">3 · Red-Team &amp; CI Gate · Go / PyPI &amp; MCP · v1.4.0</p>
       <h3><a href="https://github.com/radeksixi/sixi-scanner">sixi-scanner</a></h3>
-      <p>Zero-dep Go CLI on <a href="https://pypi.org/project/sixi-scanner/">PyPI</a> &amp; Official MCP Registry: <strong>50 agentic probes</strong> (+safety pack), adaptive multi-turn Crescendo, 11 connectors, deterministic MCP rug-pull &amp; SQL/BOLA wire policies, and closed-loop <code>laya-as-judge</code> guardrail export (<a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11-guardrail shootout</a>, <a href="/closed-loop-redteam-guard-sixi-scanner-laya-1-2/">Closed Loop</a>).</p>
+      <p>Zero-dep Go CLI: <strong>50 agentic probes</strong> (+safety pack), adaptive Crescendo, 11 connectors, MCP rug-pull &amp; SQL/BOLA wire policies, and <code>--export-laya</code> closure — <strong>99.4% MCPTox prec</strong>, <strong>15/15 DVMCP</strong>, <strong>#1/7 Foundry (0.821)</strong> (<a href="/enterprise-agent-guardrail-and-scanner-shootout-sixi-scanner-1-3/">11-guardrail shootout</a>).</p>
     </div>
 
     <div class="card">
-      <p class="tag-line">Benchmark &amp; Labs · Python</p>
-      <h3><a href="https://github.com/radeksixi/agent-redteam-benchmark">agent-redteam-benchmark</a> &amp; <a href="https://github.com/radeksixi/agent-redteam-labs">labs</a></h3>
-      <p>Seven red-teaming tools scored from the wire by 10 deterministic oracles + a tool-blind judge against a live Microsoft Foundry agent, paired with hands-on hardening labs (<a href="https://github.com/radeksixi/adk-demo-target">adk-demo-target</a>) and <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into PyRIT</a>.</p>
-    </div>
-  </div>
-
-  <p class="eyebrow">Sixi Lab R&amp;D (<a href="https://sixi.ai">sixi.ai</a>)</p>
-  <h2>Sixi Assure &amp; Rifugio — AI agent governance and Swiss off-grid radio</h2>
-  <a href="https://sixi.ai"><img src="/assets/sixi-lora-flow.svg" alt="Sign (sigillo) → Route (MeshCore) → Operate (Faro) → Observe (sixi-observer) → Edge AI (GlassBoxEdge)."></a>
-  <div class="grid">
-    <div class="card card-full">
-      <p class="tag-line">Flagship · AI Agent Governance · In development · sixi.ai/en/assure/</p>
-      <h3><a href="https://sixi.ai/en/assure/">Sixi Assure</a> · Sixi Lab R&amp;D</h3>
-      <p>Know who owns every AI agent before the people who built it leave: one typed model of the agent system at design time, deterministic rules with their clauses, a passport for every agent, and a signed handover pack — in active development, with early demos and pilot reviews by arrangement (<a href="https://sixi.ai/en/assure/">see Sixi Assure</a>, <a href="https://sixi.ai/en/work/">work with the lab</a>).</p>
-      <ul class="pills">
-        <li>Typed design-time agent system model</li>
-        <li>Deterministic rules &amp; agent passports</li>
-        <li>Signed handover pack for regulated teams</li>
-      </ul>
+      <p class="tag-line">Flagship Governance · In development · sixi.ai</p>
+      <h3><a href="https://sixi.ai/en/assure/">Sixi Assure</a> &amp; <a href="https://github.com/radeksixi/agent-redteam-benchmark">Foundry Benchmark</a></h3>
+      <p>Design-time AI agent governance for pharma, medtech &amp; regulated teams (typed models, deterministic EU AI Act / FINMA / DORA rules, agent passports, signed handover packs) + 7-tool Foundry benchmark &amp; <a href="https://github.com/microsoft/PyRIT/pull/2771"><code>A2ATarget</code> merged into PyRIT</a>.</p>
     </div>
 
     <div class="card card-full">
-      <p class="tag-line">Field Programme · Autonomous Swiss MeshCore PRU · sixi.ai/en/rifugio/</p>
-      <h3><a href="https://sixi.ai/en/rifugio/">Rifugio · Sixi Lab R&amp;D</a> &amp; <a href="https://github.com/radeksixi/sigillo">sigillo v1.1-rc</a></h3>
-      <p>Autonomous solar emergency infrastructure for Swiss <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> LoRa networks (for municipalities and families), paired with <strong>sigillo</strong> — an open specification and C99/Python/TypeScript libraries fitting an Ed25519-signed EU CAMF public alert into a single <strong>87-byte</strong> offline-verifiable radio packet (<a href="/sigillo-87-byte-signed-alerts-for-lora/">write-up</a>).</p>
-      <ul class="pills">
-        <li>Autonomous off-grid MeshCore emergency nodes</li>
-        <li>87-byte Ed25519-signed offline alerts (Sigillo)</li>
-        <li>C99 · Python · TypeScript reference libraries</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Handheld &amp; Linux UI · LVGL 9 · v0.12.1</p>
-      <h3><a href="https://github.com/radeksixi/sixi-tdeck-plus">sixi-tdeck-plus (Faro)</a></h3>
-      <p>Open-source touchscreen/keyboard UI for MeshCore on <strong>LilyGo T-Deck / T-Deck Plus &amp; T-Deck MAX</strong>, plus an Ubuntu desktop console for any MeshCore companion radio, offline maps, <code>EN/IT/DE/FR/PL</code>, and a <a href="https://radeksixi.github.io/sixi-tdeck-plus/">1-click WebSerial flasher</a> (<a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">write-up</a>).</p>
-    </div>
-
-    <div class="card">
-      <p class="tag-line">Radio Telemetry &amp; Edge AI · Python · Jetson</p>
-      <h3><a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a> &amp; <a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a></h3>
-      <p>USB LoRa &amp; RTL-SDR receiver bridge feeding <a href="https://map.sixi.ai">map.sixi.ai</a>, <a href="https://github.com/meshcore-dev/MeshCore/pulls?q=is%3Apr+author%3Aradeksixi">upstream MeshCore PRs</a>, and air-gapped local AI diagnostics on NVIDIA Jetson edge nodes.</p>
+      <p class="tag-line">Off-Grid Field Radio &amp; Embedded · C99 / C++ / LVGL 9 · Switzerland</p>
+      <h3><a href="https://sixi.ai/en/rifugio/">Rifugio</a> · <a href="https://github.com/radeksixi/sigillo">sigillo v1.1-rc</a> · <a href="https://github.com/radeksixi/sixi-tdeck-plus">Faro v0.12.1</a> · <a href="https://github.com/radeksixi/sixi-observer">sixi-observer</a></h3>
+      <p>Autonomous solar Swiss <a href="https://github.com/meshcore-dev/MeshCore">MeshCore</a> emergency mesh, <strong>87-byte Ed25519-signed</strong> offline EU CAMF alerts (<a href="/sigillo-87-byte-signed-alerts-for-lora/">write-up</a>), LVGL 9 handheld UI for <strong>T-Deck / T-Deck Plus / T-Deck MAX</strong> + Ubuntu console (<a href="/faro-0-12-1-flash-safety-wifi-and-five-boards/">write-up</a>), <a href="https://map.sixi.ai">map.sixi.ai</a> telemetry, and <a href="https://github.com/radeksixi/GlassBoxEdge">GlassBoxEdge</a>.</p>
     </div>
   </div>
 </main>
